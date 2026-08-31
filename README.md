@@ -129,19 +129,3 @@ Prize Drawing Page
 https://lyonli666-sudo.github.io/
 
 ---
-
-# 👨‍💻 作者
-
-Lyon Li
-
----
-
-# 📄 版权声明
-
-© 2026 Lyon Li. All Rights Reserved.
-
-本项目为个人开发作品，仅供学习与参考使用。
-
-如需商业使用，请联系作者获得授权。
-
-本项目与任何公司、组织或机构无关联。
