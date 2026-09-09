@@ -1,131 +1,196 @@
-# lyonli666-sudo.github.io
-Prize Drawing Page
-# 🎲 Lucky Draw System
+# Lucky Draw
 
-一个基于网页的幸运抽奖系统，支持参会者导入、奖品管理、随机抽奖、补抽、中奖记录管理及个性化界面设置。
+A standalone, browser-based lucky draw application designed for company events, annual meetings, team celebrations, and prize drawings.
 
-## 功能简介
+一个无需安装、可直接在浏览器运行的企业活动抽奖工具。支持参会者与奖品导入、随机抽奖、缺席补抽、中奖记录、品牌设置、中英文界面以及舞台揭晓效果。
 
-### 👥 参会者管理
+> Current Version / 当前版本：**v1.1.5**  
+> Updated / 更新日期：**2026-09-09**
 
-- 支持导入参会者名单
-- 自动统计参会者数量
-- 随机抽取中奖人员
-- 防止重复中奖
-- 支持重新导入名单
+---
 
-### 🎁 奖品管理
+## Features / 功能
 
-- 支持导入奖品清单
-- 实时显示奖品库存
-- 自动扣减已抽奖品数量
-- 支持重置奖品信息
+### Participant Management / 参会者管理
 
-### 🎯 抽奖功能
+- Import participant lists from TXT or CSV
+- 支持 TXT / CSV 参会者名单导入
+- Supports Chinese and English names
+- 支持中英文姓名
+- Duplicate display names are treated as separate participants
+- 同名人员仍可作为不同参会者参与抽奖
+- Participant data is locked after successful application to reduce accidental changes during live events
+- 成功应用名单后自动锁定，降低现场误操作风险
+- Use **Reset Participants** before replacing the participant list
+- 只有执行 **Reset Participants / 重置参会者** 后才能重新导入
 
-- 支持设置单次抽奖人数
-- 动态滚动抽奖效果
-- 一键停止并公布结果
-- 自动记录中奖人员
+### Prize Management / 奖品管理
+
+- Import prize tiers, prize names and quantities
+- 导入奖项、奖品名称及数量
+- Automatically tracks remaining prizes
+- 自动统计剩余奖品数量
+- Prize data is independently locked after successful import
+- 成功导入后奖品数据独立锁定
+- Use **Reset Prizes** before replacing prize data
+- 只有执行 **Reset Prizes / 重置奖品** 后才能重新导入
+
+### Lucky Draw / 抽奖
+
+- Select prize tier and number of winners
+- 选择奖项及本轮中奖人数
+- Animated participant rolling wall
+- 动态参会者滚动墙
+- Random winner selection
+- 随机抽取中奖者
+- Prevents eligible winners from being drawn repeatedly
+- 防止已中奖人员重复参与普通抽奖
+- Supports multiple draw rounds
 - 支持多轮抽奖
 
-### 🏆 中奖记录
+### Winner Management / 中奖管理
 
-- 自动保存中奖记录
-- 按奖项分类展示
-- 支持缺席标记
-- 支持补抽功能
-- 支持导出中奖结果
-
-### 🎨 个性化设置
-
-- 自定义 Logo
-- 自定义背景图片
-- 多种主题风格
-- 页面透明度调整
-- 动画与音效效果
-
----
-
-# 🚀 使用方法
-
-## 1. 导入参会者名单
-
-上传参会人员名单文件并完成导入。
-
-建议格式：
-
-```text
-张三
-李四
-王五
-赵六
-```
+- Winner records grouped by prize tier
+- 按奖项显示中奖记录
+- Mark a winner as absent
+- 支持标记中奖者缺席
+- Restore attendance before redraw
+- 补抽前可恢复为在场状态
+- Redraw absent winner slots
+- 支持缺席名额补抽
+- Export winner records
+- 支持导出中奖名单
+- Large winner result dialogs support independent scrolling
+- 多人中奖时结果名单可独立滚动
+- Draw Results header and **Close / 关闭** remain visible while scrolling
+- 滚动多人中奖名单时，顶部标题及 **Close / 关闭** 始终保持可见
 
 ---
 
-## 2. 导入奖品信息
+## Brand & Stage / 品牌与舞台
 
-准备奖品列表并导入系统。
+The application can be customized directly from **Preferences / 偏好设置**.
 
-示例：
+支持：
 
-```text
-一等奖,1
-二等奖,2
-三等奖,5
-幸运奖,10
-```
+- Custom Event Title / 自定义活动标题
+- Custom Brand Logo / 自定义品牌 Logo
+- Light & Dark Appearance / 浅色与深色模式
+- Chinese & English Interface / 中英文界面
+- Accent Color / 强调色
+- Draw Effects / 抽奖揭晓特效
 
----
+### Accent Colors
 
-## 3. 开始抽奖
+Available presets:
 
-1. 选择当前抽取奖项
-2. 设置本轮抽奖人数
-3. 点击“开始抽奖”
-4. 点击“停止并揭晓”
-5. 系统自动生成中奖名单
+- Neutral
+- Blue
+- Green
+- Purple
+- Gold
+- Custom Color
 
----
-
-## 4. 缺席补抽
-
-如中奖人员缺席：
-
-1. 在中奖记录中标记缺席
-2. 进行补抽
-3. 系统自动更新中奖结果
+The selected accent color is also used by interface highlights and celebration effects.
 
 ---
 
-## 5. 导出中奖结果
+## Draw Effects / 抽奖特效
 
-活动结束后可导出中奖记录用于保存或打印。
+Three presentation levels are available.
+
+### Minimal
+
+Clean and restrained winner reveal.
+
+简洁、正式，不使用额外舞台庆典效果。
+
+Recommended for formal corporate events.
+
+### Spotlight
+
+Adds a focused winner reveal with a darker surrounding environment, winner-card emphasis and spotlight treatment.
+
+增加舞台压暗、中奖卡片聚光以及揭晓动画。
+
+Recommended for most company events.
+
+### Celebration
+
+Includes the Spotlight presentation plus multiple waves of lightweight celebration particles.
+
+在 Spotlight 基础上增加多波庆典撒花效果。
+
+Designed for:
+
+- Major prizes
+- Annual parties
+- Final prize rounds
+- Celebration moments
+
+Celebration particles run inside an independent visual-effects layer and do not change the page layout.
+
+### Preview
+
+Use **Preview** in Preferences to test Draw Effects.
+
+Preview does **not**:
+
+- Create a winner record
+- Reduce prize inventory
+- Change draw history
 
 ---
 
-# 💾 数据保存
+## Sound & Speed / 音效与速度
 
-系统会自动保存以下信息：
+Preferences also include:
 
-- 参会者名单
-- 奖品配置
-- 中奖记录
-- 补抽记录
-- 页面设置
-- Logo
-- 背景图片
-- 主题配置
+- Sound On / Off
+- Volume
+- Rolling Speed
 
-刷新页面后可自动恢复数据。
+These settings are stored locally in the browser.
 
 ---
 
-# 🌐 在线体验
+## Online Demo / 在线体验
 
-网站地址：
+GitHub Pages:
 
 https://lyonli666-sudo.github.io/
 
 ---
+
+## Run Locally / 本地运行
+
+Lucky Draw is designed as a **single standalone HTML file**.
+
+No server, build tool, Node.js, package manager or installation is required.
+
+### Steps
+
+1. Download the HTML file.
+2. Double-click it.
+3. Open it with Chrome, Edge, Firefox or Safari.
+4. Import participants.
+5. Import prizes.
+6. Start the draw.
+
+For live events, Chrome or Microsoft Edge is recommended.
+
+---
+
+## Participant File Format / 参会者文件格式
+
+TXT and CSV are supported.
+
+### TXT Example
+
+One participant per line:
+
+```text
+Mia Xu
+Alex Lu
+张三
+李四
