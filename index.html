@@ -1121,19 +1121,14 @@ html.dark{ --accent:#55cbb4; --accent-2:#76e0ca; --accent-soft:rgba(85,203,180,.
 .generic-logo-mark{height:34px;min-width:34px;padding:0 9px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;letter-spacing:.04em;background:var(--accent);color:#fff}
 #logoPreview .custom-brand-logo{height:36px;width:auto;max-width:148px;object-fit:contain;display:block}
 .kf-modal-overlay.is-closing .kf-modal{transition:opacity .10s ease,transform .10s ease!important}
-.accentPresets{flex-wrap:wrap}.accentChip{min-height:34px;padding:6px 11px}.accentChip.active{outline:2px solid var(--accent);outline-offset:2px}.accentCustom{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--txt-2)}.accentCustom input{width:34px;height:28px;border:0;background:transparent;padding:0}
-html[data-accent="neutral"]{--accent:#52606d;--accent-2:#748391;--accent-soft:rgba(82,96,109,.12)} html.dark[data-accent="neutral"]{--accent:#aab6c0;--accent-2:#c4cdd4;--accent-soft:rgba(170,182,192,.13)}
-html[data-accent="blue"]{--accent:#2563eb;--accent-2:#4f8cff;--accent-soft:rgba(37,99,235,.11)} html.dark[data-accent="blue"]{--accent:#76a7ff;--accent-2:#9bc0ff;--accent-soft:rgba(118,167,255,.13)}
-html[data-accent="green"]{--accent:#007a64;--accent-2:#00a889;--accent-soft:rgba(0,122,100,.11)} html.dark[data-accent="green"]{--accent:#55cbb4;--accent-2:#76e0ca;--accent-soft:rgba(85,203,180,.13)}
-html[data-accent="purple"]{--accent:#7357c8;--accent-2:#9276e8;--accent-soft:rgba(115,87,200,.11)} html.dark[data-accent="purple"]{--accent:#b29cf4;--accent-2:#c8b8fa;--accent-soft:rgba(178,156,244,.13)}
-html[data-accent="gold"]{--accent:#9a6b16;--accent-2:#c18a24;--accent-soft:rgba(154,107,22,.12)} html.dark[data-accent="gold"]{--accent:#e0b45d;--accent-2:#f0cb7d;--accent-soft:rgba(224,180,93,.13)}
+.accentPresets{flex-wrap:wrap}.accentChip{min-height:36px;padding:6px 12px!important;background:var(--card-glass-2)!important;color:var(--txt-2)!important;border:1px solid var(--border)!important;box-shadow:none!important;filter:none!important;transform:none!important}.accentChip::before{content:"";width:18px;height:18px;border-radius:6px;background:var(--chip-grad,linear-gradient(135deg,#52606d,#748391));box-shadow:inset 0 0 0 1px rgba(255,255,255,.35),0 1px 4px rgba(30,40,60,.12)}.accentChip:hover{color:var(--txt-1)!important;border-color:var(--border-2)!important;background:var(--card)!important}.accentChip.active{color:var(--txt-1)!important;border-color:color-mix(in srgb,var(--accent) 45%,var(--border))!important;outline:2px solid color-mix(in srgb,var(--accent) 65%,transparent);outline-offset:2px}.accentChip[data-accent="neutral"]{--chip-grad:linear-gradient(135deg,#52606d,#8b98a4)}.accentChip[data-accent="blue"]{--chip-grad:linear-gradient(135deg,#0071e3,#2997ff)}.accentChip[data-accent="green"]{--chip-grad:linear-gradient(135deg,#007a64,#25c7a8)}.accentChip[data-accent="purple"]{--chip-grad:linear-gradient(135deg,#6847c7,#a58cff)}.accentChip[data-accent="gold"]{--chip-grad:linear-gradient(135deg,#9a6b16,#e1ad45)}.accentCustom{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--txt-2)}.accentCustom input{width:38px;height:30px;border:0;background:transparent;padding:0}
+html[data-accent="neutral"]{--accent:#52606d;--accent-2:#8b98a4;--accent-soft:rgba(82,96,109,.12);--hero-line:linear-gradient(135deg,#52606d 0%,#8b98a4 100%);--fluid-a:#91a5b6;--fluid-b:#c2ccd5;--fluid-c:#aebccc} html.dark[data-accent="neutral"]{--accent:#aab6c0;--accent-2:#d0d7dd;--accent-soft:rgba(170,182,192,.13)}
+html[data-accent="blue"]{--accent:#0071e3;--accent-2:#2997ff;--accent-soft:rgba(0,113,227,.10);--hero-line:linear-gradient(135deg,#0071e3 0%,#2997ff 100%);--fluid-a:#76b7ff;--fluid-b:#b7d7ff;--fluid-c:#c59cf4} html.dark[data-accent="blue"]{--accent:#76a7ff;--accent-2:#9bc0ff;--accent-soft:rgba(118,167,255,.13)}
+html[data-accent="green"]{--accent:#007a64;--accent-2:#25c7a8;--accent-soft:rgba(0,122,100,.11);--hero-line:linear-gradient(135deg,#007a64 0%,#25c7a8 100%);--fluid-a:#63cfb7;--fluid-b:#b9eee2;--fluid-c:#8fcfd8} html.dark[data-accent="green"]{--accent:#55cbb4;--accent-2:#76e0ca;--accent-soft:rgba(85,203,180,.13)}
+html[data-accent="purple"]{--accent:#6847c7;--accent-2:#a58cff;--accent-soft:rgba(104,71,199,.11);--hero-line:linear-gradient(135deg,#6847c7 0%,#a58cff 100%);--fluid-a:#b49cff;--fluid-b:#ddd2ff;--fluid-c:#93b9ff} html.dark[data-accent="purple"]{--accent:#b29cf4;--accent-2:#c8b8fa;--accent-soft:rgba(178,156,244,.13)}
+html[data-accent="gold"]{--accent:#9a6b16;--accent-2:#e1ad45;--accent-soft:rgba(154,107,22,.12);--hero-line:linear-gradient(135deg,#9a6b16 0%,#e1ad45 100%);--fluid-a:#e7c06e;--fluid-b:#f2dfb2;--fluid-c:#d4c6a6} html.dark[data-accent="gold"]{--accent:#e0b45d;--accent-2:#f0cb7d;--accent-soft:rgba(224,180,93,.13)}
 body .confetti{display:none!important} body.fx-minimal .fx-spotlights,body.fx-minimal .fx-beam{display:none!important} body.fx-spotlight .fx-spotlights,body.fx-spotlight .fx-beam,body.fx-celebration .fx-spotlights,body.fx-celebration .fx-beam{display:block!important}
 .appFooter{display:flex;justify-content:center;align-items:center;gap:7px;flex-wrap:wrap;padding:30px 10px 6px;color:var(--txt-3);font-size:12px}
-.appFooter #btnReleaseNotes{all:unset!important;display:inline!important;cursor:pointer!important;color:var(--txt-2)!important;text-decoration:underline!important;text-underline-offset:3px!important;background:transparent!important;box-shadow:none!important;filter:none!important;transform:none!important;padding:0!important;border:0!important;min-height:0!important}
-.appFooter #btnReleaseNotes:hover,.appFooter #btnReleaseNotes:focus-visible{color:var(--accent)!important;background:transparent!important;box-shadow:none!important;filter:none!important;transform:none!important}
-#releaseNotesModal #btnCloseReleaseNotes{background:var(--bg-2)!important;color:var(--txt-1)!important;border:1px solid var(--border)!important;box-shadow:none!important;filter:none!important}
-#releaseNotesModal #btnCloseReleaseNotes:hover:not(:disabled),#releaseNotesModal #btnCloseReleaseNotes:focus-visible{background:var(--border)!important;color:var(--txt-1)!important;border-color:var(--border-2)!important;box-shadow:none!important;filter:none!important;transform:none!important}
-.releaseNotes{width:min(620px,100%)}.releaseItem ul{margin:14px 0 0;padding-left:20px}.releaseItem li{margin:8px 0;color:var(--txt-2)}
 /* v1.1.5: result modal uses a fixed header and an independently scrollable body. */
 #stageRevealModal .kf-modal{position:relative;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
 #stageRevealModal .kf-modal-header{position:sticky;top:0;z-index:20;background:var(--card);-webkit-backdrop-filter:blur(28px) saturate(140%);backdrop-filter:blur(28px) saturate(140%);border-bottom:1px solid var(--border)}
@@ -1167,6 +1162,76 @@ body.fx-celebration #stageRevealModal.is-open .rv-name{animation:fxWinnerCelebra
 #stageRevealModal .kf-modal-header,#stageRevealModal .kf-modal-footer{width:100%;box-sizing:border-box}
 #stageRevealModal .kf-modal-body{scrollbar-width:thin;scrollbar-color:var(--border-2) transparent}
 </style>
+
+
+<!-- ===== Fluid Aurora Test C · Liquid Field · Light Mode Only ===== -->
+<style id="kf-fluid-aurora-test-c">
+/* 鼠标驱动的高级流体 Aurora：只增强背景，不改变页面现有配色 */
+.kf-fluid-field{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  pointer-events:none;
+  opacity:1;
+  contain:paint;
+}
+.kf-fluid-blob{
+  position:absolute;
+  left:0; top:0;
+  border-radius:50%;
+  pointer-events:none;
+  transform-origin:50% 50%;
+  will-change:transform,opacity;
+  mix-blend-mode:multiply;
+}
+.kf-fluid-blob.primary{
+  width:720px; height:720px;
+  margin-left:-360px; margin-top:-360px;
+  background:radial-gradient(circle at 46% 44%,
+    rgba(190,220,255,.46) 0%,
+    rgba(203,218,255,.28) 32%,
+    rgba(223,209,245,.16) 54%,
+    rgba(245,245,247,0) 74%);
+  filter:blur(44px) saturate(112%);
+  opacity:.78;
+}
+.kf-fluid-blob.trail{
+  width:560px; height:560px;
+  margin-left:-280px; margin-top:-280px;
+  background:radial-gradient(circle at 50% 50%,
+    rgba(223,209,245,.28) 0%,
+    rgba(190,220,255,.18) 42%,
+    rgba(245,245,247,0) 72%);
+  filter:blur(58px) saturate(108%);
+  opacity:.56;
+}
+.kf-fluid-blob.core{
+  width:360px; height:360px;
+  margin-left:-180px; margin-top:-180px;
+  background:radial-gradient(circle,
+    rgba(255,255,255,.34) 0%,
+    rgba(190,220,255,.18) 38%,
+    rgba(245,245,247,0) 72%);
+  filter:blur(34px);
+  opacity:.48;
+  mix-blend-mode:screen;
+}
+/* 原有两侧 Aurora 保留，降低一点存在感，为鼠标流体留空间 */
+html:not(.dark) .kf-aurora-orb{ opacity:.39; }
+/* Dark Mode 保持原风格，不启用交互流体 */
+html:not(.dark) .kf-fluid-field{filter:saturate(118%);}
+html:not(.dark) .kf-fluid-blob.primary{width:900px;height:900px;margin-left:-450px;margin-top:-450px;opacity:.96;filter:blur(30px) saturate(132%);background:radial-gradient(ellipse at 42% 45%,color-mix(in srgb,var(--fluid-a,#76b7ff) 68%,transparent) 0%,color-mix(in srgb,var(--fluid-b,#b7d7ff) 50%,transparent) 27%,color-mix(in srgb,var(--fluid-c,#c59cf4) 38%,transparent) 50%,rgba(245,245,247,0) 76%);}
+html:not(.dark) .kf-fluid-blob.trail{width:760px;height:620px;margin-left:-380px;margin-top:-310px;opacity:.82;filter:blur(38px) saturate(128%);background:radial-gradient(ellipse at 48% 50%,color-mix(in srgb,var(--fluid-c,#c59cf4) 54%,transparent) 0%,color-mix(in srgb,var(--fluid-a,#76b7ff) 40%,transparent) 42%,rgba(245,245,247,0) 75%);}
+html:not(.dark) .kf-fluid-blob.core{width:430px;height:430px;margin-left:-215px;margin-top:-215px;opacity:.62;filter:blur(24px);}
+html.dark .kf-fluid-field{ display:none; }
+@media (max-width:760px), (pointer:coarse){
+  .kf-fluid-field{ display:none; }
+}
+@media (prefers-reduced-motion:reduce){
+  .kf-fluid-field{ display:none; }
+}
+</style>
+
 </head>
 <script id="KF_THEME_MANAGER">
 /*
@@ -1650,6 +1715,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <!-- Aurora 渐变背景（三光晕，缓慢漂移） -->
 <div class="kf-aurora" aria-hidden="true">
+
+  <div class="kf-fluid-field" aria-hidden="true">
+    <div class="kf-fluid-blob trail"></div>
+    <div class="kf-fluid-blob primary"></div>
+    <div class="kf-fluid-blob core"></div>
+  </div>
   <div class="kf-aurora-orb o1"></div>
   <div class="kf-aurora-orb o2"></div>
   <div class="kf-aurora-orb o3"></div>
@@ -1906,7 +1977,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       </div>
       <div class="settingsRow">
-        <div class="settingsLabel"><span data-i18n="set.accent">主题配色</span><small data-i18n="set.accentSub">统一控制按钮、高亮与舞台强调色</small></div>
+        <div class="settingsLabel"><span data-i18n="set.accent">主题配色</span><small data-i18n="set.accentSub">渐变主题同步控制按钮、强调色与流体背景</small></div>
         <div class="settingsCtl accentPresets" id="accentPresets">
           <button type="button" class="accentChip" data-accent="neutral">Neutral</button>
           <button type="button" class="accentChip" data-accent="blue">Blue</button>
@@ -1944,10 +2015,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     </div>
   </details>
-  <footer class="appFooter"><span id="footerProduct">Lucky Draw</span><span>·</span><span>v1.1.6</span><span>·</span><span data-i18n="footer.updated">更新于 2026-09-09</span><span>·</span><button type="button" id="btnReleaseNotes" data-i18n="footer.notes">更新说明</button></footer>
+  <footer class="appFooter"><span id="footerProduct">Lucky Draw</span><span>·</span><span>v2.0.0</span><span>·</span><span data-i18n="footer.updated">更新于 2026-09-09</span></footer>
 </main>
 
-<div aria-modal="true" class="kf-modal-overlay" id="releaseNotesModal" role="dialog"><div class="kf-modal releaseNotes"><div class="kf-modal-header"><div><div class="kf-modal-h1" data-i18n="footer.notes">更新说明</div><div class="kf-modal-h2">v1.1.6 · 2026-09-09</div></div><button class="secondary modalCloseBtn" id="btnCloseReleaseNotes" type="button" data-i18n="modal.close">关闭</button></div><div class="kf-modal-body"><div class="releaseItem"><b>v1.1.6</b><ul><li>修复中奖结果顶部 Header 右侧出现空白/灰色竖条的问题 / Fixed the blank/gray gutter on the right side of the Draw Results header.</li></ul></div><div class="releaseItem"><b>v1.1.5</b><ul><li>中奖结果弹窗改为固定 Header + 独立滚动内容区，Close 始终可见 / Draw Results now uses a fixed header with an independently scrollable body so Close always remains visible.</li></ul></div><div class="releaseItem"><b>v1.1.4</b><ul><li>中奖结果弹窗顶部标题栏固定，滚动多人名单时 Close 始终可见 / Sticky result header keeps Close visible while scrolling</li></ul></div><div class="releaseItem"><b>v1.1.3</b><ul><li>修复多人中奖结果弹窗滚轮与纵向滚动 / Fixed winner modal scrolling for large draws</li><li>Celebration 改为约 4.7 秒四波连续庆典 / Multi-wave Celebration over about 4.7 seconds</li><li>关闭弹窗时立即清理庆典计时器与粒子 / Immediate celebration cleanup on close</li></ul></div><div class="releaseItem"><b>v1.1.2</b><ul><li>增强 Spotlight 聚光层次与揭晓动画 / Stronger Spotlight reveal</li><li>降低 Celebration 撒花速度 / Slower Celebration confetti</li><li>修复庆典粒子导致页面异常滚动与空白区域 / Fixed celebration overflow and page-height bug</li></ul></div><div class="releaseItem"><b>v1.1.1</b><ul><li data-i18n="rel.fxfix">修复 Draw Effect 三档效果差异与预览表现</li><li data-i18n="rel.hoverfix">修复 Release Notes 与 Close 按钮悬停可读性</li></ul></div><div class="releaseItem"><b>v1.1.0</b><ul><li data-i18n="rel.logo">新增自定义品牌 Logo 与恢复默认功能</li><li data-i18n="rel.accent">新增主题配色预设与自定义强调色</li><li data-i18n="rel.fx">新增 Minimal / Spotlight / Celebration 舞台特效与预览</li><li data-i18n="rel.close">优化结果弹窗关闭响应速度</li><li data-i18n="rel.footer">新增版本信息与 Release Notes</li></ul></div></div></div></div>
 
 <!-- 舞台抽奖揭晓弹窗 -->
 <div aria-modal="true" class="kf-modal-overlay" id="stageRevealModal" role="dialog">
@@ -2078,7 +2148,7 @@ window.KFI18N = (function(){
       'win.title':'中奖榜单','win.export':'导出 CSV','win.fill':'补抽缺席名额','win.need':'待补抽：','win.can':'可补抽人数：',
       'sec.people':'参会者','sec.peopleSub':'点击展开，上传并管理名单','people.upload':'上传名单','people.apply':'应用参会者名单','people.reset':'重置参会者','people.help':'说明','people.none':'未上传','people.fmt':'格式要求','people.fmt1':'• TXT：每行一个名字（支持中英文）','people.fmt2':'• CSV：第一列为名字，自动识别表头与带引号字段（推荐 UTF-8）','people.ex':'示例（TXT）',
       'sec.prizes':'奖品','sec.prizesSub':'点击展开，导入奖品清单','prize.upload':'上传奖品','prize.apply':'导入奖品','prize.reset':'重置奖品','prize.help':'说明','prize.none':'未上传','prize.fmt':'格式要求（按列位置解析）','prize.c1':'第1列：顺序（数字）','prize.c2':'第2列：奖项','prize.c3':'第3列：产品','prize.c4':'第4列：数量（整数）','prize.ex':'示例','prize.empty':'（导入后这里会显示完整奖品清单，用于核对）',
-      'set.title':'偏好设置','set.sub':'品牌、舞台效果、音效与速度','set.eventTitle':'活动标题','set.eventTitleSub':'顶部标题仅可在此修改，避免现场误操作','set.applyTitle':'应用标题','set.sound':'音效','set.soundSub':'抽奖滚动与揭晓提示音','set.on':'开','set.off':'关','set.speed':'滚动速度','set.speedSub':'名字滚动墙的速度','set.theme':'配色风格','set.themeSub':'选择你喜欢的界面配色','set.logo':'品牌 Logo','set.logoSub':'上传自己的品牌标识；自动保持原始比例','set.logoUpload':'上传 Logo','set.logoReset':'恢复默认','set.accent':'主题配色','set.accentSub':'统一控制按钮、高亮与舞台强调色','set.custom':'自定义','set.effect':'舞台特效','set.effectSub':'选择揭晓时的舞台表现','set.fxMinimal':'简约','set.fxSpotlight':'聚光','set.fxCelebration':'庆典','set.preview':'预览','footer.updated':'更新于 2026-09-09','footer.notes':'更新说明','rel.logo':'新增自定义品牌 Logo 与恢复默认功能','rel.accent':'新增主题配色预设与自定义强调色','rel.fx':'新增 Minimal / Spotlight / Celebration 舞台特效与预览','rel.close':'优化结果弹窗关闭响应速度','rel.footer':'新增版本信息与 Release Notes','rel.fxfix':'修复 Draw Effect 三档效果差异与预览表现','rel.hoverfix':'修复 Release Notes 与 Close 按钮悬停可读性',
+      'set.title':'偏好设置','set.sub':'品牌、舞台效果、音效与速度','set.eventTitle':'活动标题','set.eventTitleSub':'顶部标题仅可在此修改，避免现场误操作','set.applyTitle':'应用标题','set.sound':'音效','set.soundSub':'抽奖滚动与揭晓提示音','set.on':'开','set.off':'关','set.speed':'滚动速度','set.speedSub':'名字滚动墙的速度','set.theme':'配色风格','set.themeSub':'选择你喜欢的界面配色','set.logo':'品牌 Logo','set.logoSub':'上传自己的品牌标识；自动保持原始比例','set.logoUpload':'上传 Logo','set.logoReset':'恢复默认','set.accent':'主题配色','set.accentSub':'统一控制按钮、高亮与舞台强调色','set.custom':'自定义','set.effect':'舞台特效','set.effectSub':'选择揭晓时的舞台表现','set.fxMinimal':'简约','set.fxSpotlight':'聚光','set.fxCelebration':'庆典','set.preview':'预览','footer.updated':'更新于 2026-09-09',
       'modal.drawTitle':'本次抽奖结果','modal.fillTitle':'补抽结果','modal.close':'关闭','modal.drawFooter':'提示：已自动写入「中奖清单」，奖品剩余数量已扣减。','modal.fillFooter':'提示：已自动写入「中奖清单」。',
       'fly.hint':'中奖啦','rv.people':'位中奖者','rv.time':'时间','rv.prize':'奖品','rv.award':'奖项'
     },
@@ -2093,7 +2163,7 @@ window.KFI18N = (function(){
       'win.title':'Winners','win.export':'Export CSV','win.fill':'Redraw Absentees','win.need':'Pending Redraws: ','win.can':'Eligible Participants: ',
       'sec.people':'Participants','sec.peopleSub':'Expand to upload & manage the list','people.upload':'Upload List','people.apply':'Apply List','people.reset':'Reset Participants','people.help':'Help','people.none':'Not uploaded','people.fmt':'Format','people.fmt1':'• TXT: one name per line (CN/EN)','people.fmt2':'• CSV: first column is the name; headers and quoted fields supported (UTF-8 recommended)','people.ex':'Example (TXT)',
       'sec.prizes':'Prizes','sec.prizesSub':'Expand to import the prize list','prize.upload':'Upload Prizes','prize.apply':'Import Prizes','prize.reset':'Reset Prizes','prize.help':'Help','prize.none':'Not uploaded','prize.fmt':'Format (parsed by column)','prize.c1':'Col 1: Order (number)','prize.c2':'Col 2: Prize Tier','prize.c3':'Col 3: Prize Name','prize.c4':'Col 4: Qty (integer)','prize.ex':'Example','prize.empty':'(Imported prize list will appear here for review)',
-      'set.title':'Settings','set.sub':'Brand, stage effects, sound & speed','set.eventTitle':'Event Title','set.eventTitleSub':'Edit the header title here to prevent accidental changes','set.applyTitle':'Save Changes','set.sound':'Sound','set.soundSub':'Rolling & reveal alert sound','set.on':'On','set.off':'Off','set.speed':'Roll Speed','set.speedSub':'Speed of the rolling wall','set.theme':'Color Theme','set.themeSub':'Choose your favorite color scheme','set.logo':'Brand Logo','set.logoSub':'Upload your own brand mark; original proportions are preserved','set.logoUpload':'Upload Logo','set.logoReset':'Restore Default','set.accent':'Accent Color','set.accentSub':'Controls buttons, highlights and stage accents','set.custom':'Custom','set.effect':'Draw Effect','set.effectSub':'Choose the reveal experience','set.fxMinimal':'Minimal','set.fxSpotlight':'Spotlight','set.fxCelebration':'Celebration','set.preview':'Preview','footer.updated':'Updated Sep 9, 2026','footer.notes':'Release Notes','rel.logo':'Added custom brand logo upload and restore default','rel.accent':'Added accent presets and custom accent color','rel.fx':'Added Minimal / Spotlight / Celebration effects and preview','rel.close':'Improved result modal closing responsiveness','rel.footer':'Added version information and Release Notes','rel.fxfix':'Fixed visual differences and preview behavior for Draw Effect modes','rel.hoverfix':'Fixed hover readability for Release Notes and Close buttons',
+      'set.title':'Settings','set.sub':'Brand, stage effects, sound & speed','set.eventTitle':'Event Title','set.eventTitleSub':'Edit the header title here to prevent accidental changes','set.applyTitle':'Save Changes','set.sound':'Sound','set.soundSub':'Rolling & reveal alert sound','set.on':'On','set.off':'Off','set.speed':'Roll Speed','set.speedSub':'Speed of the rolling wall','set.theme':'Color Theme','set.themeSub':'Choose your favorite color scheme','set.logo':'Brand Logo','set.logoSub':'Upload your own brand mark; original proportions are preserved','set.logoUpload':'Upload Logo','set.logoReset':'Restore Default','set.accent':'Accent Color','set.accentSub':'Controls buttons, highlights and stage accents','set.custom':'Custom','set.effect':'Draw Effect','set.effectSub':'Choose the reveal experience','set.fxMinimal':'Minimal','set.fxSpotlight':'Spotlight','set.fxCelebration':'Celebration','set.preview':'Preview','footer.updated':'Updated Sep 9, 2026',
       'modal.drawTitle':'Draw Results','modal.fillTitle':'Redraw Results','modal.close':'Close','modal.drawFooter':'Note: winners are written to the Winner List; prize stock updated.','modal.fillFooter':'Note: winners are written to the Winner List.',
       'fly.hint':'Winner','rv.people':'Winners','rv.time':'Time','rv.prize':'Prize','rv.award':'Prize Tier'
     }
@@ -4407,7 +4477,7 @@ openOverlayModal(modal);
   };
   const applyAccent = () => {
     const a=state?.settings?.accent || "neutral"; document.documentElement.dataset.accent=a;
-    if(a==="custom"){ const c=state.settings.accentCustom||"#52606d"; document.documentElement.style.setProperty("--accent",c); document.documentElement.style.setProperty("--accent-2",c); document.documentElement.style.setProperty("--accent-soft",c+"22"); } else { document.documentElement.style.removeProperty("--accent"); document.documentElement.style.removeProperty("--accent-2"); document.documentElement.style.removeProperty("--accent-soft"); }
+    if(a==="custom"){ const c=state.settings.accentCustom||"#52606d"; const root=document.documentElement; root.style.setProperty("--accent",c); root.style.setProperty("--accent-2",`color-mix(in srgb, ${c} 72%, white)`); root.style.setProperty("--accent-soft",`color-mix(in srgb, ${c} 12%, transparent)`); root.style.setProperty("--hero-line",`linear-gradient(135deg, ${c} 0%, color-mix(in srgb, ${c} 68%, white) 100%)`); root.style.setProperty("--fluid-a",`color-mix(in srgb, ${c} 58%, white)`); root.style.setProperty("--fluid-b",`color-mix(in srgb, ${c} 32%, white)`); root.style.setProperty("--fluid-c",`color-mix(in srgb, ${c} 46%, #b78cff)`); } else { ["--accent","--accent-2","--accent-soft","--hero-line","--fluid-a","--fluid-b","--fluid-c"].forEach(v=>document.documentElement.style.removeProperty(v)); }
     document.querySelectorAll(".accentChip").forEach(b=>b.classList.toggle("active",b.dataset.accent===a));
   };
   const applyEffectMode = () => { const m=state?.settings?.effectMode||"minimal"; document.body.classList.remove("fx-minimal","fx-spotlight","fx-celebration"); document.body.classList.add("fx-"+m); try{ StageFX.spotlightsOn(false); StageFX.setHype(0); StageFX.stop(); }catch(e){} if($("effectMode")) $("effectMode").value=m; };
@@ -4418,7 +4488,6 @@ openOverlayModal(modal);
   $("accentCustom")?.addEventListener("input",e=>{state.settings.accent="custom";state.settings.accentCustom=e.target.value;applyAccent();saveState();});
   $("effectMode")?.addEventListener("change",e=>{state.settings.effectMode=e.target.value;applyEffectMode();saveState();});
   $("btnEffectPreview")?.addEventListener("click",()=>{showStageReveal({award:ui("演示奖项","Demo Prize"),product:ui("效果预览","Effect Preview")},[{name:ui("演示中奖者","Demo Winner"),ts:Date.now()}]);});
-  const releaseModal=$("releaseNotesModal"); $("btnReleaseNotes")?.addEventListener("click",()=>openOverlayModal(releaseModal)); $("btnCloseReleaseNotes")?.addEventListener("click",()=>closeOverlayModal(releaseModal)); releaseModal?.addEventListener("click",e=>{if(e.target===releaseModal)closeOverlayModal(releaseModal);});
 
 
   // 初始化
@@ -5475,6 +5544,28 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   window.addEventListener('resize', syncPrizeSpacerHeight);
   window.__kfSyncPrizeSpacer = syncPrizeSpacerHeight;
+})();
+</script>
+
+
+<script id="kf-fluid-aurora-js">
+/* Fluid Aurora Test C: pronounced liquid inertia, deformation and wake; light mode only */
+(function(){
+ var field=document.querySelector('.kf-fluid-field'); if(!field||!matchMedia('(pointer:fine)').matches)return;
+ var p=field.querySelector('.primary'),t=field.querySelector('.trail'),c=field.querySelector('.core'); if(!p||!t||!c)return;
+ var vw=innerWidth,vh=innerHeight, gx=vw*.5,gy=vh*.34, px=gx,py=gy, tx=gx,ty=gy,cx=gx,cy=gy,lx=gx,ly=gy,vx=0,vy=0,speed=0,idle=performance.now();
+ addEventListener('pointermove',function(e){var dx=e.clientX-lx,dy=e.clientY-ly;gx=e.clientX;gy=e.clientY;vx=vx*.58+dx*.42;vy=vy*.58+dy*.42;speed=Math.min(1.5,Math.hypot(vx,vy)/55);lx=e.clientX;ly=e.clientY;idle=performance.now();},{passive:true});
+ addEventListener('resize',function(){vw=innerWidth;vh=innerHeight},{passive:true});
+ function tick(now){if(!document.documentElement.classList.contains('dark')){
+  if(now-idle>1900){gx+=(vw*.5-gx)*.004;gy+=(vh*.34-gy)*.004;vx*=.94;vy*=.94;}
+  px+=(gx-px)*.115;py+=(gy-py)*.115; tx+=(px-tx)*.026;ty+=(py-ty)*.026; cx+=(gx-cx)*.22;cy+=(gy-cy)*.22; speed*=.925;
+  var ang=Math.atan2(vy,vx)*180/Math.PI, stretch=1+Math.min(.42,speed*.30), squash=1-Math.min(.16,speed*.105);
+  var wakeX=tx-vx*2.0,wakeY=ty-vy*2.0;
+  p.style.transform='translate3d('+px+'px,'+py+'px,0) rotate('+ang+'deg) scale('+stretch+','+squash+')';
+  t.style.transform='translate3d('+wakeX+'px,'+wakeY+'px,0) rotate('+ang+'deg) scale('+(1+speed*.20)+','+(1-speed*.055)+')';
+  c.style.transform='translate3d('+cx+'px,'+cy+'px,0) scale('+(1+speed*.14)+')';
+  p.style.opacity=(.86+Math.min(.10,speed*.07)).toFixed(3);t.style.opacity=(.68+Math.min(.14,speed*.10)).toFixed(3);c.style.opacity=(.48+Math.min(.12,speed*.08)).toFixed(3);
+ } requestAnimationFrame(tick)} requestAnimationFrame(tick);
 })();
 </script>
 
