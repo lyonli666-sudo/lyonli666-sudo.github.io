@@ -683,6 +683,21 @@ html.dark .name-item{ background:var(--card-2); }
 
 /* ---------- 12. 中奖榜单（卡片化） ---------- */
 .winnersToolbar{ display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin-top:14px; }
+/* Winner toolbar: status indicators are information, not buttons. */
+.winner-toolbar-stats{gap:20px;margin-top:16px;}
+.winner-stat{display:inline-flex;align-items:center;gap:7px;color:var(--txt-2);font-size:12.5px;line-height:1;white-space:nowrap;}
+.winner-stat b{color:var(--txt-1);font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;}
+.winner-stat-dot,.winner-fill-dot{display:inline-block;width:8px;height:8px;border-radius:999px;flex:0 0 auto;}
+.winner-stat-dot.is-pending,.winner-fill-dot.is-pending{background:#d8b35d;box-shadow:0 0 0 3px rgba(216,179,93,.07),0 0 8px rgba(216,179,93,.22);}
+.winner-stat-dot.is-eligible,.winner-fill-dot.is-present{background:#2fb171;box-shadow:0 0 0 3px rgba(47,177,113,.07),0 0 8px rgba(47,177,113,.26);}
+#btnExportCsv{background:transparent!important;color:var(--txt-2)!important;border-color:transparent!important;box-shadow:none!important;}
+#btnExportCsv:hover:not(:disabled){background:var(--card-glass-2)!important;color:var(--txt-1)!important;border-color:var(--border)!important;transform:none!important;}
+#btnDoFill{background:var(--card-glass-2)!important;color:var(--txt-1)!important;border-color:var(--border)!important;box-shadow:var(--shadow-sm)!important;}
+#btnDoFill:hover:not(:disabled){background:var(--card-glass)!important;border-color:var(--border-2)!important;box-shadow:var(--shadow-md)!important;transform:none!important;}
+.winner-fill-flow{display:inline-flex;align-items:center;gap:4px;margin-right:1px;flex:0 0 auto;}
+.winner-fill-arrow{color:var(--txt-3);font-size:12px;font-style:normal;line-height:1;transform:translateY(-.5px);}
+#btnDoFill.kf-busy .winner-fill-flow{opacity:.65;}
+
 #winnersList{ margin-top:18px; }
 .winners-empty-text{ text-align:center; padding:28px 0; color:var(--txt-3); }
 .winners-detail-box{
@@ -697,26 +712,67 @@ html.dark .name-item{ background:var(--card-2); }
 .winners-detail-row:hover{ background:var(--accent-soft); border-radius:8px; }
 .winners-detail-row.row-absent{ opacity:.72; }
 .winners-detail-row .ok{ color:var(--ok); font-weight:600; }
-/* 奖品清单：表格卡片化（JS 渲染 table，不做结构改动） */
-#prizeList table{
-  width:100%; border-collapse:separate; border-spacing:0 8px;
+/* 奖品明细 Dashboard：竖状 / 横状 / 卡片三种核对视图 */
+.prize-view-segmented{
+  display:inline-flex;align-items:center;gap:4px;padding:4px;border:1px solid var(--border);
+  border-radius:12px;background:var(--bg-2);box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
 }
-#prizeList thead th{
-  text-align:left; padding:2px 16px;
-  font-size:12px; font-weight:650; color:var(--txt-3);
-  letter-spacing:.08em; text-transform:uppercase;
+.prize-view-segmented button{
+  min-height:34px;padding:0 12px;border:0;border-radius:9px;background:transparent;color:var(--txt-3);
+  font:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:background-color .18s ease,color .18s ease,box-shadow .18s ease;
 }
-#prizeList tbody tr{
-  background:var(--bg-2);
-  box-shadow:inset 0 0 0 1px var(--border);
+.prize-view-segmented button:hover{color:var(--txt-1);background:var(--card-glass-2);transform:none;}
+.prize-view-segmented button.active{color:var(--accent);background:var(--card);box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.prize-view-segmented button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+.prize-detail-dashboard{margin-top:14px;}
+/* 竖状图 */
+.prize-detail-dashboard.is-vertical{
+  display:flex;align-items:stretch;gap:12px;padding:14px 4px 4px;overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:thin;scrollbar-color:var(--border-2) transparent;
 }
-#prizeList tbody tr:hover{ box-shadow:inset 0 0 0 1px var(--accent); background:var(--accent-soft); }
-#prizeList tbody td{ padding:13px 16px; font-size:14px; color:var(--txt-1); }
-#prizeList tbody td:first-child{ border-radius:12px 0 0 12px; color:var(--txt-3); font-weight:650; width:70px; }
-#prizeList tbody td:last-child{ border-radius:0 12px 12px 0; text-align:right; white-space:nowrap; }
-.prize-count{ font-weight:700; }
-.prize-left{ color:var(--accent); }
-.prize-total{ color:var(--txt-3); font-weight:550; }
+.prize-detail-dashboard.is-vertical .prize-detail-card{
+  flex:1 1 0;min-width:118px;max-width:180px;display:flex;flex-direction:column;align-items:stretch;
+  min-height:300px;padding:14px 12px 13px;border:1px solid var(--border);border-radius:16px;background:var(--card-glass-2);
+  -webkit-backdrop-filter:var(--card-blur);backdrop-filter:var(--card-blur);
+}
+.prize-detail-qty{text-align:center;color:var(--txt-1);font-size:20px;font-weight:780;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.03em;}
+.prize-detail-chart{height:156px;display:flex;align-items:flex-end;justify-content:center;padding:12px 10px 0;}
+.prize-detail-column{width:min(54px,58%);min-height:8px;border-radius:12px 12px 5px 5px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 72%, white),var(--accent));box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 18%, transparent);}
+.prize-detail-meta{min-width:0;margin-top:12px;padding-top:11px;border-top:1px solid var(--border);text-align:center;}
+.prize-detail-product{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:38px;color:var(--txt-1);font-size:14px;font-weight:700;line-height:1.35;overflow-wrap:anywhere;cursor:default;}
+.prize-detail-award{margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--txt-3);font-size:11px;font-weight:600;}
+.prize-detail-order{display:inline-block;margin-right:5px;color:var(--accent);font-variant-numeric:tabular-nums;}
+@media (min-width:1100px){.prize-detail-dashboard.is-vertical:has(.prize-detail-card:nth-child(-n+6):last-child) .prize-detail-card{max-width:none;}}
+
+/* 横状图：长产品名更易阅读 */
+.prize-detail-dashboard.is-horizontal{display:grid;gap:10px;}
+.prize-h-row{display:grid;grid-template-columns:minmax(150px,1.15fr) minmax(180px,2fr) 58px;align-items:center;gap:14px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;background:var(--card-glass-2);}
+.prize-h-copy{min-width:0;}
+.prize-h-product{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--txt-1);font-size:13px;font-weight:700;}
+.prize-h-award{margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--txt-3);font-size:11px;font-weight:600;}
+.prize-h-track{height:12px;border-radius:999px;background:var(--bg-2);overflow:hidden;box-shadow:inset 0 0 0 1px var(--border);}
+.prize-h-bar{height:100%;min-width:6px;border-radius:999px;background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 70%, white));}
+.prize-h-qty{text-align:right;color:var(--txt-1);font-size:16px;font-weight:780;font-variant-numeric:tabular-nums;}
+
+/* 卡片：更像导入预览清单 */
+.prize-detail-dashboard.is-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+.prize-c-card{min-width:0;padding:15px 16px;border:1px solid var(--border);border-radius:15px;background:var(--card-glass-2);}
+.prize-c-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;}
+.prize-c-copy{min-width:0;}
+.prize-c-award{color:var(--txt-3);font-size:11px;font-weight:700;}
+.prize-c-product{margin-top:5px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;color:var(--txt-1);font-size:14px;font-weight:720;line-height:1.4;overflow-wrap:anywhere;}
+.prize-c-qty{flex:0 0 auto;color:var(--accent);font-size:21px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums;}
+.prize-c-track{height:6px;margin-top:13px;border-radius:999px;background:var(--bg-2);overflow:hidden;}
+.prize-c-bar{height:100%;min-width:4px;border-radius:999px;background:var(--accent);}
+
+@media (max-width:760px){
+  .prize-detail-dashboard.is-vertical{gap:10px;padding-top:12px;}
+  .prize-detail-dashboard.is-vertical .prize-detail-card{flex:0 0 126px;min-width:126px;min-height:280px;padding:13px 10px 12px;}
+  .prize-detail-chart{height:140px}.prize-detail-product{font-size:13px;}
+  .prize-h-row{grid-template-columns:minmax(120px,1fr) minmax(110px,1.25fr) 48px;gap:10px;padding:11px 12px;}
+  .prize-detail-dashboard.is-cards{grid-template-columns:1fr;}
+}
 
 /* ---------- 13. 折叠区（Participants / Prizes / Settings） ---------- */
 details.secCard > summary{
@@ -1053,9 +1109,24 @@ html.dark .kf-logo-box{background:linear-gradient(145deg,#fafafa,#c9c9cf);color:
 .winner-display-name{font-size:19px;font-weight:600;letter-spacing:-.02em;overflow-wrap:anywhere;}
 .winner-badges{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin-top:8px;font-size:11px;}
 .winner-round{color:var(--txt-2);}
-.winner-status{color:var(--ok);background:rgba(5,150,105,.07);padding:3px 8px;border-radius:999px;}
-.winner-status.is-absent{color:#986011;background:rgba(190,125,35,.1);}
-html.dark .winner-status{color:#72cfaa;}html.dark .winner-status.is-absent{color:#e8b975;}
+.winner-presence-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;vertical-align:middle;}
+.winner-presence-dot{position:relative;display:inline-block;width:8px;height:8px;border-radius:999px;background:#2fb171;box-shadow:0 0 0 3px rgba(47,177,113,.08),0 0 9px rgba(47,177,113,.34);}
+.winner-presence-dot.is-absent{background:#d8b35d;box-shadow:0 0 0 3px rgba(216,179,93,.08),0 0 8px rgba(216,179,93,.22);}
+.winner-presence-dot.is-redrawn{width:18px;height:10px;background:transparent;box-shadow:none;border-radius:0;}
+.winner-presence-dot.is-redrawn::before,.winner-presence-dot.is-redrawn::after{content:"";position:absolute;top:1px;width:8px;height:8px;border-radius:999px;}
+.winner-presence-dot.is-redrawn::before{left:1px;background:#d8b35d;box-shadow:0 0 7px rgba(216,179,93,.18);}
+.winner-presence-dot.is-redrawn::after{right:1px;background:#2fb171;box-shadow:0 0 8px rgba(47,177,113,.28);}
+.winner-status-tip{pointer-events:none;position:absolute;left:50%;bottom:calc(100% + 8px);z-index:20;transform:translate(-50%,4px);opacity:0;white-space:nowrap;padding:6px 9px;border-radius:8px;border:1px solid var(--border-2);background:var(--card-glass);backdrop-filter:blur(16px) saturate(130%);-webkit-backdrop-filter:blur(16px) saturate(130%);box-shadow:var(--shadow-sm);color:var(--txt-1);font-size:11px;line-height:1;transition:opacity .16s ease,transform .16s ease;}
+.winner-presence-wrap:hover .winner-status-tip,.winner-presence-wrap:focus-within .winner-status-tip{opacity:1;transform:translate(-50%,0);}
+.winner-group-meta{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-shrink:0;}
+.winner-status-legend{position:relative;display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;outline:none;}
+.winner-status-legend-trigger{width:14px;height:14px;border-radius:999px;border:1px solid rgba(47,177,113,.55);box-shadow:0 0 7px rgba(47,177,113,.12);display:flex;align-items:center;justify-content:center;}
+.winner-status-legend-trigger::after{content:"";width:4px;height:4px;border-radius:999px;background:#2fb171;box-shadow:0 0 6px rgba(47,177,113,.42);}
+.winner-status-legend-pop{pointer-events:none;position:absolute;right:0;top:calc(100% + 9px);z-index:30;min-width:168px;padding:10px 11px;border-radius:12px;border:1px solid var(--border-2);background:var(--card-glass);backdrop-filter:blur(18px) saturate(135%);-webkit-backdrop-filter:blur(18px) saturate(135%);box-shadow:var(--shadow-md);opacity:0;transform:translateY(-3px);transition:opacity .16s ease,transform .16s ease;}
+.winner-status-legend:hover .winner-status-legend-pop,.winner-status-legend:focus .winner-status-legend-pop{opacity:1;transform:translateY(0);}
+.winner-status-legend-row{display:flex;align-items:center;gap:9px;color:var(--txt-2);font-size:11px;line-height:1.3;}
+.winner-status-legend-row + .winner-status-legend-row{margin-top:8px;}
+.winner-status-legend-row .winner-presence-wrap{flex:0 0 22px;}
 .winner-product,.winner-time{font-size:13px;color:var(--txt-2);overflow-wrap:anywhere;min-width:0;}
 .winner-time{font-variant-numeric:tabular-nums;font-size:12px;}
 .winner-field-label{display:block;margin-bottom:5px;font-size:10px;color:var(--txt-3);letter-spacing:.06em;}
@@ -1124,7 +1195,7 @@ html.dark{ --accent:#55cbb4; --accent-2:#76e0ca; --accent-soft:rgba(85,203,180,.
 .generic-logo-mark{height:34px;min-width:34px;padding:0 9px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;letter-spacing:.04em;background:var(--accent);color:#fff}
 #logoPreview .custom-brand-logo{height:36px;width:auto;max-width:148px;object-fit:contain;display:block}
 .kf-modal-overlay.is-closing .kf-modal{transition:opacity .10s ease,transform .10s ease!important}
-.accentPresets{flex-wrap:wrap}.accentChip{min-height:36px;padding:6px 12px!important;background:var(--card-glass-2)!important;color:var(--txt-2)!important;border:1px solid var(--border)!important;box-shadow:none!important;filter:none!important;transform:none!important}.accentChip::before{content:"";width:18px;height:18px;border-radius:6px;background:var(--chip-grad,linear-gradient(135deg,#52606d,#748391));box-shadow:inset 0 0 0 1px rgba(255,255,255,.35),0 1px 4px rgba(30,40,60,.12)}.accentChip:hover{color:var(--txt-1)!important;border-color:var(--border-2)!important;background:var(--card)!important}.accentChip.active{color:var(--txt-1)!important;border-color:color-mix(in srgb,var(--accent) 45%,var(--border))!important;outline:2px solid color-mix(in srgb,var(--accent) 65%,transparent);outline-offset:2px}.accentChip[data-accent="neutral"]{--chip-grad:linear-gradient(135deg,#52606d,#8b98a4)}.accentChip[data-accent="blue"]{--chip-grad:linear-gradient(135deg,#0071e3,#2997ff)}.accentChip[data-accent="green"]{--chip-grad:linear-gradient(135deg,#007a64,#25c7a8)}.accentChip[data-accent="purple"]{--chip-grad:linear-gradient(135deg,#6847c7,#a58cff)}.accentChip[data-accent="gold"]{--chip-grad:linear-gradient(135deg,#9a6b16,#e1ad45)}.accentChip[data-accent="indigo"]{--chip-grad:linear-gradient(135deg,#4f46e5,#818cf8)}.accentChip[data-accent="cyan"]{--chip-grad:linear-gradient(135deg,#0788a4,#22c7df)}.accentChip[data-accent="rose"]{--chip-grad:linear-gradient(135deg,#d92d55,#f06f87)}.accentChip[data-accent="orange"]{--chip-grad:linear-gradient(135deg,#d95b18,#f49745)}.accentChip[data-accent="vibrant"]{--chip-grad:linear-gradient(135deg,#ff4d8d 0%,#8b5cf6 38%,#2f80ed 68%,#20d7b5 100%)}.accentCustom{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--txt-2)}.accentCustom input{width:38px;height:30px;border:0;background:transparent;padding:0}
+.accentPresets{flex-wrap:wrap}.accentChip{min-height:36px;padding:6px 12px!important;background:var(--card-glass-2)!important;color:var(--txt-2)!important;border:1px solid var(--border)!important;box-shadow:none!important;filter:none!important;transform:none!important}.accentChip::before{content:"";width:18px;height:18px;border-radius:6px;background:var(--chip-grad,linear-gradient(135deg,#52606d,#748391));box-shadow:inset 0 0 0 1px rgba(255,255,255,.35),0 1px 4px rgba(30,40,60,.12)}.accentChip:hover{color:var(--txt-1)!important;border-color:var(--border-2)!important;background:var(--card)!important}.accentChip.active{color:var(--txt-1)!important;border-color:color-mix(in srgb,var(--accent) 45%,var(--border))!important;outline:2px solid color-mix(in srgb,var(--accent) 65%,transparent);outline-offset:2px}.accentChip[data-accent="neutral"]{--chip-grad:linear-gradient(135deg,#52606d,#8b98a4)}.accentChip[data-accent="blue"]{--chip-grad:linear-gradient(135deg,#0071e3,#2997ff)}.accentChip[data-accent="green"]{--chip-grad:linear-gradient(135deg,#007a64,#25c7a8)}.accentChip[data-accent="purple"]{--chip-grad:linear-gradient(135deg,#6847c7,#a58cff)}.accentChip[data-accent="gold"]{--chip-grad:linear-gradient(135deg,#9a6b16,#e1ad45)}.accentChip[data-accent="indigo"]{--chip-grad:linear-gradient(135deg,#4f46e5,#818cf8)}.accentChip[data-accent="cyan"]{--chip-grad:linear-gradient(135deg,#0788a4,#22c7df)}.accentChip[data-accent="rose"]{--chip-grad:linear-gradient(135deg,#d92d55,#f06f87)}.accentChip[data-accent="orange"]{--chip-grad:linear-gradient(135deg,#d95b18,#f49745)}.accentChip[data-accent="celadon"]{--chip-grad:linear-gradient(135deg,#3FA796 0%,#E8D9B5 100%)}.accentChip[data-accent="dusk"]{--chip-grad:linear-gradient(135deg,#4A5F8C 0%,#E8B4A2 100%)}.accentChip[data-accent="pomegranate"]{--chip-grad:linear-gradient(135deg,#B5485D 0%,#F3E2D1 100%)}.accentChip[data-accent="pine"]{--chip-grad:linear-gradient(135deg,#365B4C 0%,#D9A441 100%)}.accentChip[data-accent="mist"]{--chip-grad:linear-gradient(135deg,#8877C7 0%,#F0E7DB 100%)}.accentChip[data-accent="dustyrose"]{--chip-grad:linear-gradient(135deg,#C88697 0%,#31424D 100%)}.accentChip[data-accent="ochre"]{--chip-grad:linear-gradient(135deg,#E7C86A 0%,#5D7E7A 100%)}.accentChip[data-accent="vibrant"]{--chip-grad:linear-gradient(135deg,#ff4d8d 0%,#8b5cf6 38%,#2f80ed 68%,#20d7b5 100%)}.accentCustom{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--txt-2)}.accentCustom input{width:38px;height:30px;border:0;background:transparent;padding:0}
 html[data-accent="neutral"]{--accent:#52606d;--accent-2:#8b98a4;--accent-soft:rgba(82,96,109,.12);--hero-line:linear-gradient(135deg,#52606d 0%,#8b98a4 100%);--fluid-a:#91a5b6;--fluid-b:#c2ccd5;--fluid-c:#aebccc} html.dark[data-accent="neutral"]{--accent:#aab6c0;--accent-2:#d0d7dd;--accent-soft:rgba(170,182,192,.13)}
 html[data-accent="blue"]{--accent:#0071e3;--accent-2:#2997ff;--accent-soft:rgba(0,113,227,.10);--hero-line:linear-gradient(135deg,#0071e3 0%,#2997ff 100%);--fluid-a:#76b7ff;--fluid-b:#b7d7ff;--fluid-c:#c59cf4} html.dark[data-accent="blue"]{--accent:#76a7ff;--accent-2:#9bc0ff;--accent-soft:rgba(118,167,255,.13)}
 html[data-accent="green"]{--accent:#007a64;--accent-2:#25c7a8;--accent-soft:rgba(0,122,100,.11);--hero-line:linear-gradient(135deg,#007a64 0%,#25c7a8 100%);--fluid-a:#63cfb7;--fluid-b:#b9eee2;--fluid-c:#8fcfd8} html.dark[data-accent="green"]{--accent:#55cbb4;--accent-2:#76e0ca;--accent-soft:rgba(85,203,180,.13)}
@@ -1134,6 +1205,13 @@ html[data-accent="indigo"]{--accent:#4f46e5;--accent-2:#818cf8;--accent-soft:rgb
 html[data-accent="cyan"]{--accent:#0788a4;--accent-2:#22c7df;--accent-soft:rgba(7,136,164,.11);--hero-line:linear-gradient(135deg,#0788a4 0%,#22c7df 100%);--fluid-a:#69d6e7;--fluid-b:#bceef4;--fluid-c:#92d7ef} html.dark[data-accent="cyan"]{--accent:#63d4e6;--accent-2:#8ce2ef;--accent-soft:rgba(99,212,230,.13)}
 html[data-accent="rose"]{--accent:#d92d55;--accent-2:#f06f87;--accent-soft:rgba(217,45,85,.10);--hero-line:linear-gradient(135deg,#d92d55 0%,#f06f87 100%);--fluid-a:#f39aaa;--fluid-b:#f8ced6;--fluid-c:#d9b7ef} html.dark[data-accent="rose"]{--accent:#f08aa0;--accent-2:#f7acba;--accent-soft:rgba(240,138,160,.13)}
 html[data-accent="orange"]{--accent:#d95b18;--accent-2:#f49745;--accent-soft:rgba(217,91,24,.11);--hero-line:linear-gradient(135deg,#d95b18 0%,#f49745 100%);--fluid-a:#f3ae75;--fluid-b:#f8d9bb;--fluid-c:#eac59b} html.dark[data-accent="orange"]{--accent:#f1a469;--accent-2:#f7bf8c;--accent-soft:rgba(241,164,105,.13)}
+html[data-accent="celadon"]{--accent:#3FA796;--accent-2:#68B9AC;--accent-soft:rgba(63,167,150,.11);--hero-line:linear-gradient(135deg,#3FA796 0%,#71B8AD 58%,#E8D9B5 100%);--fluid-a:#63BCAF;--fluid-b:#E8D9B5;--fluid-c:#B9D5C8} html.dark[data-accent="celadon"]{--accent:#79C9BD;--accent-2:#A6DDD4;--accent-soft:rgba(121,201,189,.13);--hero-line:linear-gradient(135deg,#79C9BD 0%,#A6DDD4 58%,#D9C9A6 100%);--fluid-a:#56A99E;--fluid-b:#BFAF8E;--fluid-c:#7FB8A9}
+html[data-accent="dusk"]{--accent:#4A5F8C;--accent-2:#E8B4A2;--accent-soft:rgba(74,95,140,.11);--hero-line:linear-gradient(135deg,#4A5F8C 0%,#7483A5 58%,#E8B4A2 100%);--fluid-a:#7F91B6;--fluid-b:#E8B4A2;--fluid-c:#C8B7B9} html.dark[data-accent="dusk"]{--accent:#8295C1;--accent-2:#F0C5B5;--accent-soft:rgba(130,149,193,.13);--hero-line:linear-gradient(135deg,#8295C1 0%,#A8B3CF 58%,#E2AD9B 100%);--fluid-a:#6679A4;--fluid-b:#B98778;--fluid-c:#8C8292}
+html[data-accent="pomegranate"]{--accent:#B5485D;--accent-2:#D77A89;--accent-soft:rgba(181,72,93,.11);--hero-line:linear-gradient(135deg,#B5485D 0%,#D77A89 62%,#F3E2D1 100%);--fluid-a:#D16F82;--fluid-b:#F3E2D1;--fluid-c:#E7BFC1} html.dark[data-accent="pomegranate"]{--accent:#E08292;--accent-2:#F0AEB7;--accent-soft:rgba(224,130,146,.13);--hero-line:linear-gradient(135deg,#E08292 0%,#F0AEB7 62%,#E4C9B7 100%);--fluid-a:#A85667;--fluid-b:#C59B86;--fluid-c:#A97B80}
+html[data-accent="pine"]{--accent:#365B4C;--accent-2:#D9A441;--accent-soft:rgba(54,91,76,.11);--hero-line:linear-gradient(135deg,#365B4C 0%,#5F7664 56%,#D9A441 100%);--fluid-a:#557B6B;--fluid-b:#D9A441;--fluid-c:#A5A16F} html.dark[data-accent="pine"]{--accent:#78A08E;--accent-2:#E8BF6D;--accent-soft:rgba(120,160,142,.13);--hero-line:linear-gradient(135deg,#78A08E 0%,#9CB2A0 56%,#E2B657 100%);--fluid-a:#476E5D;--fluid-b:#AD8132;--fluid-c:#7E8764}
+html[data-accent="mist"]{--accent:#8877C7;--accent-2:#B6A9DC;--accent-soft:rgba(136,119,199,.11);--hero-line:linear-gradient(135deg,#8877C7 0%,#B6A9DC 62%,#F0E7DB 100%);--fluid-a:#A99BD8;--fluid-b:#F0E7DB;--fluid-c:#D7CDE4} html.dark[data-accent="mist"]{--accent:#B3A6E4;--accent-2:#D2C9F0;--accent-soft:rgba(179,166,228,.13);--hero-line:linear-gradient(135deg,#B3A6E4 0%,#D2C9F0 62%,#E5D9CB 100%);--fluid-a:#8072B9;--fluid-b:#B7AA9C;--fluid-c:#948BA6}
+html[data-accent="dustyrose"]{--accent:#C88697;--accent-2:#31424D;--accent-soft:rgba(200,134,151,.11);--hero-line:linear-gradient(135deg,#C88697 0%,#A87483 52%,#31424D 100%);--fluid-a:#DEA5B2;--fluid-b:#71808A;--fluid-c:#B6959D} html.dark[data-accent="dustyrose"]{--accent:#E4A7B7;--accent-2:#78909E;--accent-soft:rgba(228,167,183,.13);--hero-line:linear-gradient(135deg,#E4A7B7 0%,#BA8B98 52%,#78909E 100%);--fluid-a:#A96F80;--fluid-b:#435A67;--fluid-c:#7A6970}
+html[data-accent="ochre"]{--accent:#B49335;--accent-2:#5D7E7A;--accent-soft:rgba(180,147,53,.11);--hero-line:linear-gradient(135deg,#E7C86A 0%,#BDA75F 45%,#5D7E7A 100%);--fluid-a:#E7C86A;--fluid-b:#8EAAA6;--fluid-c:#C2BC88} html.dark[data-accent="ochre"]{--accent:#E7C86A;--accent-2:#8FB0AB;--accent-soft:rgba(231,200,106,.13);--hero-line:linear-gradient(135deg,#E7C86A 0%,#C6B066 45%,#8FB0AB 100%);--fluid-a:#B49B50;--fluid-b:#55736F;--fluid-c:#858467}
 html[data-accent="vibrant"]{--accent:#7c5cff;--accent-2:#20cdb4;--accent-soft:rgba(124,92,255,.11);--hero-line:linear-gradient(120deg,#ff4d8d 0%,#8b5cf6 34%,#2f80ed 66%,#20d7b5 100%);--fluid-a:#ff9ac0;--fluid-b:#b9a7ff;--fluid-c:#79e4d2} html.dark[data-accent="vibrant"]{--accent:#a99aff;--accent-2:#68e2ce;--accent-soft:rgba(169,154,255,.13);--hero-line:linear-gradient(120deg,#ff76aa 0%,#a58cff 34%,#64a8ff 66%,#59dfc8 100%)}
 body.fx-minimal .fx-spotlights,body.fx-minimal .fx-beam{display:none!important} body.fx-spotlight .fx-spotlights,body.fx-spotlight .fx-beam{display:block!important}
 .appFooter{display:flex;justify-content:center;align-items:center;gap:7px;flex-wrap:wrap;padding:30px 10px 6px;color:var(--txt-3);font-size:12px}
@@ -1226,6 +1304,11 @@ html:not(.dark) .kf-fluid-field{filter:saturate(118%);}
 html:not(.dark) .kf-fluid-blob.primary{width:900px;height:900px;margin-left:-450px;margin-top:-450px;opacity:.96;filter:blur(30px) saturate(132%);background:radial-gradient(ellipse at 42% 45%,color-mix(in srgb,var(--fluid-a,#76b7ff) 68%,transparent) 0%,color-mix(in srgb,var(--fluid-b,#b7d7ff) 50%,transparent) 27%,color-mix(in srgb,var(--fluid-c,#c59cf4) 38%,transparent) 50%,rgba(245,245,247,0) 76%);}
 html:not(.dark) .kf-fluid-blob.trail{width:760px;height:620px;margin-left:-380px;margin-top:-310px;opacity:.82;filter:blur(38px) saturate(128%);background:radial-gradient(ellipse at 48% 50%,color-mix(in srgb,var(--fluid-c,#c59cf4) 54%,transparent) 0%,color-mix(in srgb,var(--fluid-a,#76b7ff) 40%,transparent) 42%,rgba(245,245,247,0) 75%);}
 html:not(.dark) .kf-fluid-blob.core{width:430px;height:430px;margin-left:-215px;margin-top:-215px;opacity:.62;filter:blur(24px);}
+
+.glowSettingLabel{display:flex!important;align-items:center;gap:11px}.glowSettingLabel>span:last-child{display:flex;flex-direction:column;gap:3px}.settingIcon{width:30px;height:30px;border:1px solid var(--border);border-radius:10px;display:grid;place-items:center;color:var(--accent);background:var(--accent-soft);flex:0 0 auto}.settingIcon svg{width:16px;height:16px}.uiSwitch{width:46px;height:26px;border:1px solid var(--border-2);border-radius:999px;padding:2px;background:var(--surface-2);cursor:pointer;transition:.2s ease;display:flex;align-items:center}.uiSwitchKnob{width:20px;height:20px;border-radius:50%;background:var(--muted);box-shadow:0 1px 4px rgba(0,0,0,.18);transition:transform .22s ease,background .22s ease}.uiSwitch[aria-checked="true"]{background:var(--accent);border-color:var(--accent)}.uiSwitch[aria-checked="true"] .uiSwitchKnob{transform:translateX(20px);background:#fff}.uiSwitch:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+/* 鼠标流体光晕：唯一默认效果，可在偏好设置中关闭 */
+html.glow-off .kf-fluid-field{display:none!important;}
+html.glow-on .kf-fluid-field{display:block;}
 html.dark .kf-fluid-field{ display:none; }
 @media (max-width:760px), (pointer:coarse){
   .kf-fluid-field{ display:none; }
@@ -1598,6 +1681,306 @@ html.dark #logoPreview .generic-logo-mark{background:linear-gradient(145deg,#405
 @media(max-width:760px){#logoPreview .generic-logo-mark{width:32px;height:32px;min-width:32px;border-radius:10px;}#logoPreview .generic-logo-mark svg{width:30px;height:30px;}}
 </style>
 <style>#saveWarning{position:fixed;left:16px;right:16px;bottom:16px;z-index:10000;padding:14px 18px;border:1px solid var(--warn);border-radius:10px;background:var(--card);color:var(--txt-1);box-shadow:var(--shadow-sm);}#saveWarning[hidden]{display:none!important;}</style>
+
+<style id="kf-minimal-theme-glow-v226">
+/* v2.2.6 — compact color swatches + horizontal iOS-style glow toggle */
+.kf-settings-scroll .glowSettingRow{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+}
+.kf-settings-scroll .glowSettingRow .settingsLabel{margin:0;min-width:0;}
+.kf-settings-scroll .glowSettingRow .settingsCtl{
+  margin-left:auto;flex:0 0 auto;display:flex;align-items:center;justify-content:flex-end;flex-wrap:nowrap;
+}
+.uiSwitch{
+  width:48px;height:28px;border-radius:999px;padding:4px;box-sizing:border-box;
+  background:var(--surface-2);border:1px solid var(--border-2);
+  display:flex;align-items:center;cursor:pointer;transition:background .22s ease,border-color .22s ease,box-shadow .22s ease;
+}
+.uiSwitchKnob{
+  width:20px;height:18px;border-radius:999px;background:var(--muted);
+  box-shadow:0 1px 4px rgba(0,0,0,.18);transition:transform .22s ease,background .22s ease;
+}
+.uiSwitch[aria-checked="true"]{background:var(--accent);border-color:var(--accent);}
+.uiSwitch[aria-checked="true"] .uiSwitchKnob{transform:translateX(20px);background:#fff;}
+
+.accentPresets{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.accentChip{
+  position:relative;min-width:32px!important;width:32px;height:32px;min-height:32px!important;
+  padding:0!important;border-radius:50%!important;background:transparent!important;
+  border:1px solid color-mix(in srgb,var(--border-2) 80%,transparent)!important;
+  box-shadow:none!important;filter:none!important;transform:none!important;overflow:visible;
+}
+.accentChip::before{
+  content:"";position:absolute;inset:3px;width:auto;height:auto;border-radius:50%;
+  background:var(--chip-grad,linear-gradient(135deg,#52606d,#748391));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.32),0 1px 4px rgba(30,40,60,.12);
+}
+.accentChip::after{
+  content:"✓";position:absolute;inset:0;display:grid;place-items:center;
+  font-size:13px;font-weight:800;color:#fff;opacity:0;transform:scale(.75);
+  text-shadow:0 1px 4px rgba(0,0,0,.38);transition:opacity .16s ease,transform .16s ease;
+}
+.accentChip:hover{transform:scale(1.08)!important;border-color:color-mix(in srgb,var(--accent) 35%,var(--border-2))!important;background:transparent!important;}
+.accentChip.active{
+  border-color:var(--accent)!important;outline:2px solid color-mix(in srgb,var(--accent) 62%,transparent);outline-offset:2px;
+}
+.accentChip.active::after{opacity:1;transform:scale(1);}
+.accentCustom{width:32px;height:32px;display:block;flex:0 0 32px;font-size:0;color:transparent;}
+.accentCustom input{
+  width:32px;height:32px;border:1px solid var(--border-2);border-radius:50%;padding:3px;background:transparent;cursor:pointer;overflow:hidden;
+}
+.accentCustom input::-webkit-color-swatch-wrapper{padding:0;}
+.accentCustom input::-webkit-color-swatch{border:0;border-radius:50%;}
+.accentCustom input::-moz-color-swatch{border:0;border-radius:50%;}
+@media (max-width:620px){
+  .kf-settings-scroll .glowSettingRow{display:flex;align-items:center;justify-content:space-between;}
+}
+
+/* v2.2.7 — true capsule toggle + spectrum custom-color swatch */
+.uiSwitch{
+  width:46px!important;min-width:46px!important;max-width:46px!important;height:26px!important;min-height:26px!important;
+  padding:3px!important;border-radius:999px!important;box-sizing:border-box!important;
+  display:flex!important;align-items:center!important;justify-content:flex-start!important;overflow:hidden!important;
+  background:var(--surface-2)!important;border:1px solid var(--border-2)!important;
+  box-shadow:none!important;transform:none!important;filter:none!important;
+}
+.uiSwitchKnob{
+  display:block!important;flex:0 0 20px!important;width:20px!important;height:20px!important;border-radius:999px!important;
+  background:#fff!important;box-shadow:0 1px 4px rgba(0,0,0,.22)!important;
+  transform:translateX(0)!important;transition:transform .22s cubic-bezier(.4,0,.2,1)!important;
+}
+.uiSwitch[aria-checked="true"]{background:var(--accent)!important;border-color:var(--accent)!important;}
+.uiSwitch[aria-checked="true"] .uiSwitchKnob{transform:translateX(18px)!important;}
+.accentCustom{position:relative!important;width:32px!important;height:32px!important;border-radius:50%!important;cursor:pointer!important;}
+.accentCustom::before{
+  content:"";position:absolute;inset:3px;border-radius:50%;
+  background:conic-gradient(#ff3b30 0deg,#ffcc00 60deg,#34c759 120deg,#00c7be 180deg,#007aff 240deg,#af52de 300deg,#ff3b30 360deg);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.34),0 1px 4px rgba(30,40,60,.14);
+}
+.accentCustom::after{content:"";position:absolute;inset:11px;border-radius:50%;background:var(--card);box-shadow:0 0 0 1px rgba(0,0,0,.06);pointer-events:none;}
+.accentCustom input{position:absolute!important;inset:0!important;width:32px!important;height:32px!important;opacity:0!important;cursor:pointer!important;z-index:2!important;}
+</style>
+
+<style id="kf-soft-halo-draw-button">
+/* v2.2.9 — Soft Halo Glass primary draw button */
+.stageControls{
+  position:relative;
+}
+#btnStartRoll{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  min-width:228px;
+  min-height:56px;
+  padding:0 30px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.82);
+  color:var(--txt-1);
+  background:
+    radial-gradient(90px 58px at 18% 32%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 72%),
+    radial-gradient(110px 66px at 82% 68%, color-mix(in srgb, var(--accent-2) 18%, transparent), transparent 74%),
+    linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.48));
+  box-shadow:
+    0 16px 34px rgba(28,38,64,.10),
+    0 4px 12px rgba(28,38,64,.05),
+    inset 0 1px 0 rgba(255,255,255,.98),
+    inset 0 -1px 0 rgba(255,255,255,.32);
+  -webkit-backdrop-filter:blur(22px) saturate(140%);
+  backdrop-filter:blur(22px) saturate(140%);
+  font-size:15px;
+  font-weight:700;
+  letter-spacing:.01em;
+  text-shadow:0 1px 0 rgba(255,255,255,.66);
+  transition:transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .24s ease, border-color .24s ease, filter .24s ease;
+}
+/* kf-start-icon-spark — Scheme A minimal line icon, kept in ::before because draw JS rewrites textContent */
+#btnStartRoll::before{
+  content:"";
+  position:relative;
+  z-index:2;
+  width:18px;
+  height:18px;
+  flex:0 0 18px;
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%231f2937' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8.8 6.8 17 12l-8.2 5.2V6.8Z'/%3E%3Cpath d='M18.5 3.5v3'/%3E%3Cpath d='M20 5h-3'/%3E%3Cpath d='M4.5 14.5v2.5'/%3E%3Cpath d='M5.75 15.75h-2.5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:18px 18px;
+  opacity:.9;
+}
+#btnStartRoll::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:-35% -10%;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 28% 42%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 31%),
+    radial-gradient(circle at 68% 56%, color-mix(in srgb, var(--accent-2) 18%, transparent), transparent 34%);
+  filter:blur(18px);
+  opacity:.72;
+  transform:translate3d(0,0,0);
+  transition:opacity .25s ease, transform .45s cubic-bezier(.2,.8,.2,1);
+}
+#btnStartRoll:not(:disabled):hover{
+  transform:translateY(-1px);
+  filter:none;
+  border-color:rgba(255,255,255,.96);
+  box-shadow:
+    0 20px 42px rgba(28,38,64,.13),
+    0 5px 14px color-mix(in srgb, var(--accent) 10%, transparent),
+    inset 0 1px 0 rgba(255,255,255,1),
+    inset 0 -1px 0 rgba(255,255,255,.4);
+  background:
+    radial-gradient(96px 62px at 20% 30%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 72%),
+    radial-gradient(116px 72px at 80% 70%, color-mix(in srgb, var(--accent-2) 22%, transparent), transparent 74%),
+    linear-gradient(180deg, rgba(255,255,255,.86), rgba(255,255,255,.55));
+}
+#btnStartRoll:not(:disabled):hover::after{
+  opacity:.92;
+  transform:translate3d(7px,-2px,0) scale(1.04);
+}
+#btnStartRoll:not(:disabled):active{
+  transform:translateY(0) scale(.985);
+}
+#btnStartRoll:disabled{
+  color:var(--txt-3);
+  background:linear-gradient(180deg, rgba(255,255,255,.48), rgba(255,255,255,.28));
+  border-color:rgba(255,255,255,.55);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.62);
+  opacity:.62;
+}
+#btnStartRoll:disabled::before{opacity:.42;}
+#btnStartRoll:disabled::after{opacity:.18;}
+
+#btnStopRoll{
+  min-width:192px;
+  min-height:52px;
+  padding:0 26px;
+  border-radius:999px;
+  color:var(--txt-1);
+  background:rgba(255,255,255,.48);
+  border:1px solid rgba(255,255,255,.74);
+  box-shadow:0 10px 24px rgba(28,38,64,.07), inset 0 1px 0 rgba(255,255,255,.9);
+  -webkit-backdrop-filter:blur(18px) saturate(128%);
+  backdrop-filter:blur(18px) saturate(128%);
+  font-weight:650;
+}
+#btnStopRoll:not(:disabled):hover{
+  color:var(--txt-1);
+  background:rgba(255,255,255,.62);
+  border-color:rgba(255,255,255,.92);
+  box-shadow:0 14px 30px rgba(28,38,64,.10), inset 0 1px 0 rgba(255,255,255,.96);
+  transform:translateY(-1px);
+}
+#btnStopRoll .kf-icon{
+  width:17px;
+  height:17px;
+  stroke-width:1.8;
+}
+html.dark #btnStartRoll{
+  color:#F8FAFC;
+  text-shadow:none;
+  border-color:rgba(255,255,255,.17);
+  background:
+    radial-gradient(95px 60px at 20% 30%, color-mix(in srgb, var(--accent) 26%, transparent), transparent 72%),
+    radial-gradient(112px 68px at 82% 68%, color-mix(in srgb, var(--accent-2) 23%, transparent), transparent 74%),
+    linear-gradient(180deg, rgba(49,52,62,.76), rgba(28,30,38,.72));
+  box-shadow:0 18px 38px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.14);
+}
+html.dark #btnStartRoll::before{
+  filter:invert(1) brightness(1.2);
+}
+html.dark #btnStartRoll:not(:disabled):not(.kf-busy):hover{
+  color:#F8FAFC;
+  border-color:color-mix(in srgb,var(--accent-2) 36%,rgba(255,255,255,.18));
+  background:
+    radial-gradient(112px 72px at 18% 28%, color-mix(in srgb,var(--accent) 34%,transparent), transparent 70%),
+    radial-gradient(132px 78px at 84% 72%, color-mix(in srgb,var(--accent-2) 30%,transparent), transparent 72%),
+    linear-gradient(180deg, rgba(54,57,68,.82), rgba(29,31,39,.80));
+  box-shadow:
+    0 20px 42px rgba(0,0,0,.28),
+    0 0 18px color-mix(in srgb,var(--accent) 16%,transparent),
+    0 0 34px color-mix(in srgb,var(--accent-2) 9%,transparent),
+    inset 0 1px 0 rgba(255,255,255,.16);
+  filter:none;
+}
+html.dark #btnStopRoll{
+  color:var(--txt-1);
+  background:rgba(38,40,48,.58);
+  border-color:rgba(255,255,255,.12);
+  box-shadow:0 12px 26px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.08);
+}
+@media (prefers-reduced-motion: reduce){
+  #btnStartRoll,#btnStartRoll::after,#btnStopRoll{transition:none!important;}
+}
+</style>
+
+
+<style id="kf-data-controls-refine-v2213">
+/* v2.2.13 — quiet data-management hierarchy */
+.kf-data-panel .controlStatus,
+.kf-data-panel .controlStatus.import-ok,
+.kf-data-panel .controlStatus.import-pending,
+.kf-data-panel .controlStatus.import-empty{
+  color:var(--txt-3)!important;
+  font-weight:550!important;
+}
+/* Counts are plain typography, not colored badges. */
+.kf-tab-count{
+  min-width:0!important;height:auto!important;padding:0!important;border-radius:0!important;
+  background:transparent!important;color:var(--txt-3)!important;
+  font-size:11px!important;font-weight:650!important;line-height:1!important;
+}
+.kf-data-tab.active .kf-tab-count{background:transparent!important;color:var(--txt-2)!important;}
+/* Softer segmented control: selection comes from a glass plate + weight, never a colored badge. */
+.kf-data-tabs{background:color-mix(in srgb,var(--bg-2) 72%,transparent)!important;border-color:var(--border)!important;}
+.kf-data-tab.active{background:var(--card-glass)!important;box-shadow:0 1px 4px rgba(30,40,60,.07)!important;}
+/* Icon-only Help / Instructions utility button. */
+.kf-data-panel button.kf-help-icon{
+  width:28px!important;height:28px!important;min-width:28px!important;min-height:28px!important;padding:0!important;
+  border:1px solid var(--border-2)!important;border-radius:999px!important;background:transparent!important;
+  color:var(--txt-3)!important;display:inline-grid!important;place-items:center!important;box-shadow:none!important;
+  font-size:14px!important;font-weight:750!important;line-height:1!important;
+}
+.kf-data-panel button.kf-help-icon:hover:not(:disabled){
+  background:var(--card-glass)!important;border-color:var(--border-2)!important;color:var(--txt-1)!important;
+  transform:none!important;box-shadow:0 2px 10px rgba(30,40,60,.06)!important;
+}
+.kf-data-panel button.kf-help-icon span{display:block;transform:translateY(-.25px);}
+</style>
+<style id="kf-dark-card-edge-glow">
+/* v2.2.18 — Dark Mode only: rounded, theme-aware edge glow for primary cards. */
+html.dark.glow-on :is(.card,.drawExperience)::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  z-index:0;
+  padding:1px;
+  opacity:var(--kf-edge-alpha,0);
+  background:
+    radial-gradient(220px circle at var(--kf-edge-x,50%) var(--kf-edge-y,50%),
+      color-mix(in srgb,var(--accent) 90%,transparent) 0%,
+      color-mix(in srgb,var(--accent-2) 68%,transparent) 24%,
+      color-mix(in srgb,var(--accent) 24%,transparent) 48%,
+      transparent 73%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+  mask-composite:exclude;
+  filter:
+    drop-shadow(0 0 8px color-mix(in srgb,var(--accent) 30%,transparent))
+    drop-shadow(0 0 20px color-mix(in srgb,var(--accent-2) 17%,transparent));
+  transition:opacity .2s ease-out;
+}
+html.dark.glow-off :is(.card,.drawExperience)::after{opacity:0!important;}
+/* Keep content over the glow layer without changing fixed drawers/modals. */
+html.dark.glow-on .drawExperience{position:relative;isolation:isolate;}
+html.dark.glow-on .drawExperience > *{position:relative;z-index:1;}
+@media (pointer:coarse),(prefers-reduced-motion:reduce){
+  html.dark.glow-on :is(.card,.drawExperience)::after{opacity:0!important;}
+}
+</style>
 </head>
 <script id="KF_THEME_MANAGER">
 /*
@@ -2070,6 +2453,89 @@ document.addEventListener("DOMContentLoaded", () => {
 @media(max-width:1120px){.kf-nav{display:none!important}.kf-langSeg{margin-left:auto!important;}}
 @media(max-width:640px){.kf-settings-toggle{min-width:38px!important;width:38px!important;padding:0!important}.kf-settings-toggle span{display:none!important;}}
 </style>
+
+<style id="kfControlConsistencyV2210">
+/* KF UI CONTROL CONSISTENCY v2.2.10
+   Hover is neutral feedback; selected/focus may use the current accent. */
+button:hover:not(:disabled){
+  transform:none!important;
+  filter:none!important;
+  box-shadow:none!important;
+}
+/* Secondary actions: neutral glass hover, accent reserved for focus/selection. */
+button.secondary:hover:not(:disabled),
+button.ghost:hover:not(:disabled),
+.resetAction:hover:not(:disabled){
+  background:var(--card-glass)!important;
+  color:var(--txt-1)!important;
+  border-color:var(--border-2)!important;
+  box-shadow:none!important;
+  filter:none!important;
+  transform:none!important;
+}
+/* Segmented controls: hover never looks selected. */
+.kf-data-tab:hover{
+  transform:none!important;
+  background:var(--card-glass)!important;
+  color:var(--txt-1)!important;
+  box-shadow:none!important;
+}
+.kf-data-tab.active{
+  background:var(--card)!important;
+  color:var(--txt-1)!important;
+  border-color:transparent!important;
+  box-shadow:0 1px 4px rgba(30,40,60,.08)!important;
+}
+.kf-data-tab.active .kf-tab-count{
+  background:var(--accent-soft)!important;
+  color:var(--accent)!important;
+}
+.kf-langSeg button:hover{
+  transform:none!important;
+  filter:none!important;
+  box-shadow:none!important;
+  background:var(--card-glass)!important;
+  color:var(--txt-1)!important;
+}
+.kf-langSeg button.active{
+  background:var(--bg-2)!important;
+  color:var(--txt-1)!important;
+}
+/* Header/icon controls: no legacy lift or fixed-blue hover. */
+#themeToggle:hover,
+.kf-settings-toggle:hover,
+.kf-settings-close:hover{
+  transform:none!important;
+  filter:none!important;
+  box-shadow:none!important;
+  background:var(--card-glass)!important;
+  color:var(--txt-1)!important;
+  border-color:var(--border-2)!important;
+}
+/* Keep semantic exceptions and primary draw controls intentional. */
+#btnReset:hover:not(:disabled){
+  background:var(--bg-2)!important;
+  color:var(--danger)!important;
+  border-color:var(--danger)!important;
+}
+#btnStartRoll:hover:not(:disabled){
+  /* Soft Halo owns its own primary interaction. */
+  transform:translateY(-1px) scale(1.012)!important;
+}
+#btnStopRoll:hover:not(:disabled){
+  background:var(--card-glass)!important;
+  color:var(--txt-1)!important;
+  border-color:var(--border-2)!important;
+  box-shadow:none!important;
+}
+/* Focus remains accent-colored for keyboard accessibility. */
+button:focus-visible,
+select:focus-visible,
+input:focus-visible{
+  outline:2px solid var(--accent)!important;
+  outline-offset:2px!important;
+}
+</style>
 </head>
 <body>
 <div id="saveWarning" role="alert" hidden></div>
@@ -2214,7 +2680,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <!-- Action Buttons -->
     <div class="stageControls" style="justify-content:center; gap:14px; margin-top:20px;">
       <button disabled="" id="btnStartRoll" type="button" data-i18n="btn.start">开始抽奖</button>
-      <button disabled="" id="btnStopRoll" type="button"><svg class="kf-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg><span data-i18n="btn.stop">停止并揭晓</span></button>
+      <button disabled="" id="btnStopRoll" type="button"><svg class="kf-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M7 7h10v10H7z"/></svg><span data-i18n="btn.stop">停止并揭晓</span></button>
     </div>
   </section>
 
@@ -2226,12 +2692,12 @@ document.addEventListener("DOMContentLoaded", () => {
       <h2 data-i18n="win.title">中奖榜单</h2>
       <div class="row" style="gap:10px;">
         <button disabled="" id="btnExportCsv" type="button" class="ghost"><svg class="kf-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span data-i18n="win.export">导出 CSV</span></button>
-        <button disabled="" id="btnDoFill" type="button"><svg class="kf-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span data-i18n="win.fill">补抽缺席名额</span></button>
+        <button disabled="" id="btnDoFill" type="button"><span class="winner-fill-flow" aria-hidden="true"><i class="winner-fill-dot is-pending"></i><i class="winner-fill-arrow">→</i><i class="winner-fill-dot is-present"></i></span><span data-i18n="win.fill">补抽缺席名额</span></button>
       </div>
     </div>
-    <div class="winnersToolbar">
-      <div class="pill small"><span data-i18n="win.need">待补抽：</span><b id="needFill">0</b></div>
-      <div class="pill small"><span data-i18n="win.can">可补抽人数：</span><b id="canFill">0</b></div>
+    <div class="winnersToolbar winner-toolbar-stats" aria-label="中奖榜单状态">
+      <div class="winner-stat"><span class="winner-stat-dot is-pending" aria-hidden="true"></span><b id="needFill">0</b><span data-i18n="win.need">待补抽</span></div>
+      <div class="winner-stat"><span class="winner-stat-dot is-eligible" aria-hidden="true"></span><b id="canFill">0</b><span data-i18n="win.can">可补抽人数</span></div>
     </div>
     <div id="winnersList"></div>
   </section>
@@ -2262,7 +2728,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <button class="ghost" id="btnPeopleUpload" type="button" data-i18n="people.upload">上传名单</button>
           <button id="applyPeople" type="button" data-i18n="people.apply">应用参会者名单</button>
           <button class="ghost resetAction" id="resetPeople" type="button" data-i18n="people.reset">重置参会者</button>
-          <button class="ghost" id="togglePeopleHelp" type="button" data-i18n="people.help">说明</button>
+          <button class="ghost kf-help-icon" id="togglePeopleHelp" type="button" aria-label="说明" title="说明"><span aria-hidden="true">!</span></button>
         </div>
         <span class="small muted controlStatus import-empty" id="peopleStatus">未上传</span>
       </div>
@@ -2292,7 +2758,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <button class="ghost" id="btnPrizeUpload" type="button" data-i18n="prize.upload">上传奖品</button>
           <button id="applyPrizes" type="button" data-i18n="prize.apply">导入奖品</button>
           <button class="ghost resetAction" id="resetPrizes" type="button" data-i18n="prize.reset">重置奖品</button>
-          <button class="ghost" id="togglePrizeHelp" type="button" data-i18n="prize.help">说明</button>
+          <button class="ghost kf-help-icon" id="togglePrizeHelp" type="button" aria-label="说明" title="说明"><span aria-hidden="true">!</span></button>
         </div>
         <span class="small muted controlStatus import-empty" id="prizeStatus">未上传</span>
       </div>
@@ -2351,17 +2817,40 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="settingsRow">
         <div class="settingsLabel"><span data-i18n="set.accent">主题配色</span><small data-i18n="set.accentSub">渐变主题同步控制按钮、强调色与流体背景</small></div>
         <div class="settingsCtl accentPresets" id="accentPresets">
-          <button type="button" class="accentChip" data-accent="neutral">Neutral</button>
-          <button type="button" class="accentChip" data-accent="blue">Blue</button>
-          <button type="button" class="accentChip" data-accent="green">Green</button>
-          <button type="button" class="accentChip" data-accent="purple">Purple</button>
-          <button type="button" class="accentChip" data-accent="gold">Gold</button>
-          <button type="button" class="accentChip" data-accent="indigo">Indigo</button>
-          <button type="button" class="accentChip" data-accent="cyan">Cyan</button>
-          <button type="button" class="accentChip" data-accent="rose">Rose</button>
-          <button type="button" class="accentChip" data-accent="orange">Orange</button>
-          <button type="button" class="accentChip" data-accent="vibrant">Vibrant</button>
-          <label class="accentCustom"><span data-i18n="set.custom">自定义</span><input id="accentCustom" type="color" value="#52606d"/></label>
+          <button type="button" class="accentChip" data-accent="neutral" aria-label="Neutral" title="Neutral"></button>
+          <button type="button" class="accentChip" data-accent="blue" aria-label="Blue" title="Blue"></button>
+          <button type="button" class="accentChip" data-accent="green" aria-label="Green" title="Green"></button>
+          <button type="button" class="accentChip" data-accent="purple" aria-label="Purple" title="Purple"></button>
+          <button type="button" class="accentChip" data-accent="gold" aria-label="Gold" title="Gold"></button>
+          <button type="button" class="accentChip" data-accent="indigo" aria-label="Indigo" title="Indigo"></button>
+          <button type="button" class="accentChip" data-accent="cyan" aria-label="Cyan" title="Cyan"></button>
+          <button type="button" class="accentChip" data-accent="rose" aria-label="Rose" title="Rose"></button>
+          <button type="button" class="accentChip" data-accent="orange" aria-label="Orange" title="Orange"></button>
+          <button type="button" class="accentChip" data-accent="celadon" aria-label="Celadon" title="Celadon"></button>
+          <button type="button" class="accentChip" data-accent="dusk" aria-label="Dusk" title="Dusk"></button>
+          <button type="button" class="accentChip" data-accent="pomegranate" aria-label="Pomegranate" title="Pomegranate"></button>
+          <button type="button" class="accentChip" data-accent="pine" aria-label="Pine" title="Pine"></button>
+          <button type="button" class="accentChip" data-accent="mist" aria-label="Mist" title="Mist"></button>
+          <button type="button" class="accentChip" data-accent="dustyrose" aria-label="Dusty Rose" title="Dusty Rose"></button>
+          <button type="button" class="accentChip" data-accent="ochre" aria-label="Ochre" title="Ochre"></button>
+          <button type="button" class="accentChip" data-accent="vibrant" aria-label="Vibrant" title="Vibrant"></button>
+          <label class="accentCustom" title="自定义配色"><input id="accentCustom" type="color" value="#52606d" aria-label="自定义配色"/></label>
+        </div>
+      </div>
+      <div class="settingsRow">
+        <div class="settingsLabel"><span data-i18n="set.prizeView">奖品明细显示</span><small data-i18n="set.prizeViewSub">选择导入奖品后的核对方式</small></div>
+        <div class="settingsCtl">
+          <div class="prize-view-segmented" id="prizeViewMode" role="group" aria-label="奖品明细显示方式">
+            <button type="button" data-prize-view="vertical" data-i18n="set.prizeVertical">竖状图</button>
+            <button type="button" data-prize-view="horizontal" data-i18n="set.prizeHorizontal">横状图</button>
+            <button type="button" data-prize-view="cards" data-i18n="set.prizeCards">卡片</button>
+          </div>
+        </div>
+      </div>
+      <div class="settingsRow glowSettingRow">
+        <div class="settingsLabel glowSettingLabel"><span class="settingIcon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l12.5 9-6.1 1.3L9 19z"/><path d="M17.5 4.5v3M21 8h-3M19.5 5.8l-2.1 2.1"/></svg></span><span><span data-i18n="set.glow">鼠标光晕</span><small data-i18n="set.glowSub">流体光晕跟随鼠标移动</small></span></div>
+        <div class="settingsCtl">
+          <button id="glowToggle" class="uiSwitch" type="button" role="switch" aria-checked="true" aria-label="鼠标光晕"><span class="uiSwitchKnob"></span></button>
         </div>
       </div>
       <div class="settingsRow">
@@ -2372,12 +2861,22 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       </div>
       <div class="settingsRow">
-        <div class="settingsLabel"><span data-i18n="set.sound">音效</span><small data-i18n="set.soundSub">抽奖滚动与揭晓提示音</small></div>
+        <div class="settingsLabel"><span data-i18n="set.sound">音效</span><small data-i18n="set.soundSub">选择整套抽奖音色；自动模式会跟随主题配色</small></div>
         <div class="settingsCtl">
           <select id="soundMode">
             <option selected="" value="on" data-i18n="set.on">开</option>
             <option value="off" data-i18n="set.off">关</option>
           </select>
+          <select id="soundPack" aria-label="Sound Pack">
+            <option value="auto" data-i18n="set.soundAuto">自动（跟随主题）</option>
+            <option value="glass">Glass</option>
+            <option value="celebration">Celebration</option>
+            <option value="zen">Zen</option>
+            <option value="arcade">Arcade</option>
+            <option value="corporate">Corporate</option>
+            <option value="neon">Neon Party</option>
+          </select>
+          <button class="ghost" id="btnSoundPreview" type="button" data-i18n="set.soundPreview">试听</button>
           <input id="soundVolSlider" max="100" min="0" type="range" value="60"/>
           <span class="small muted" id="soundVolLabel">60%</span>
         </div>
@@ -2522,10 +3021,10 @@ window.KFI18N = (function(){
       'hero.eyebrow':'当前奖项','hero.empty':'待导入奖品清单','hero.remain':'剩余',
       'draw.title':'抽奖舞台','draw.status':'状态：等待导入数据','draw.from':'从奖项开始','draw.fromAuto':'（自动选择）','draw.count':'本次人数','draw.max':'(最大数)','draw.view':'查看中奖清单','draw.reset':'重置抽奖',
       'btn.start':'开始抽奖','btn.stop':'停止',
-      'win.title':'中奖榜单','win.export':'导出 CSV','win.fill':'补抽缺席名额','win.need':'待补抽：','win.can':'可补抽人数：',
+      'win.title':'中奖榜单','win.export':'导出 CSV','win.fill':'补抽缺席名额','win.need':'待补抽','win.can':'可补抽人数',
       'sec.people':'参会者','sec.peopleSub':'参会者名单','people.upload':'上传名单','people.apply':'应用参会者名单','people.reset':'重置参会者','people.help':'说明','people.none':'未上传','people.fmt':'格式要求','people.fmt1':'• TXT：每行一个名字（支持中英文）','people.fmt2':'• CSV：第一列为名字，自动识别表头与带引号字段（推荐 UTF-8）','people.ex':'示例（TXT）',
       'sec.prizes':'奖品','sec.prizesSub':'奖品清单','prize.upload':'上传奖品','prize.apply':'导入奖品','prize.reset':'重置奖品','prize.help':'说明','prize.none':'未上传','prize.fmt':'格式要求（按列位置解析）','prize.c1':'第1列：顺序（数字）','prize.c2':'第2列：奖项','prize.c3':'第3列：产品','prize.c4':'第4列：数量（整数）','prize.ex':'示例','prize.empty':'（导入后这里会显示完整奖品清单，用于核对）',
-      'set.title':'偏好设置','set.eyebrow':'全局设置','set.sub':'品牌、主题、舞台效果、音效与速度','data.title':'数据管理','data.sub':'抽奖前的数据准备与维护','set.eventTitle':'活动标题','set.eventTitleSub':'顶部标题仅可在此修改，避免现场误操作','set.applyTitle':'应用标题','set.sound':'音效','set.soundSub':'抽奖滚动与揭晓提示音','set.on':'开','set.off':'关','set.speed':'滚动速度','set.speedSub':'名字滚动墙的速度','set.theme':'配色风格','set.themeSub':'选择你喜欢的界面配色','set.logo':'品牌 Logo','set.logoSub':'上传自己的品牌标识；自动保持原始比例','set.logoUpload':'上传 Logo','set.logoReset':'恢复默认','set.accent':'主题配色','set.accentSub':'统一控制按钮、高亮与舞台强调色','set.custom':'自定义','set.effect':'舞台特效','set.effectSub':'选择揭晓时的舞台表现','set.fxMinimal':'默认','set.fxSpotlight':'聚光','set.preview':'预览','footer.updated':'更新于 2026-09-09',
+      'set.title':'偏好设置','set.eyebrow':'全局设置','set.sub':'品牌、主题、舞台效果、音效与速度','set.prizeView':'奖品明细显示','set.prizeViewSub':'选择导入奖品后的核对方式','set.prizeVertical':'竖状图','set.prizeHorizontal':'横状图','set.prizeCards':'卡片','data.title':'数据管理','data.sub':'抽奖前的数据准备与维护','set.eventTitle':'活动标题','set.eventTitleSub':'顶部标题仅可在此修改，避免现场误操作','set.applyTitle':'应用标题','set.sound':'音效','set.soundSub':'选择整套抽奖音色；自动模式会跟随主题配色','set.soundAuto':'自动（跟随主题）','set.soundPreview':'试听','set.on':'开','set.off':'关','set.speed':'滚动速度','set.speedSub':'名字滚动墙的速度','set.theme':'配色风格','set.themeSub':'选择你喜欢的界面配色','set.logo':'品牌 Logo','set.logoSub':'上传自己的品牌标识；自动保持原始比例','set.logoUpload':'上传 Logo','set.logoReset':'恢复默认','set.accent':'主题配色','set.accentSub':'统一控制按钮、高亮与舞台强调色','set.custom':'自定义','set.glow':'鼠标光晕','set.glowSub':'流体光晕跟随鼠标移动','set.effect':'舞台特效','set.effectSub':'选择揭晓时的舞台表现','set.fxMinimal':'默认','set.fxSpotlight':'聚光','set.preview':'预览','footer.updated':'更新于 2026-09-09',
       'modal.drawTitle':'本次抽奖结果','modal.fillTitle':'补抽结果','modal.close':'关闭','modal.drawFooter':'提示：已自动写入「中奖清单」，奖品剩余数量已扣减。','modal.fillFooter':'提示：已自动写入「中奖清单」。',
       'fly.hint':'中奖啦','rv.people':'位中奖者','rv.time':'时间','rv.prize':'奖品','rv.award':'奖项'
     },
@@ -2540,7 +3039,7 @@ window.KFI18N = (function(){
       'win.title':'Winners','win.export':'Export CSV','win.fill':'Redraw Absentees','win.need':'Pending Redraws: ','win.can':'Eligible Participants: ',
       'sec.people':'Participants','sec.peopleSub':'Expand to upload & manage the list','people.upload':'Upload List','people.apply':'Apply List','people.reset':'Reset Participants','people.help':'Help','people.none':'Not uploaded','people.fmt':'Format','people.fmt1':'• TXT: one name per line (CN/EN)','people.fmt2':'• CSV: first column is the name; headers and quoted fields supported (UTF-8 recommended)','people.ex':'Example (TXT)',
       'sec.prizes':'Prizes','sec.prizesSub':'Expand to import the prize list','prize.upload':'Upload Prizes','prize.apply':'Import Prizes','prize.reset':'Reset Prizes','prize.help':'Help','prize.none':'Not uploaded','prize.fmt':'Format (parsed by column)','prize.c1':'Col 1: Order (number)','prize.c2':'Col 2: Prize Tier','prize.c3':'Col 3: Prize Name','prize.c4':'Col 4: Qty (integer)','prize.ex':'Example','prize.empty':'(Imported prize list will appear here for review)',
-      'set.title':'Settings','set.eyebrow':'Global Settings','set.sub':'Brand, theme, stage effects, sound & speed','data.title':'Data Management','data.sub':'Prepare and maintain draw data','set.eventTitle':'Event Title','set.eventTitleSub':'Edit the header title here to prevent accidental changes','set.applyTitle':'Save Changes','set.sound':'Sound','set.soundSub':'Rolling & reveal alert sound','set.on':'On','set.off':'Off','set.speed':'Roll Speed','set.speedSub':'Speed of the rolling wall','set.theme':'Color Theme','set.themeSub':'Choose your favorite color scheme','set.logo':'Brand Logo','set.logoSub':'Upload your own brand mark; original proportions are preserved','set.logoUpload':'Upload Logo','set.logoReset':'Restore Default','set.accent':'Accent Color','set.accentSub':'Controls buttons, highlights and stage accents','set.custom':'Custom','set.effect':'Draw Effect','set.effectSub':'Choose the reveal experience','set.fxMinimal':'Default','set.fxSpotlight':'Spotlight','set.preview':'Preview','footer.updated':'Updated Sep 9, 2026',
+      'set.title':'Settings','set.eyebrow':'Global Settings','set.sub':'Brand, theme, stage effects, sound & speed','set.prizeView':'Prize Detail View','set.prizeViewSub':'Choose how imported prizes are reviewed','set.prizeVertical':'Vertical','set.prizeHorizontal':'Horizontal','set.prizeCards':'Cards','data.title':'Data Management','data.sub':'Prepare and maintain draw data','set.eventTitle':'Event Title','set.eventTitleSub':'Edit the header title here to prevent accidental changes','set.applyTitle':'Save Changes','set.sound':'Sound','set.soundSub':'Choose a sound pack; Auto follows the color theme','set.soundAuto':'Auto (Follow Theme)','set.soundPreview':'Preview','set.on':'On','set.off':'Off','set.speed':'Roll Speed','set.speedSub':'Speed of the rolling wall','set.theme':'Color Theme','set.themeSub':'Choose your favorite color scheme','set.logo':'Brand Logo','set.logoSub':'Upload your own brand mark; original proportions are preserved','set.logoUpload':'Upload Logo','set.logoReset':'Restore Default','set.accent':'Accent Color','set.accentSub':'Controls buttons, highlights and stage accents','set.custom':'Custom','set.glow':'Mouse Glow','set.glowSub':'Fluid glow follows the cursor','set.effect':'Draw Effect','set.effectSub':'Choose the reveal experience','set.fxMinimal':'Default','set.fxSpotlight':'Spotlight','set.preview':'Preview','footer.updated':'Updated Sep 9, 2026',
       'modal.drawTitle':'Draw Results','modal.fillTitle':'Redraw Results','modal.close':'Close','modal.drawFooter':'Note: winners are written to the Winner List; prize stock updated.','modal.fillFooter':'Note: winners are written to the Winner List.',
       'fly.hint':'Winner','rv.people':'Winners','rv.time':'Time','rv.prize':'Prize','rv.award':'Prize Tier'
     }
@@ -3166,95 +3665,153 @@ function runStaggerIn(container, itemSelector){
     masterGain.gain.value = volValue;
     if ($("soundVolLabel")) $("soundVolLabel").textContent = Math.round(volValue * 100) + "%";
 }
-  function playTone(frequency, duration, volume = 0.1) {
-    if ($("soundMode").value === "off") return;
+  function soundEnabled(){
+    return $("soundMode")?.value !== "off";
+  }
+  // 音效会话：只有一次有效的“开始抽奖”才能激活。
+  let drawSoundSessionActive = false;
+  // 跟踪所有 Web Audio 振荡器，停止抽奖时可立即取消正在播放和未来已排程的音符。
+  const activeSynthNodes = new Set();
+
+  function playSynth(frequency, duration, volume = 0.03, type = "sine", when = 0, endFrequency = null) {
+    if (!soundEnabled() || !drawSoundSessionActive) return;
+    try { if (audioContext.state === "suspended") audioContext.resume(); } catch(e) {}
+    const now = audioContext.currentTime + Math.max(0, when || 0);
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
     oscillator.connect(gainNode);
     gainNode.connect(masterGain);
-    oscillator.frequency.value = frequency;
-    oscillator.type = 'sine';
-    // 默认音效整体放大（至少 3 倍），并做上限保护
-    const v = Math.min(1, Math.max(0, volume * 3));
-    gainNode.gain.setValueAtTime(v, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
-    oscillator.start();
-    oscillator.stop(audioContext.currentTime + duration);
+    oscillator.type = type;
+    oscillator.frequency.setValueAtTime(Math.max(20, frequency), now);
+    if (endFrequency) oscillator.frequency.exponentialRampToValueAtTime(Math.max(20, endFrequency), now + duration);
+    const v = Math.min(0.72, Math.max(0.0001, volume));
+    gainNode.gain.setValueAtTime(v, now);
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+    activeSynthNodes.add(oscillator);
+    oscillator.onended = () => {
+      activeSynthNodes.delete(oscillator);
+      try { oscillator.disconnect(); } catch(e) {}
+      try { gainNode.disconnect(); } catch(e) {}
+    };
+    oscillator.start(now);
+    oscillator.stop(now + duration + 0.02);
   }
 
-function playClickSfx() {
-  try {
-    // 轻量“点击确认”音效：短促上扬
-    playTone(880, 0.045, 0.015);
-    setTimeout(() => { try { playTone(1320, 0.035, 0.012); } catch(e) {} }, 55);
-  } catch(e) {}
-}
+  // 兼容旧调用：统一经过新的 Web Audio 合成器。
+  function playTone(frequency, duration, volume = 0.1) {
+    playSynth(frequency, duration, Math.min(.28, volume * 1.8), "sine");
+  }
 
-// ===== 全按钮音效 + 防连点（稳定性增强）=====
-function playUiClickByEl(el){
-  try{
-    const isGhost = el?.classList?.contains("ghost");
-    const isDanger = (el?.id || "").toLowerCase().includes("reset") || el?.classList?.contains("danger");
-    if (isDanger){
-      // 危险操作：更低一点、短促
-      playTone(520, 0.05, 0.015);
-      setTimeout(() => { try{ playTone(780, 0.04, 0.012);}catch(e){} }, 55);
-      return;
-    }
-    if (isGhost){
-      // 次要按钮：更轻
-      playTone(740, 0.04, 0.012);
-      return;
-    }
-    // 主要按钮：清脆双音
-    playClickSfx();
-  }catch(e){}
-}
+  const SOUND_PACKS = new Set(["glass","celebration","zen","arcade","corporate","neon"]);
+  const SOUND_AUTO_BY_ACCENT = {
+    celadon:"zen", pine:"zen", green:"zen",
+    pomegranate:"celebration", ochre:"celebration", gold:"celebration", orange:"celebration",
+    vibrant:"neon", rose:"neon",
+    dustyrose:"corporate", neutral:"corporate",
+    dusk:"glass", mist:"glass", blue:"glass", indigo:"glass", cyan:"glass", purple:"glass"
+  };
 
-(function attachUiSfxAndDebounce(){
-  const IDS = [
-    "btnPeopleUpload","applyPeople","resetPeople","togglePeopleHelp",
-    "btnPrizeUpload","applyPrizes","resetPrizes","togglePrizeHelp",
-    "btnStartRoll","btnStopRoll","btnReset","btnSetMax",
-    "btnBgUpload","btnDoFill","btnExportCsv","btnGoWinners",
-    "btnCloseFillReveal","btnCloseStageReveal"
-  ];
+  function getActiveSoundPack(){
+    const chosen = state?.settings?.soundPack || "auto";
+    if (SOUND_PACKS.has(chosen)) return chosen;
+    const accent = state?.settings?.accent || document.documentElement.dataset.accent || "neutral";
+    return SOUND_AUTO_BY_ACCENT[accent] || "glass";
+  }
 
-  IDS.forEach((id)=>{
-    const el = (typeof $ === "function" ? $(id) : null) || document.getElementById(id);
-    if (!el) return;
+  function playClickSfx() {
+    const p=getActiveSoundPack();
+    if(p==="zen"){ playSynth(660,.07,.028,"sine",0,820); return; }
+    if(p==="arcade"){ playSynth(980,.045,.035,"square"); playSynth(1460,.035,.022,"square",.045); return; }
+    if(p==="celebration"){ playSynth(720,.055,.035,"triangle"); playSynth(1080,.05,.024,"triangle",.04); return; }
+    if(p==="corporate"){ playSynth(760,.04,.018,"sine"); return; }
+    if(p==="neon"){ playSynth(520,.05,.026,"sawtooth",0,920); return; }
+    playSynth(900,.05,.024,"sine"); playSynth(1320,.04,.016,"sine",.045);
+  }
 
-    // 防重复绑定
-    if (el.dataset._uiSfxBound === "1") return;
-    el.dataset._uiSfxBound = "1";
+  function playUiClickByEl(el){
+    try{
+      if (!soundEnabled()) return;
+      const isDanger=(el?.id||"").toLowerCase().includes("reset")||el?.classList?.contains("danger");
+      const isGhost=el?.classList?.contains("ghost");
+      if(isDanger){ playSynth(430,.06,.026,"triangle"); return; }
+      if(isGhost){ playSynth(getActiveSoundPack()==="arcade"?760:640,.04,.016,getActiveSoundPack()==="arcade"?"square":"sine"); return; }
+      playClickSfx();
+    }catch(e){}
+  }
 
-    // 捕获阶段：先播音效 & 防连点（不影响原逻辑）
-    el.addEventListener("click", (ev)=>{
-      // 防连点：250ms 内第二次点击直接吞掉，避免重复触发/重复弹窗/重复计时器
-      if (el.dataset._cooling === "1"){
-        ev.stopPropagation();
-        ev.preventDefault();
-        return;
-      }
-      el.dataset._cooling = "1";
-      setTimeout(()=>{ el.dataset._cooling = "0"; }, 250);
-
-      playUiClickByEl(el);
-    }, { capture:true });
-  });
-})();
   function playStartSound() {
-    // 播放一个上升的音调作为开始音效
-    playTone(200, 0.2);
-    playTone(300, 0.2, 0.08);
-    playTone(400, 0.2, 0.06);
+    const p=getActiveSoundPack();
+    const notes={
+      glass:[[420,620,.18,.034,"sine",0],[620,940,.19,.028,"sine",.09]],
+      celebration:[[180,300,.18,.05,"triangle",0],[300,520,.20,.045,"triangle",.09],[520,820,.22,.036,"triangle",.18]],
+      zen:[[330,440,.26,.024,"sine",0],[494,660,.32,.02,"sine",.12]],
+      arcade:[[220,660,.16,.045,"square",0],[440,1100,.18,.04,"square",.08]],
+      corporate:[[360,520,.16,.022,"sine",0],[520,700,.16,.018,"sine",.10]],
+      neon:[[150,700,.22,.045,"sawtooth",0],[260,1040,.20,.035,"square",.10]]
+    }[p]||[];
+    notes.forEach(([a,b,d,v,t,w])=>playSynth(a,d,v,t,w,b));
   }
+
+  function playStopSound(){
+    const p=getActiveSoundPack();
+    if(p==="zen"){ playSynth(740,.30,.035,"sine",0,420); return; }
+    if(p==="arcade"){ playSynth(900,.09,.05,"square"); playSynth(520,.12,.035,"square",.08); return; }
+    if(p==="celebration"){ playSynth(180,.16,.065,"triangle",0,95); playSynth(720,.13,.035,"sine",.08); return; }
+    if(p==="corporate"){ playSynth(560,.12,.024,"sine",0,440); return; }
+    if(p==="neon"){ playSynth(760,.18,.045,"sawtooth",0,150); return; }
+    playSynth(860,.14,.032,"sine",0,520);
+  }
+
   function playWinSound() {
-    // 播放一个悦耳的和弦作为中奖音效
-    playTone(523.25, 0.5); // C
-    playTone(659.25, 0.5); // E
-    playTone(783.99, 0.5); // G
+    const p=getActiveSoundPack();
+    const seq={
+      glass:[[523,.34,.038,"sine",0],[659,.36,.034,"sine",.10],[784,.48,.030,"sine",.20]],
+      celebration:[[392,.18,.05,"triangle",0],[523,.20,.05,"triangle",.10],[659,.24,.045,"triangle",.20],[784,.55,.04,"sine",.30]],
+      zen:[[523,.42,.028,"sine",0],[659,.46,.024,"sine",.16],[880,.62,.021,"sine",.32]],
+      arcade:[[659,.11,.045,"square",0],[784,.11,.045,"square",.10],[988,.13,.04,"square",.20],[1319,.42,.032,"square",.31]],
+      corporate:[[523,.25,.026,"sine",0],[659,.30,.022,"sine",.13],[784,.38,.02,"sine",.26]],
+      neon:[[392,.18,.04,"sawtooth",0],[659,.20,.04,"square",.10],[988,.23,.035,"sawtooth",.20],[1319,.48,.03,"sine",.31]]
+    }[p]||[];
+    seq.forEach(([f,d,v,t,w])=>playSynth(f,d,v,t,w));
   }
+
+
+  // 中奖弹窗专用：只临时开放一次短促中奖音，不恢复滚动/背景音。
+  function playRevealWinSound(){
+    if (!soundEnabled()) return;
+    drawSoundSessionActive = true;
+    try { playWinSound(); } finally { drawSoundSessionActive = false; }
+  }
+
+  let rollingSoundTimer=null;
+  function rollingTick(){
+    const p=getActiveSoundPack();
+    if(p==="zen") return playSynth(420+Math.random()*90,.06,.008,"sine");
+    if(p==="corporate") return playSynth(520,.025,.006,"sine");
+    if(p==="arcade") return playSynth(Math.random()>.5?740:880,.025,.012,"square");
+    if(p==="celebration") return playSynth(240+Math.random()*80,.035,.013,"triangle");
+    if(p==="neon") return playSynth(180+Math.random()*220,.035,.012,"sawtooth");
+    playSynth(600+Math.random()*160,.03,.008,"sine");
+  }
+  function startRollingSound(){
+    stopRollingSound();
+    if(!soundEnabled()) return;
+    const delay={zen:320,corporate:300,glass:220,celebration:180,arcade:130,neon:145}[getActiveSoundPack()]||220;
+    rollingSoundTimer=setInterval(rollingTick,delay);
+  }
+  function stopRollingSound(){
+    if(rollingSoundTimer){clearInterval(rollingSoundTimer);rollingSoundTimer=null;}
+  }
+  function stopAllDrawAudio(){
+    stopRollingSound();
+    drawSoundSessionActive = false;
+    activeSynthNodes.forEach(node => {
+      try { node.stop(); } catch(e) {}
+      try { node.disconnect(); } catch(e) {}
+    });
+    activeSynthNodes.clear();
+  }
+
 // ------------------------------- 状态管理 -------------------------------
   const LS_KEY = "kf_lottery_2026_v5";
   const defaultState = () => ({
@@ -3270,7 +3827,7 @@ function playUiClickByEl(el){
     // 导入锁：导入成功后锁定按钮，需点击旁边“重置”才可再次导入
     lockApplyPeople: false,
     lockApplyPrizes: false,
-    settings: { soundMode: "on", soundVol: 0.6, wallSpeedPct: 20, glassPct: 60, eventTitle: "Lucky Draw", brandLogo: "", accent: "neutral", accentCustom: "#52606d", effectMode: "minimal" }
+    settings: { soundMode: "on", soundPack: "auto", soundVol: 0.6, wallSpeedPct: 20, glassPct: 60, eventTitle: "Lucky Draw", brandLogo: "", accent: "neutral", accentCustom: "#52606d", glowEnabled: true, effectMode: "minimal", prizeViewMode: "vertical" }
   });
   let state = defaultState();
   let rolling = false;
@@ -3356,7 +3913,9 @@ function getRealLeftForPrize(prize) {
       if (typeof obj.settings.glassPct !== "number") obj.settings.glassPct = 60;
       if (typeof obj.settings.soundVol !== "number") obj.settings.soundVol = 0.6;
       if (typeof obj.settings.soundMode !== "string") obj.settings.soundMode = "on";
+      if (typeof obj.settings.soundPack !== "string" || !(obj.settings.soundPack === "auto" || SOUND_PACKS.has(obj.settings.soundPack))) obj.settings.soundPack = "auto";
       if (typeof obj.settings.eventTitle !== "string" || !obj.settings.eventTitle.trim()) obj.settings.eventTitle = "Lucky Draw";
+      if (!["vertical","horizontal","cards"].includes(obj.settings.prizeViewMode)) obj.settings.prizeViewMode = "vertical";
       // 数据完整性：旧/异常奖品补充唯一 prizeId
       (obj.prizes || []).forEach(p => { if (!p.prizeId) p.prizeId = uid(); });
       return obj;
@@ -3370,8 +3929,10 @@ function getRealLeftForPrize(prize) {
     const box = $(boxId);
     if (!btn || !box) return;
 
-    // 视觉：按钮不再显示“展开/收起”
-    btn.textContent = ui("说明","Help");
+    // 图标按钮：保留感叹号，仅同步无障碍标签。
+    const helpLabel = ui("说明","Help");
+    btn.setAttribute("aria-label", helpLabel);
+    btn.setAttribute("title", helpLabel);
 
     // 让说明盒子变成浮层：挂载到 body 下脱离 .card 的 overflow:hidden 裁剪，fixed 定位跟随按钮
     box.classList.add("popover");
@@ -3873,22 +4434,57 @@ btn.style.background = "#c62828";
     updateControls();
     saveState();
   });
+  function syncPrizeViewModeControl() {
+    const mode = ["vertical","horizontal","cards"].includes(state?.settings?.prizeViewMode) ? state.settings.prizeViewMode : "vertical";
+    document.querySelectorAll("#prizeViewMode [data-prize-view]").forEach(btn => {
+      const active = btn.dataset.prizeView === mode;
+      btn.classList.toggle("active", active);
+      btn.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+  }
+
   function renderPrizeList() {
     const list = $("prizeList");
+    if (!list) return;
+    syncPrizeViewModeControl();
     if (!state.prizes?.length) {
       list.innerHTML = `<div class="small" style="opacity:.85;">${ui("请上传奖品清单", "Please upload the prize list")}</div>`;
       $("prizeTotal").textContent = ui("总数：0", "Total: 0");
       return;
     }
-    const total = state.prizes.reduce((s,p)=>s+p.qty,0);
+    const total = state.prizes.reduce((sum,p)=>sum+(Number(p.qty)||0),0);
+    const maxQty = Math.max(...state.prizes.map(p => Number(p.qty) || 0), 1);
+    const mode = ["vertical","horizontal","cards"].includes(state?.settings?.prizeViewMode) ? state.settings.prizeViewMode : "vertical";
     $("prizeTotal").textContent = ui(`总数：${total}`, `Total: ${total}`);
-    let html = `<table><thead><tr style="opacity:.9;"><th>${ui("顺序","No.")}</th><th>${ui("奖项","Prize Tier")}</th><th>${ui("产品","Prize")}</th><th>${ui("剩余/总数","Left / Total")}</th></tr></thead><tbody>`;
+    let html = `<div class="prize-detail-dashboard is-${mode}" role="list" aria-label="${ui("奖品数量比较","Prize quantity comparison")}">`;
     state.prizes.forEach(p => {
-      html += `<tr><td>${p.order}</td><td>${escapeHtml(p.award)}</td><td>${escapeHtml(p.product)}</td><td><span class="prize-count prize-left">${p.left}</span> <span class="prize-count prize-total">/ ${p.qty}</span></td></tr>`;
+      const qty = Math.max(0, Number(p.qty) || 0);
+      const pct = qty > 0 ? Math.max(4, Math.min(100, (qty / maxQty) * 100)) : 0;
+      const product = escapeHtml(p.product);
+      const award = escapeHtml(p.award);
+      const order = escapeHtml(String(p.order));
+      if (mode === "horizontal") {
+        html += `<article class="prize-h-row" role="listitem">` +
+          `<div class="prize-h-copy"><div class="prize-h-product" title="${product}">${product}</div><div class="prize-h-award"><span class="prize-detail-order">${order}</span>${award}</div></div>` +
+          `<div class="prize-h-track" aria-hidden="true"><div class="prize-h-bar" style="width:${pct.toFixed(1)}%"></div></div>` +
+          `<div class="prize-h-qty">× ${qty}</div></article>`;
+      } else if (mode === "cards") {
+        html += `<article class="prize-c-card" role="listitem"><div class="prize-c-top"><div class="prize-c-copy">` +
+          `<div class="prize-c-award"><span class="prize-detail-order">${order}</span>${award}</div><div class="prize-c-product" title="${product}">${product}</div>` +
+          `</div><div class="prize-c-qty">× ${qty}</div></div><div class="prize-c-track" aria-hidden="true"><div class="prize-c-bar" style="width:${pct.toFixed(1)}%"></div></div></article>`;
+      } else {
+        const height = qty > 0 ? Math.max(8, Math.min(100, (qty / maxQty) * 100)) : 0;
+        html += `<article class="prize-detail-card" role="listitem">` +
+          `<div class="prize-detail-qty">× ${qty}</div>` +
+          `<div class="prize-detail-chart" aria-hidden="true"><div class="prize-detail-column" style="height:${height.toFixed(1)}%"></div></div>` +
+          `<div class="prize-detail-meta"><div class="prize-detail-product" title="${product}">${product}</div>` +
+          `<div class="prize-detail-award"><span class="prize-detail-order">${order}</span>${award}</div></div></article>`;
+      }
     });
-    html += '</tbody></table>';
+    html += `</div>`;
     list.innerHTML = html;
   }
+
   $("resetPrizes").addEventListener("click", () => {
     playClickSfx();
     const btn = $("resetPrizes");
@@ -4153,6 +4749,7 @@ btn.style.background = "#c62828";
     }
 
     rolling = false;
+    stopAllDrawAudio();
     stopNameTicker();
     const wall = $("wall");
     if (wall) {
@@ -4208,6 +4805,7 @@ state.prizes.forEach(p => p.left = p.qty);
   }
 
   rolling = true;
+  drawSoundSessionActive = true;
   try { const b = $("btnStartRoll"); if (b) { b.classList.add("kf-busy"); b.setAttribute("aria-busy","true"); } } catch(e) {}
   
   try { if(state.settings.effectMode==="spotlight"){StageFX.setHype(1); StageFX.spotlightsOn(true);} } catch(e) {}
@@ -4218,11 +4816,13 @@ startNameTicker(pool);
   $("wall").classList.add('wall-hidden');
   updateControls();
   playStartSound(); // 播放开始音效
+  startRollingSound();
 });
   $("btnStopRoll").addEventListener("click", () => {
     try { const bs = $("btnStopRoll"); if (bs) { bs.classList.add("kf-busy"); bs.setAttribute("aria-busy","true"); } } catch(e) {}
     if (!rolling) return;
     rolling = false;
+    stopAllDrawAudio();
     stopNameTicker();
     const anim = wallAnim.get($("wall"));
     if (anim) anim.speed = 0;
@@ -4284,7 +4884,6 @@ startNameTicker(pool);
 
     const __doReveal = () => {
       showStageReveal(p, revealItems);
-      playWinSound(); // 播放中奖音效
     };
     setTimeout(__doReveal, 140);
     renderPrizeList();
@@ -4354,6 +4953,7 @@ startNameTicker(pool);
     try { window.KFI18N && window.KFI18N.apply(modal); } catch(e) {}
     openOverlayModal(modal);
     runStaggerIn(content, ".rv-card");
+    playRevealWinSound();
     // （已移除）弹窗撒花特效
     try { applyRevealEffect(); } catch(e) {}
 const close = () => { try { StageFX.setHype(0); StageFX.spotlightsOn(false); StageFX.stop(); } catch(e) {} modal.classList.remove("rv-wide"); closeOverlayModal(modal); };
@@ -4404,7 +5004,7 @@ function renderWinners() {
       section.className = "winner-group";
       const products = [...new Set(items.map(r => r.product).filter(Boolean))];
       const validCount = items.filter(r => r.status !== "absent").length;
-      section.innerHTML = `<div class="winner-group-header"><div><h3>${escapeHtml(award)}</h3><p class="winner-group-product">${escapeHtml(products.join(" · ") || "—")}</p></div><span class="winner-group-count">${ui(`${items.length} 条记录 · ${validCount} 人有效`, `${items.length} ${items.length===1?"record":"records"} · ${validCount} valid`)}</span></div>`;
+      section.innerHTML = `<div class="winner-group-header"><div><h3>${escapeHtml(award)}</h3><p class="winner-group-product">${escapeHtml(products.join(" · ") || "—")}</p></div><div class="winner-group-meta"><span class="winner-group-count">${ui(`${items.length} 条记录 · ${validCount} 人有效`, `${items.length} ${items.length===1?"record":"records"} · ${validCount} valid`)}</span><span class="winner-status-legend" tabindex="0" aria-label="${ui('状态说明','Status legend')}"><span class="winner-status-legend-trigger" aria-hidden="true"></span><span class="winner-status-legend-pop"><span class="winner-status-legend-row"><span class="winner-presence-wrap"><span class="winner-presence-dot"></span></span><span>${ui('在场','Present')}</span></span><span class="winner-status-legend-row"><span class="winner-presence-wrap"><span class="winner-presence-dot is-absent"></span></span><span>${ui('缺席','Absent')}</span></span><span class="winner-status-legend-row"><span class="winner-presence-wrap"><span class="winner-presence-dot is-redrawn"></span></span><span>${ui('缺席 · 已补抽','Absent · Redrawn')}</span></span></span></span></div></div>`;
       const box = document.createElement("div");
       box.className = "winners-detail-box";
       items.sort((a,b) => a.ts - b.ts).forEach(r => {
@@ -4416,7 +5016,7 @@ function renderWinners() {
             <div class="winner-display-name">${escapeHtml(participantLabel(r.name))}</div>
             <div class="winner-badges">
               <span class="winner-round">${r.round === "R2" ? ui('补抽','Redraw') : ui('第一轮','Round 1')}</span>
-              ${r.status === "absent" ? `<span class="winner-status is-absent">${ui('缺席','Absent')} · ${state.filledAbsent.has(r.id) ? ui('已补抽','Redrawn') : ui('待补抽','Pending Redraw')}</span>` : `<span class="winner-status">${r.round === "R2" ? ui('有效','Valid') : ui('在场','Present')}</span>`}
+              ${r.status === "absent" ? `<span class="winner-presence-wrap" tabindex="0"><span class="winner-presence-dot ${state.filledAbsent.has(r.id) ? 'is-redrawn' : 'is-absent'}" aria-hidden="true"></span><span class="winner-status-tip">${state.filledAbsent.has(r.id) ? ui('缺席 · 已补抽','Absent · Redrawn') : ui('缺席','Absent')}</span></span>` : `<span class="winner-presence-wrap" tabindex="0"><span class="winner-presence-dot" aria-hidden="true"></span><span class="winner-status-tip">${r.round === "R2" ? ui('补抽有效','Valid Redraw') : ui('在场','Present')}</span></span>`}
             </div>
           </div>
           <div class="winner-product"><span class="winner-field-label">${ui("中奖奖品","Prize")}</span>${escapeHtml(r.product || "—")}</div>
@@ -4458,8 +5058,6 @@ function renderWinners() {
 
     // 二段确认：第一次点击变危险态，5秒内再次点击才执行
     const btn = ev?.currentTarget || document.querySelector(`button[data-wid="${id}"]`);
-    // 点击音效：缺席按钮属于动态生成，不在固定绑定列表里，这里手动补上
-    try { playUiClickByEl(btn); } catch (e) {}
     if (!btn) return;
 
     if (btn.dataset.confirming !== "1") {
@@ -4625,7 +5223,7 @@ openOverlayModal(modal);
       // 播放补抽中奖音效
       try { applyRevealEffect(); } catch(e) {}
 
-      playWinSound();
+      playRevealWinSound();
 
       const close = () => { try { StageFX.setHype(0); StageFX.spotlightsOn(false); StageFX.stop(); } catch(e) {} modal.classList.remove("rv-wide"); closeOverlayModal(modal); };
       $("btnCloseFillReveal").onclick = close;
@@ -4667,9 +5265,22 @@ openOverlayModal(modal);
 // 音效设置变化监听
   $("soundMode").addEventListener("change", () => {
      state.settings.soundMode = $("soundMode").value;
+     if(state.settings.soundMode === "off") stopAllDrawAudio();
      saveState();
   });
+  $("soundPack")?.addEventListener("change", () => {
+     state.settings.soundPack = $("soundPack").value;
+     if (!rolling) stopAllDrawAudio();
+     saveState();
+  });
+  $("btnSoundPreview")?.addEventListener("click", () => {
+     // 试听只播放一次当前 Sound Pack 的中奖提示音；绝不启动滚动/背景循环。
+     stopAllDrawAudio();
+     if (!soundEnabled()) return;
+     playRevealWinSound();
+  });
   $("soundVolSlider").addEventListener("input", () => {
+     state.settings.soundVol = Math.max(0,Math.min(1,Number($("soundVolSlider").value||0)/100));
      updateSoundVolume();
      saveState();
   });
@@ -4692,11 +5303,13 @@ openOverlayModal(modal);
   window.refreshImportStatus=refreshImportStatus;
   window.KFRefreshDynamicLanguage=()=>{
     try{ refreshImportStatus(); }catch(e){}
+    try{ [$("togglePeopleHelp"), $("togglePrizeHelp")].forEach(btn=>{ if(btn){ const label=ui("说明","Help"); btn.setAttribute("aria-label",label); btn.setAttribute("title",label); } }); }catch(e){}
     try{ renderPrizeList(); }catch(e){}
     try{ refreshStartFrom(); }catch(e){}
     try{ renderWinners(); }catch(e){}
     try{ updateImportLocks(); }catch(e){}
     try{ updateControls(); }catch(e){}
+    try{ renderCurrentRollHint(); }catch(e){}
     try{ if($("peopleTotal")) $("peopleTotal").textContent=ui(`总数：${state.attendees.length}`,`Total: ${state.attendees.length}`); }catch(e){}
     try{ if($("prizeTotal")) $("prizeTotal").textContent=ui(`总数：${state.prizes.length}`,`Total: ${state.prizes.length}`); }catch(e){}
     const rb=$("btnReset"); if(rb?.dataset.confirming==="1") rb.textContent=ui(`确认重置（${rb.dataset._confirmLeft||5}秒）`,`Confirm Reset (${rb.dataset._confirmLeft||5}s)`);
@@ -4721,12 +5334,32 @@ openOverlayModal(modal);
     if(a==="custom"){ const c=state.settings.accentCustom||"#52606d"; const root=document.documentElement; root.style.setProperty("--accent",c); root.style.setProperty("--accent-2",`color-mix(in srgb, ${c} 72%, white)`); root.style.setProperty("--accent-soft",`color-mix(in srgb, ${c} 12%, transparent)`); root.style.setProperty("--hero-line",`linear-gradient(135deg, ${c} 0%, color-mix(in srgb, ${c} 68%, white) 100%)`); root.style.setProperty("--fluid-a",`color-mix(in srgb, ${c} 58%, white)`); root.style.setProperty("--fluid-b",`color-mix(in srgb, ${c} 32%, white)`); root.style.setProperty("--fluid-c",`color-mix(in srgb, ${c} 46%, #b78cff)`); } else { ["--accent","--accent-2","--accent-soft","--hero-line","--fluid-a","--fluid-b","--fluid-c"].forEach(v=>document.documentElement.style.removeProperty(v)); }
     document.querySelectorAll(".accentChip").forEach(b=>b.classList.toggle("active",b.dataset.accent===a));
   };
+  const applyGlowSettings = () => {
+    if(typeof state.settings.glowEnabled !== "boolean") state.settings.glowEnabled = state.settings.glowStyle !== "off";
+    const on=state.settings.glowEnabled;
+    const root=document.documentElement;
+    root.classList.remove("glow-off","glow-on","glow-soft","glow-fluid","glow-spot","glow-trail","glow-intensity-low","glow-intensity-standard","glow-intensity-high");
+    root.classList.add(on?"glow-on":"glow-off");
+    root.dataset.glowEnabled=on?"on":"off";
+    const btn=$("glowToggle"); if(btn) btn.setAttribute("aria-checked",on?"true":"false");
+  };
   const applyEffectMode = () => { let m=state?.settings?.effectMode||"minimal"; if(!["minimal","spotlight"].includes(m)){m="minimal";state.settings.effectMode=m;} document.body.classList.remove("fx-minimal","fx-spotlight"); document.body.classList.add("fx-"+m); try{ StageFX.spotlightsOn(false); StageFX.setHype(0); StageFX.stop(); }catch(e){} if($("effectMode")) $("effectMode").value=m; };
   $("btnBrandLogo")?.addEventListener("click",()=>$("brandLogoFile")?.click());
   $("brandLogoFile")?.addEventListener("change",e=>{ const f=e.target.files?.[0]; if(!f)return; if(f.size>1500000){showCenterToast(ui("Logo 文件请小于 1.5 MB","Please use a logo under 1.5 MB"),2200,"info");return;} const r=new FileReader(); r.onload=()=>{state.settings.brandLogo=String(r.result||"");renderBrandLogo();saveState();showCenterToast(ui("品牌 Logo 已更新","Brand logo updated"),1600,"success");}; r.readAsDataURL(f); });
   $("btnBrandLogoReset")?.addEventListener("click",()=>{state.settings.brandLogo="";renderBrandLogo();saveState();showCenterToast(ui("已恢复默认 Logo","Default logo restored"),1500,"success");});
   document.querySelectorAll(".accentChip").forEach(b=>b.addEventListener("click",()=>{state.settings.accent=b.dataset.accent;applyAccent();saveState();}));
   $("accentCustom")?.addEventListener("input",e=>{state.settings.accent="custom";state.settings.accentCustom=e.target.value;applyAccent();saveState();});
+  $("glowToggle")?.addEventListener("click",()=>{state.settings.glowEnabled=!state.settings.glowEnabled;applyGlowSettings();saveState();});
+  $("prizeViewMode")?.addEventListener("click",e=>{
+    const btn=e.target.closest?.("[data-prize-view]");
+    if(!btn)return;
+    const mode=btn.dataset.prizeView;
+    if(!["vertical","horizontal","cards"].includes(mode))return;
+    state.settings.prizeViewMode=mode;
+    syncPrizeViewModeControl();
+    renderPrizeList();
+    saveState();
+  });
   $("effectMode")?.addEventListener("change",e=>{state.settings.effectMode=e.target.value;applyEffectMode();rebuildWall();saveState();});
   $("btnEffectPreview")?.addEventListener("click",()=>{showStageReveal({award:ui("演示奖项","Demo Prize"),product:ui("效果预览","Effect Preview")},[{name:ui("演示中奖者","Demo Winner"),ts:Date.now()}]);});
 
@@ -4736,6 +5369,7 @@ openOverlayModal(modal);
     // 同步外观与音量设置
     try {
       if ($("soundMode") && state?.settings?.soundMode) $("soundMode").value = state.settings.soundMode;
+      if ($("soundPack")) $("soundPack").value = state?.settings?.soundPack || "auto";
       if ($("soundVolSlider")) {
         const pct = Math.round((state?.settings?.soundVol ?? 0.6) * 100);
         $("soundVolSlider").value = String(pct);
@@ -4750,7 +5384,7 @@ openOverlayModal(modal);
       if ($("eventTitleInput")) $("eventTitleInput").value = state?.settings?.eventTitle || "Lucky Draw";
       if ($("kfTitle")) $("kfTitle").textContent = state?.settings?.eventTitle || "Lucky Draw";
       if ($("accentCustom")) $("accentCustom").value = state?.settings?.accentCustom || "#52606d";
-      renderBrandLogo(); applyAccent(); applyEffectMode();
+      renderBrandLogo(); applyAccent(); applyGlowSettings(); applyEffectMode(); syncPrizeViewModeControl();
     } catch(e) {}
 
     refreshImportStatus();
@@ -4856,7 +5490,9 @@ openOverlayModal(modal);
   const ROLL_HINT_EN = [
     "Selecting {N} lucky winner(s)…","This draw will select {N} winner(s)","Revealing {N} lucky winner(s)…","Randomly selecting {N} participant(s)…","Drawing {N} winner(s) — good luck!","The lucky moment is here: {N} winner(s)","Fair random selection in progress: {N}","Watch the screen — {N} winner(s) coming up","Drawing {N} winner(s) for this prize","Next up: {N} winner(s)"
   ];
-  const ROLL_HINT_TEMPLATES = (window.KFI18N?.getLang?.() || "zh") === "en" ? ROLL_HINT_EN : ROLL_HINT_ZH;
+  function getRollHintTemplates() {
+    return (window.KFI18N?.getLang?.() || "zh") === "en" ? ROLL_HINT_EN : ROLL_HINT_ZH;
+  }
 
   // ===== 万圣节主题：滚动阶段「低语短句」文案（更电影）=====
   // 说明：短句 + 省略号/破折号，避免太“句子”，更像舞台低语
@@ -4928,6 +5564,26 @@ openOverlayModal(modal);
   // 覆盖：名字随机跳动（原本 fly.textContent 会覆盖整个 flyout，这里改为只更新 rollName）
   const __origStartNameTicker = (typeof startNameTicker === "function") ? startNameTicker : null;
   const __origStopNameTicker  = (typeof stopNameTicker === "function") ? stopNameTicker : null;
+  let currentRollHintIndex = -1;
+  let currentRollHintN = 1;
+
+  function getActiveRollTemplates() {
+    // 英文模式始终使用英文文案；中文模式保留特殊主题自己的舞台语气。
+    if ((window.KFI18N?.getLang?.() || "zh") === "en") return ROLL_HINT_EN;
+    if (document.body.classList.contains("theme-neon")) return CP_ROLL_HUD;
+    if (document.body.classList.contains("theme-linear")) return LIN_ROLL_SYSTEM;
+    if (document.body.classList.contains("theme-halloween")) return HW_ROLL_WHISPERS;
+    return getRollHintTemplates();
+  }
+
+  function renderCurrentRollHint() {
+    const s = ensureFlyoutStructure();
+    if (!s || s.fly.style.display === "none" || currentRollHintIndex < 0) return;
+    const templates = getActiveRollTemplates();
+    if (!templates.length) return;
+    const tpl = templates[currentRollHintIndex % templates.length];
+    s.hint.innerHTML = tpl.replace("{N}", `<span class="rollN">${currentRollHintN}</span>`);
+  }
 
   startNameTicker = function(pool) {
     const s = ensureFlyoutStructure();
@@ -4939,14 +5595,10 @@ openOverlayModal(modal);
 
     // 随机提示文案（只在滚动时显示）
     const n = parseInt(($("drawN") && $("drawN").value) || "1", 10) || 1;
-    const __templates = document.body.classList.contains("theme-neon")
-      ? CP_ROLL_HUD
-      : (document.body.classList.contains("theme-linear")
-          ? LIN_ROLL_SYSTEM
-          : (document.body.classList.contains("theme-halloween")
-              ? HW_ROLL_WHISPERS
-              : ROLL_HINT_TEMPLATES));
-    const tpl = __templates[Math.floor(Math.random() * __templates.length)];
+    const __templates = getActiveRollTemplates();
+    currentRollHintN = n;
+    currentRollHintIndex = Math.floor(Math.random() * __templates.length);
+    const tpl = __templates[currentRollHintIndex];
     hint.innerHTML = tpl.replace("{N}", `<span class="rollN">${n}</span>`);
 // 继续使用原来的 tickerTimer（同一作用域变量）
     tickerTimer = setInterval(() => {
@@ -4960,6 +5612,7 @@ openOverlayModal(modal);
     tickerTimer = null;
     const fly = $("flyout");
     if (fly) fly.style.display = "none";
+    currentRollHintIndex = -1;
   };
 
 });
@@ -5776,23 +6429,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 <script id="kf-fluid-aurora-js">
-/* Fluid Aurora Test C: pronounced liquid inertia, deformation and wake; light mode only */
+/* Mouse-reactive Aurora: Fluid glow only; light mode only */
 (function(){
  var field=document.querySelector('.kf-fluid-field'); if(!field||!matchMedia('(pointer:fine)').matches)return;
  var p=field.querySelector('.primary'),t=field.querySelector('.trail'),c=field.querySelector('.core'); if(!p||!t||!c)return;
- var vw=innerWidth,vh=innerHeight, gx=vw*.5,gy=vh*.34, px=gx,py=gy, tx=gx,ty=gy,cx=gx,cy=gy,lx=gx,ly=gy,vx=0,vy=0,speed=0,idle=performance.now();
+ var vw=innerWidth,vh=innerHeight,gx=vw*.5,gy=vh*.34,px=gx,py=gy,tx=gx,ty=gy,cx=gx,cy=gy,lx=gx,ly=gy,vx=0,vy=0,speed=0,idle=performance.now();
  addEventListener('pointermove',function(e){var dx=e.clientX-lx,dy=e.clientY-ly;gx=e.clientX;gy=e.clientY;vx=vx*.58+dx*.42;vy=vy*.58+dy*.42;speed=Math.min(1.5,Math.hypot(vx,vy)/55);lx=e.clientX;ly=e.clientY;idle=performance.now();},{passive:true});
  addEventListener('resize',function(){vw=innerWidth;vh=innerHeight},{passive:true});
- function tick(now){if(!document.documentElement.classList.contains('dark')){
-  if(now-idle>1900){gx+=(vw*.5-gx)*.004;gy+=(vh*.34-gy)*.004;vx*=.94;vy*=.94;}
-  px+=(gx-px)*.115;py+=(gy-py)*.115; tx+=(px-tx)*.026;ty+=(py-ty)*.026; cx+=(gx-cx)*.22;cy+=(gy-cy)*.22; speed*=.925;
-  var ang=Math.atan2(vy,vx)*180/Math.PI, stretch=1+Math.min(.42,speed*.30), squash=1-Math.min(.16,speed*.105);
-  var wakeX=tx-vx*2.0,wakeY=ty-vy*2.0;
-  p.style.transform='translate3d('+px+'px,'+py+'px,0) rotate('+ang+'deg) scale('+stretch+','+squash+')';
-  t.style.transform='translate3d('+wakeX+'px,'+wakeY+'px,0) rotate('+ang+'deg) scale('+(1+speed*.20)+','+(1-speed*.055)+')';
-  c.style.transform='translate3d('+cx+'px,'+cy+'px,0) scale('+(1+speed*.14)+')';
-  p.style.opacity=(.86+Math.min(.10,speed*.07)).toFixed(3);t.style.opacity=(.68+Math.min(.14,speed*.10)).toFixed(3);c.style.opacity=(.48+Math.min(.12,speed*.08)).toFixed(3);
- } requestAnimationFrame(tick)} requestAnimationFrame(tick);
+ function tick(now){
+  var root=document.documentElement;
+  if(!root.classList.contains('dark')&&root.dataset.glowEnabled!=='off'){
+   if(now-idle>1900){gx+=(vw*.5-gx)*.004;gy+=(vh*.34-gy)*.004;vx*=.94;vy*=.94;}
+   var follow=.115,trailFollow=.026,coreFollow=.22;
+   px+=(gx-px)*follow;py+=(gy-py)*follow;tx+=(px-tx)*trailFollow;ty+=(py-ty)*trailFollow;cx+=(gx-cx)*coreFollow;cy+=(gy-cy)*coreFollow;speed*=.925;
+   var ang=Math.atan2(vy,vx)*180/Math.PI;
+   var stretch=1+Math.min(.42,speed*.30),squash=1-Math.min(.18,speed*.105);
+   var wake=2.0,wakeX=tx-vx*wake,wakeY=ty-vy*wake;
+   p.style.transform='translate3d('+px+'px,'+py+'px,0) rotate('+ang+'deg) scale('+stretch+','+squash+')';
+   t.style.transform='translate3d('+wakeX+'px,'+wakeY+'px,0) rotate('+ang+'deg) scale('+(1+speed*.20)+','+(1-speed*.055)+')';
+   c.style.transform='translate3d('+cx+'px,'+cy+'px,0) scale('+(1+speed*.14)+')';
+  }
+  requestAnimationFrame(tick);
+ }
+ requestAnimationFrame(tick);
 })();
 </script>
 
@@ -5884,5 +6543,84 @@ document.addEventListener("DOMContentLoaded", () => {
 })();
 </script>
 
+<script id="kf-dark-card-edge-glow-js">
+/* v2.2.18 — Dark Mode rounded-card proximity glow. */
+(function(){
+  if(!window.matchMedia || !matchMedia('(pointer:fine)').matches) return;
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+
+  const EDGE_RANGE = 150;
+  const targets = () => Array.from(document.querySelectorAll('.drawExperience, .card'));
+  let px = innerWidth * .5, py = innerHeight * .5, raf = 0;
+
+  function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+  function radiusOf(el,r){
+    const raw = getComputedStyle(el).borderTopLeftRadius || '0';
+    const n = parseFloat(raw) || 0;
+    return Math.max(0,Math.min(n,r.width/2,r.height/2));
+  }
+  function nearestRoundedRectPoint(x,y,r,rad){
+    const left=r.left, right=r.right, top=r.top, bottom=r.bottom;
+    const cx=clamp(x,left+rad,right-rad), cy=clamp(y,top+rad,bottom-rad);
+    const insideCoreX=x>=left+rad && x<=right-rad;
+    const insideCoreY=y>=top+rad && y<=bottom-rad;
+    const insideRect=x>=left && x<=right && y>=top && y<=bottom;
+
+    // Corner zones: project to the corresponding quarter-circle instead of a square corner.
+    if(!insideCoreX && !insideCoreY && rad>0){
+      const ccx=x<left+rad?left+rad:right-rad;
+      const ccy=y<top+rad?top+rad:bottom-rad;
+      let dx=x-ccx, dy=y-ccy;
+      const len=Math.hypot(dx,dy) || 1;
+      const qx=ccx + dx/len*rad, qy=ccy + dy/len*rad;
+      return {x:qx,y:qy,dist:Math.abs(len-rad)};
+    }
+
+    if(insideRect){
+      const dl=x-left, dr=right-x, dt=y-top, db=bottom-y;
+      const d=Math.min(dl,dr,dt,db);
+      if(d===dl) return {x:left,y:clamp(y,top+rad,bottom-rad),dist:d};
+      if(d===dr) return {x:right,y:clamp(y,top+rad,bottom-rad),dist:d};
+      if(d===dt) return {x:clamp(x,left+rad,right-rad),y:top,dist:d};
+      return {x:clamp(x,left+rad,right-rad),y:bottom,dist:d};
+    }
+
+    // Outside straight-side zones.
+    let qx=clamp(x,left,right), qy=clamp(y,top,bottom);
+    if(x<left && y>=top+rad && y<=bottom-rad){ qx=left; qy=y; }
+    else if(x>right && y>=top+rad && y<=bottom-rad){ qx=right; qy=y; }
+    else if(y<top && x>=left+rad && x<=right-rad){ qx=x; qy=top; }
+    else if(y>bottom && x>=left+rad && x<=right-rad){ qx=x; qy=bottom; }
+    return {x:qx,y:qy,dist:Math.hypot(x-qx,y-qy)};
+  }
+  function update(){
+    raf = 0;
+    const root = document.documentElement;
+    const enabled = root.classList.contains('dark') && root.dataset.glowEnabled !== 'off' && root.classList.contains('glow-on');
+
+    targets().forEach(card => {
+      if(!enabled){ card.style.setProperty('--kf-edge-alpha','0'); return; }
+      const r = card.getBoundingClientRect();
+      if(r.width <= 0 || r.height <= 0){ card.style.setProperty('--kf-edge-alpha','0'); return; }
+
+      const hit = nearestRoundedRectPoint(px,py,r,radiusOf(card,r));
+      const t = clamp(1 - hit.dist/EDGE_RANGE, 0, 1);
+      const alpha = t*t*(3-2*t);
+      card.style.setProperty('--kf-edge-x',(hit.x-r.left).toFixed(1)+'px');
+      card.style.setProperty('--kf-edge-y',(hit.y-r.top).toFixed(1)+'px');
+      card.style.setProperty('--kf-edge-alpha',(alpha*.82).toFixed(3));
+    });
+  }
+
+  function request(){ if(!raf) raf=requestAnimationFrame(update); }
+  addEventListener('pointermove',e=>{ px=e.clientX; py=e.clientY; request(); },{passive:true});
+  addEventListener('resize',request,{passive:true});
+  document.addEventListener('visibilitychange',request,{passive:true});
+
+  const rootObs = new MutationObserver(request);
+  rootObs.observe(document.documentElement,{attributes:true,attributeFilter:['class','data-glow-enabled','data-accent']});
+  request();
+})();
+</script>
 </body>
 </html>
