@@ -681,6 +681,65 @@ html.dark .name-item{ background:var(--card-2); }
 /* 舞台灯效：已关闭（Premium SaaS 不使用粒子/激光/撒花） */
 .fx-spotlights, .fx-beam, .fx-lasers, .fx-laser, .fx-strobe{ display:none !important; }
 
+
+/* ---------- 舞台滚动模式 B：老虎机四轨滚轮（仅名字滚动，不增加额外特效） ---------- */
+#flyout.slot-reel-mode{
+  display:none;
+  padding:20px 22px 22px;
+  gap:14px;
+  background:color-mix(in srgb,var(--card) 88%,transparent);
+  backdrop-filter:blur(12px) saturate(120%);
+  -webkit-backdrop-filter:blur(12px) saturate(120%);
+}
+#flyout.slot-reel-mode[style*="display: flex"]{display:flex!important;}
+#flyout.slot-reel-mode .rollName{display:none!important;}
+#flyout.slot-reel-mode .rollHint{
+  flex:0 0 auto;margin:0;background:transparent;border:0;box-shadow:none;padding:0;
+  min-height:24px;color:var(--txt-2);font-size:12px;letter-spacing:.12em;
+}
+.slot-reel-shell{
+  position:relative;flex:1 1 auto;width:min(100%,980px);min-height:0;margin:0 auto;
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;overflow:hidden;
+  border:1px solid var(--border);border-radius:20px;
+  background:color-mix(in srgb,var(--card-glass-2) 76%,transparent);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28);
+}
+html.dark .slot-reel-shell{box-shadow:inset 0 1px 0 rgba(255,255,255,.045);}
+.slot-reel-shell::before,.slot-reel-shell::after{
+  content:"";position:absolute;left:0;right:0;z-index:6;pointer-events:none;height:34%;
+}
+.slot-reel-shell::before{top:0;background:linear-gradient(180deg,var(--card) 0%,color-mix(in srgb,var(--card) 78%,transparent) 46%,transparent 100%);}
+.slot-reel-shell::after{bottom:0;background:linear-gradient(0deg,var(--card) 0%,color-mix(in srgb,var(--card) 78%,transparent) 46%,transparent 100%);}
+.slot-reel-focus{
+  position:absolute;z-index:8;left:10px;right:10px;top:50%;height:64px;transform:translateY(-50%);
+  border-top:1px solid color-mix(in srgb,var(--accent) 46%,var(--border));
+  border-bottom:1px solid color-mix(in srgb,var(--accent) 46%,var(--border));
+  background:color-mix(in srgb,var(--accent-soft) 48%,transparent);pointer-events:none;
+}
+.slot-reel{position:relative;min-width:0;overflow:hidden;border-right:1px solid var(--border);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 21%,#000 79%,transparent 100%);
+  mask-image:linear-gradient(180deg,transparent 0,#000 21%,#000 79%,transparent 100%);
+}
+.slot-reel:last-of-type{border-right:0;}
+.slot-reel-track{
+  position:absolute;left:0;right:0;top:50%;will-change:transform;
+  animation-name:kfSlotReelSpin;animation-timing-function:linear;animation-iteration-count:infinite;
+}
+.slot-reel-name{
+  height:64px;padding:0 12px;display:flex;align-items:center;justify-content:center;text-align:center;
+  color:var(--txt-2);font-size:clamp(16px,1.55vw,22px);font-weight:560;letter-spacing:-.015em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.slot-reel:nth-child(2) .slot-reel-name,.slot-reel:nth-child(4) .slot-reel-name{font-weight:620;}
+@keyframes kfSlotReelSpin{from{transform:translate3d(0,-50%,0);}to{transform:translate3d(0,-100%,0);}}
+@media(max-width:700px){
+  #flyout.slot-reel-mode{padding:14px 10px 16px;gap:10px;}
+  .slot-reel-shell{gap:5px;border-radius:16px;}
+  .slot-reel-focus{left:5px;right:5px;height:54px;}
+  .slot-reel-name{height:54px;padding:0 6px;font-size:clamp(12px,3.4vw,16px);}
+}
+@media(prefers-reduced-motion:reduce){.slot-reel-track{animation-duration:6s!important;}}
+
 /* ---------- 12. 中奖榜单（卡片化） ---------- */
 .winnersToolbar{ display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin-top:14px; }
 /* Winner toolbar: status indicators are information, not buttons. */
@@ -2847,6 +2906,15 @@ input:focus-visible{
           </div>
         </div>
       </div>
+      <div class="settingsRow">
+        <div class="settingsLabel"><span data-i18n="set.stageRoll">舞台名字滚动</span><small data-i18n="set.stageRollSub">选择抽奖时名字的滚动方式</small></div>
+        <div class="settingsCtl">
+          <div class="prize-view-segmented" id="stageRollMode" role="group" aria-label="舞台名字滚动方式">
+            <button type="button" data-stage-roll="rapid" data-i18n="set.stageRollRapid">快速闪选</button>
+            <button type="button" data-stage-roll="slot" data-i18n="set.stageRollSlot">老虎机滚轮</button>
+          </div>
+        </div>
+      </div>
       <div class="settingsRow glowSettingRow">
         <div class="settingsLabel glowSettingLabel"><span class="settingIcon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l12.5 9-6.1 1.3L9 19z"/><path d="M17.5 4.5v3M21 8h-3M19.5 5.8l-2.1 2.1"/></svg></span><span><span data-i18n="set.glow">鼠标光晕</span><small data-i18n="set.glowSub">流体光晕跟随鼠标移动</small></span></div>
         <div class="settingsCtl">
@@ -3024,7 +3092,7 @@ window.KFI18N = (function(){
       'win.title':'中奖榜单','win.export':'导出 CSV','win.fill':'补抽缺席名额','win.need':'待补抽','win.can':'可补抽人数',
       'sec.people':'参会者','sec.peopleSub':'参会者名单','people.upload':'上传名单','people.apply':'应用参会者名单','people.reset':'重置参会者','people.help':'说明','people.none':'未上传','people.fmt':'格式要求','people.fmt1':'• TXT：每行一个名字（支持中英文）','people.fmt2':'• CSV：第一列为名字，自动识别表头与带引号字段（推荐 UTF-8）','people.ex':'示例（TXT）',
       'sec.prizes':'奖品','sec.prizesSub':'奖品清单','prize.upload':'上传奖品','prize.apply':'导入奖品','prize.reset':'重置奖品','prize.help':'说明','prize.none':'未上传','prize.fmt':'格式要求（按列位置解析）','prize.c1':'第1列：顺序（数字）','prize.c2':'第2列：奖项','prize.c3':'第3列：产品','prize.c4':'第4列：数量（整数）','prize.ex':'示例','prize.empty':'（导入后这里会显示完整奖品清单，用于核对）',
-      'set.title':'偏好设置','set.eyebrow':'全局设置','set.sub':'品牌、主题、舞台效果、音效与速度','set.prizeView':'奖品明细显示','set.prizeViewSub':'选择导入奖品后的核对方式','set.prizeVertical':'竖状图','set.prizeHorizontal':'横状图','set.prizeCards':'卡片','data.title':'数据管理','data.sub':'抽奖前的数据准备与维护','set.eventTitle':'活动标题','set.eventTitleSub':'顶部标题仅可在此修改，避免现场误操作','set.applyTitle':'应用标题','set.sound':'音效','set.soundSub':'选择整套抽奖音色；自动模式会跟随主题配色','set.soundAuto':'自动（跟随主题）','set.soundPreview':'试听','set.on':'开','set.off':'关','set.speed':'滚动速度','set.speedSub':'名字滚动墙的速度','set.theme':'配色风格','set.themeSub':'选择你喜欢的界面配色','set.logo':'品牌 Logo','set.logoSub':'上传自己的品牌标识；自动保持原始比例','set.logoUpload':'上传 Logo','set.logoReset':'恢复默认','set.accent':'主题配色','set.accentSub':'统一控制按钮、高亮与舞台强调色','set.custom':'自定义','set.glow':'鼠标光晕','set.glowSub':'流体光晕跟随鼠标移动','set.effect':'舞台特效','set.effectSub':'选择揭晓时的舞台表现','set.fxMinimal':'默认','set.fxSpotlight':'聚光','set.preview':'预览','footer.updated':'更新于 2026-09-09',
+      'set.title':'偏好设置','set.eyebrow':'全局设置','set.sub':'品牌、主题、舞台效果、音效与速度','set.prizeView':'奖品明细显示','set.prizeViewSub':'选择导入奖品后的核对方式','set.prizeVertical':'竖状图','set.prizeHorizontal':'横状图','set.prizeCards':'卡片','set.stageRoll':'舞台名字滚动','set.stageRollSub':'选择抽奖时名字的滚动方式','set.stageRollRapid':'快速闪选','set.stageRollSlot':'老虎机滚轮','data.title':'数据管理','data.sub':'抽奖前的数据准备与维护','set.eventTitle':'活动标题','set.eventTitleSub':'顶部标题仅可在此修改，避免现场误操作','set.applyTitle':'应用标题','set.sound':'音效','set.soundSub':'选择整套抽奖音色；自动模式会跟随主题配色','set.soundAuto':'自动（跟随主题）','set.soundPreview':'试听','set.on':'开','set.off':'关','set.speed':'滚动速度','set.speedSub':'名字滚动墙的速度','set.theme':'配色风格','set.themeSub':'选择你喜欢的界面配色','set.logo':'品牌 Logo','set.logoSub':'上传自己的品牌标识；自动保持原始比例','set.logoUpload':'上传 Logo','set.logoReset':'恢复默认','set.accent':'主题配色','set.accentSub':'统一控制按钮、高亮与舞台强调色','set.custom':'自定义','set.glow':'鼠标光晕','set.glowSub':'流体光晕跟随鼠标移动','set.effect':'舞台特效','set.effectSub':'选择揭晓时的舞台表现','set.fxMinimal':'默认','set.fxSpotlight':'聚光','set.preview':'预览','footer.updated':'更新于 2026-09-09',
       'modal.drawTitle':'本次抽奖结果','modal.fillTitle':'补抽结果','modal.close':'关闭','modal.drawFooter':'提示：已自动写入「中奖清单」，奖品剩余数量已扣减。','modal.fillFooter':'提示：已自动写入「中奖清单」。',
       'fly.hint':'中奖啦','rv.people':'位中奖者','rv.time':'时间','rv.prize':'奖品','rv.award':'奖项'
     },
@@ -3039,7 +3107,7 @@ window.KFI18N = (function(){
       'win.title':'Winners','win.export':'Export CSV','win.fill':'Redraw Absentees','win.need':'Pending Redraws: ','win.can':'Eligible Participants: ',
       'sec.people':'Participants','sec.peopleSub':'Expand to upload & manage the list','people.upload':'Upload List','people.apply':'Apply List','people.reset':'Reset Participants','people.help':'Help','people.none':'Not uploaded','people.fmt':'Format','people.fmt1':'• TXT: one name per line (CN/EN)','people.fmt2':'• CSV: first column is the name; headers and quoted fields supported (UTF-8 recommended)','people.ex':'Example (TXT)',
       'sec.prizes':'Prizes','sec.prizesSub':'Expand to import the prize list','prize.upload':'Upload Prizes','prize.apply':'Import Prizes','prize.reset':'Reset Prizes','prize.help':'Help','prize.none':'Not uploaded','prize.fmt':'Format (parsed by column)','prize.c1':'Col 1: Order (number)','prize.c2':'Col 2: Prize Tier','prize.c3':'Col 3: Prize Name','prize.c4':'Col 4: Qty (integer)','prize.ex':'Example','prize.empty':'(Imported prize list will appear here for review)',
-      'set.title':'Settings','set.eyebrow':'Global Settings','set.sub':'Brand, theme, stage effects, sound & speed','set.prizeView':'Prize Detail View','set.prizeViewSub':'Choose how imported prizes are reviewed','set.prizeVertical':'Vertical','set.prizeHorizontal':'Horizontal','set.prizeCards':'Cards','data.title':'Data Management','data.sub':'Prepare and maintain draw data','set.eventTitle':'Event Title','set.eventTitleSub':'Edit the header title here to prevent accidental changes','set.applyTitle':'Save Changes','set.sound':'Sound','set.soundSub':'Choose a sound pack; Auto follows the color theme','set.soundAuto':'Auto (Follow Theme)','set.soundPreview':'Preview','set.on':'On','set.off':'Off','set.speed':'Roll Speed','set.speedSub':'Speed of the rolling wall','set.theme':'Color Theme','set.themeSub':'Choose your favorite color scheme','set.logo':'Brand Logo','set.logoSub':'Upload your own brand mark; original proportions are preserved','set.logoUpload':'Upload Logo','set.logoReset':'Restore Default','set.accent':'Accent Color','set.accentSub':'Controls buttons, highlights and stage accents','set.custom':'Custom','set.glow':'Mouse Glow','set.glowSub':'Fluid glow follows the cursor','set.effect':'Draw Effect','set.effectSub':'Choose the reveal experience','set.fxMinimal':'Default','set.fxSpotlight':'Spotlight','set.preview':'Preview','footer.updated':'Updated Sep 9, 2026',
+      'set.title':'Settings','set.eyebrow':'Global Settings','set.sub':'Brand, theme, stage effects, sound & speed','set.prizeView':'Prize Detail View','set.prizeViewSub':'Choose how imported prizes are reviewed','set.prizeVertical':'Vertical','set.prizeHorizontal':'Horizontal','set.prizeCards':'Cards','set.stageRoll':'Stage Name Roll','set.stageRollSub':'Choose how names move during the draw','set.stageRollRapid':'Rapid Flash','set.stageRollSlot':'Slot Reels','data.title':'Data Management','data.sub':'Prepare and maintain draw data','set.eventTitle':'Event Title','set.eventTitleSub':'Edit the header title here to prevent accidental changes','set.applyTitle':'Save Changes','set.sound':'Sound','set.soundSub':'Choose a sound pack; Auto follows the color theme','set.soundAuto':'Auto (Follow Theme)','set.soundPreview':'Preview','set.on':'On','set.off':'Off','set.speed':'Roll Speed','set.speedSub':'Speed of the rolling wall','set.theme':'Color Theme','set.themeSub':'Choose your favorite color scheme','set.logo':'Brand Logo','set.logoSub':'Upload your own brand mark; original proportions are preserved','set.logoUpload':'Upload Logo','set.logoReset':'Restore Default','set.accent':'Accent Color','set.accentSub':'Controls buttons, highlights and stage accents','set.custom':'Custom','set.glow':'Mouse Glow','set.glowSub':'Fluid glow follows the cursor','set.effect':'Draw Effect','set.effectSub':'Choose the reveal experience','set.fxMinimal':'Default','set.fxSpotlight':'Spotlight','set.preview':'Preview','footer.updated':'Updated Sep 9, 2026',
       'modal.drawTitle':'Draw Results','modal.fillTitle':'Redraw Results','modal.close':'Close','modal.drawFooter':'Note: winners are written to the Winner List; prize stock updated.','modal.fillFooter':'Note: winners are written to the Winner List.',
       'fly.hint':'Winner','rv.people':'Winners','rv.time':'Time','rv.prize':'Prize','rv.award':'Prize Tier'
     }
@@ -3827,7 +3895,7 @@ function runStaggerIn(container, itemSelector){
     // 导入锁：导入成功后锁定按钮，需点击旁边“重置”才可再次导入
     lockApplyPeople: false,
     lockApplyPrizes: false,
-    settings: { soundMode: "on", soundPack: "auto", soundVol: 0.6, wallSpeedPct: 20, glassPct: 60, eventTitle: "Lucky Draw", brandLogo: "", accent: "neutral", accentCustom: "#52606d", glowEnabled: true, effectMode: "minimal", prizeViewMode: "vertical" }
+    settings: { soundMode: "on", soundPack: "auto", soundVol: 0.6, wallSpeedPct: 20, glassPct: 60, eventTitle: "Lucky Draw", brandLogo: "", accent: "neutral", accentCustom: "#52606d", glowEnabled: true, effectMode: "minimal", prizeViewMode: "vertical", stageRollMode: "rapid" }
   });
   let state = defaultState();
   let rolling = false;
@@ -3916,6 +3984,7 @@ function getRealLeftForPrize(prize) {
       if (typeof obj.settings.soundPack !== "string" || !(obj.settings.soundPack === "auto" || SOUND_PACKS.has(obj.settings.soundPack))) obj.settings.soundPack = "auto";
       if (typeof obj.settings.eventTitle !== "string" || !obj.settings.eventTitle.trim()) obj.settings.eventTitle = "Lucky Draw";
       if (!["vertical","horizontal","cards"].includes(obj.settings.prizeViewMode)) obj.settings.prizeViewMode = "vertical";
+      if (!["rapid","slot"].includes(obj.settings.stageRollMode)) obj.settings.stageRollMode = "rapid";
       // 数据完整性：旧/异常奖品补充唯一 prizeId
       (obj.prizes || []).forEach(p => { if (!p.prizeId) p.prizeId = uid(); });
       return obj;
@@ -4438,6 +4507,15 @@ btn.style.background = "#c62828";
     const mode = ["vertical","horizontal","cards"].includes(state?.settings?.prizeViewMode) ? state.settings.prizeViewMode : "vertical";
     document.querySelectorAll("#prizeViewMode [data-prize-view]").forEach(btn => {
       const active = btn.dataset.prizeView === mode;
+      btn.classList.toggle("active", active);
+      btn.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+  }
+
+  function syncStageRollModeControl() {
+    const mode = ["rapid","slot"].includes(state?.settings?.stageRollMode) ? state.settings.stageRollMode : "rapid";
+    document.querySelectorAll("#stageRollMode [data-stage-roll]").forEach(btn => {
+      const active = btn.dataset.stageRoll === mode;
       btn.classList.toggle("active", active);
       btn.setAttribute("aria-pressed", active ? "true" : "false");
     });
@@ -5360,6 +5438,15 @@ openOverlayModal(modal);
     renderPrizeList();
     saveState();
   });
+  $("stageRollMode")?.addEventListener("click",e=>{
+    const btn=e.target.closest?.("[data-stage-roll]");
+    if(!btn)return;
+    const mode=btn.dataset.stageRoll;
+    if(!["rapid","slot"].includes(mode))return;
+    state.settings.stageRollMode=mode;
+    syncStageRollModeControl();
+    saveState();
+  });
   $("effectMode")?.addEventListener("change",e=>{state.settings.effectMode=e.target.value;applyEffectMode();rebuildWall();saveState();});
   $("btnEffectPreview")?.addEventListener("click",()=>{showStageReveal({award:ui("演示奖项","Demo Prize"),product:ui("效果预览","Effect Preview")},[{name:ui("演示中奖者","Demo Winner"),ts:Date.now()}]);});
 
@@ -5384,7 +5471,7 @@ openOverlayModal(modal);
       if ($("eventTitleInput")) $("eventTitleInput").value = state?.settings?.eventTitle || "Lucky Draw";
       if ($("kfTitle")) $("kfTitle").textContent = state?.settings?.eventTitle || "Lucky Draw";
       if ($("accentCustom")) $("accentCustom").value = state?.settings?.accentCustom || "#52606d";
-      renderBrandLogo(); applyAccent(); applyGlowSettings(); applyEffectMode(); syncPrizeViewModeControl();
+      renderBrandLogo(); applyAccent(); applyGlowSettings(); applyEffectMode(); syncPrizeViewModeControl(); syncStageRollModeControl();
     } catch(e) {}
 
     refreshImportStatus();
@@ -5553,22 +5640,41 @@ openOverlayModal(modal);
     if (!fly) return null;
     let hint = fly.querySelector(".rollHint");
     let name = fly.querySelector(".rollName");
-    if (!hint || !name) {
-      fly.innerHTML = `<div class="rollHint"></div><div class="rollName"></div>`;
-      hint = fly.querySelector(".rollHint");
-      name = fly.querySelector(".rollName");
+    if (!hint) {
+      hint = document.createElement("div");
+      hint.className = "rollHint";
+      fly.prepend(hint);
     }
-    return { fly, hint, name };
+    if (!name) {
+      name = document.createElement("div");
+      name.className = "rollName";
+      fly.appendChild(name);
+    }
+    let shell = fly.querySelector(".slot-reel-shell");
+    if (!shell) {
+      shell = document.createElement("div");
+      shell.className = "slot-reel-shell";
+      shell.setAttribute("aria-label", ui("老虎机式姓名滚轮","Slot-style name reels"));
+      const focus = document.createElement("div");
+      focus.className = "slot-reel-focus";
+      shell.appendChild(focus);
+      for (let i = 0; i < 4; i++) {
+        const reel = document.createElement("div");
+        reel.className = "slot-reel";
+        reel.innerHTML = '<div class="slot-reel-track"></div>';
+        shell.appendChild(reel);
+      }
+      fly.appendChild(shell);
+    }
+    return { fly, hint, name, shell };
   }
 
-  // 覆盖：名字随机跳动（原本 fly.textContent 会覆盖整个 flyout，这里改为只更新 rollName）
   const __origStartNameTicker = (typeof startNameTicker === "function") ? startNameTicker : null;
   const __origStopNameTicker  = (typeof stopNameTicker === "function") ? stopNameTicker : null;
   let currentRollHintIndex = -1;
   let currentRollHintN = 1;
 
   function getActiveRollTemplates() {
-    // 英文模式始终使用英文文案；中文模式保留特殊主题自己的舞台语气。
     if ((window.KFI18N?.getLang?.() || "zh") === "en") return ROLL_HINT_EN;
     if (document.body.classList.contains("theme-neon")) return CP_ROLL_HUD;
     if (document.body.classList.contains("theme-linear")) return LIN_ROLL_SYSTEM;
@@ -5585,33 +5691,89 @@ openOverlayModal(modal);
     s.hint.innerHTML = tpl.replace("{N}", `<span class="rollN">${currentRollHintN}</span>`);
   }
 
+  function prepareRollHint(hint) {
+    const n = parseInt(($('drawN') && $('drawN').value) || '1', 10) || 1;
+    const templates = getActiveRollTemplates();
+    currentRollHintN = n;
+    currentRollHintIndex = Math.floor(Math.random() * templates.length);
+    hint.innerHTML = templates[currentRollHintIndex].replace("{N}", `<span class="rollN">${n}</span>`);
+  }
+
   startNameTicker = function(pool) {
     const s = ensureFlyoutStructure();
-    if (!s) return;
-    const { fly, hint, name } = s;
+    if (!s || !pool || !pool.length) return;
+    const { fly, hint, name, shell } = s;
+    const mode = ["rapid","slot"].includes(state?.settings?.stageRollMode) ? state.settings.stageRollMode : "rapid";
 
+    clearInterval(tickerTimer);
     fly.style.display = "flex";
-    if (!pool || !pool.length) return;
+    prepareRollHint(hint);
 
-    // 随机提示文案（只在滚动时显示）
-    const n = parseInt(($("drawN") && $("drawN").value) || "1", 10) || 1;
-    const __templates = getActiveRollTemplates();
-    currentRollHintN = n;
-    currentRollHintIndex = Math.floor(Math.random() * __templates.length);
-    const tpl = __templates[currentRollHintIndex];
-    hint.innerHTML = tpl.replace("{N}", `<span class="rollN">${n}</span>`);
-// 继续使用原来的 tickerTimer（同一作用域变量）
+    if (mode === "rapid") {
+      /* 保留上传版本原效果：单个大名字约每 60ms 高频随机跳动。 */
+      fly.classList.remove("slot-reel-mode");
+      shell.style.display = "none";
+      name.style.display = "block";
+      const updateRapidName = () => {
+        const label = participantLabel(pool[Math.floor(Math.random() * pool.length)]);
+        name.textContent = label;
+        name.setAttribute('data-text', label);
+      };
+      updateRapidName();
+      tickerTimer = setInterval(() => {
+        updateRapidName();
+        try { playTone(1200, 0.03, 0.02); } catch(e) {}
+      }, 60);
+      return;
+    }
+
+    /* 模式 B：四轨老虎机滚轮，速度/相位错开形成节奏层次。 */
+    fly.classList.add("slot-reel-mode");
+    name.style.display = "none";
+    shell.style.display = "grid";
+    const speedPct = Math.max(0, Math.min(100, Number(state.settings.wallSpeedPct ?? 20)));
+    const base = 1.65 - speedPct * 0.0085;
+    const durationFactors = [1.00, .86, 1.12, .93];
+    const phaseOffsets = [-.18, -.61, -.34, -.79];
+    const reels = shell.querySelectorAll('.slot-reel');
+
+    reels.forEach((reel, reelIndex) => {
+      const track = reel.querySelector('.slot-reel-track');
+      const seq = [];
+      const seqLen = Math.max(12, Math.min(20, pool.length * 2));
+      for (let i = 0; i < seqLen; i++) {
+        const pickIndex = (Math.floor(Math.random() * pool.length) + reelIndex * 3 + i) % pool.length;
+        seq.push(participantLabel(pool[pickIndex]));
+      }
+      const loop = seq.concat(seq);
+      track.innerHTML = loop.map(label => {
+        const safe = String(label).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        return `<div class="slot-reel-name" title="${safe}">${safe}</div>`;
+      }).join('');
+      const duration = Math.max(.62, base * durationFactors[reelIndex]);
+      track.style.animationDuration = duration.toFixed(2) + 's';
+      track.style.animationDelay = (duration * phaseOffsets[reelIndex]).toFixed(2) + 's';
+      track.style.animationPlayState = 'running';
+    });
+
     tickerTimer = setInterval(() => {
-      name.textContent = participantLabel(pool[Math.floor(Math.random() * pool.length)]);
-      try { playTone(1200, 0.03, 0.02); } catch(e) {}
-    }, 60);
+      try { playTone(920, 0.018, 0.012); } catch(e) {}
+    }, Math.max(120, Math.round(base * 145)));
   };
 
   stopNameTicker = function() {
     clearInterval(tickerTimer);
     tickerTimer = null;
     const fly = $("flyout");
-    if (fly) fly.style.display = "none";
+    if (fly) {
+      fly.querySelectorAll('.slot-reel-track').forEach(track => { track.style.animationPlayState = 'paused'; });
+      fly.style.display = "none";
+      fly.classList.remove("slot-reel-mode");
+      const shell = fly.querySelector('.slot-reel-shell');
+      const name = fly.querySelector('.rollName');
+      if (shell) shell.style.display = 'none';
+      if (name) name.style.display = '';
+    }
     currentRollHintIndex = -1;
   };
 
