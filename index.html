@@ -289,9 +289,46 @@ html.dark .kf-nav a:hover{ background:var(--card-2); }
 }
 #themeToggle:hover{ color:var(--txt-1); border-color:var(--border-2); transform:translateY(-1px); box-shadow:var(--shadow-sm); }
 #themeToggle svg{ width:18px; height:18px; }
-#themeToggle .icon-moon{ display:none; }
-html.dark #themeToggle .icon-moon{ display:block; }
-html.dark #themeToggle .icon-sun{ display:none; }
+/* Theme Morphicon：Sun ↔ Moon，保持单 HTML / 无外部依赖 */
+.kf-theme-morph{
+  position:relative; width:18px; height:18px; display:inline-block; flex:0 0 18px;
+}
+.kf-theme-morph svg{
+  position:absolute; inset:0; width:18px; height:18px;
+  transition:opacity .24s ease, transform .34s cubic-bezier(.22,1,.36,1);
+}
+.kf-theme-morph .icon-sun{ opacity:1; transform:rotate(0deg) scale(1); }
+.kf-theme-morph .icon-moon{ opacity:0; transform:rotate(-35deg) scale(.72); }
+html.dark .kf-theme-morph .icon-sun{ opacity:0; transform:rotate(35deg) scale(.72); }
+html.dark .kf-theme-morph .icon-moon{ opacity:1; transform:rotate(0deg) scale(1); }
+/* Settings Morphicon：Gear ↔ X，由 aria-expanded 驱动 */
+.kf-settings-morph{
+  position:relative; width:18px; height:18px; display:inline-block; flex:0 0 18px;
+}
+.kf-settings-morph svg{
+  position:absolute; inset:0; width:18px; height:18px;
+  transition:opacity .22s ease, transform .34s cubic-bezier(.22,1,.36,1);
+}
+.kf-settings-morph .icon-settings{ opacity:1; transform:rotate(0deg) scale(1); }
+.kf-settings-morph .icon-close{ opacity:0; transform:rotate(-70deg) scale(.68); }
+#settingsToggle[aria-expanded="true"] .kf-settings-morph .icon-settings{ opacity:0; transform:rotate(70deg) scale(.68); }
+#settingsToggle[aria-expanded="true"] .kf-settings-morph .icon-close{ opacity:1; transform:rotate(0deg) scale(1); }
+/* Sound Morphicon：Volume2 ↔ VolumeX，状态变化时才运动 */
+.kf-sound-morph{position:relative;width:18px;height:18px;display:inline-block;flex:0 0 18px;color:var(--txt-2);}
+.kf-sound-morph svg{position:absolute;inset:0;width:18px;height:18px;transition:opacity .22s ease,transform .32s cubic-bezier(.22,1,.36,1),color .2s ease;}
+.kf-sound-morph .icon-volume-on{opacity:1;transform:scale(1) rotate(0deg);}
+.kf-sound-morph .icon-volume-off{opacity:0;transform:scale(.7) rotate(-12deg);}
+.kf-sound-morph.is-muted{color:var(--txt-3);}
+.kf-sound-morph.is-muted .icon-volume-on{opacity:0;transform:scale(.7) rotate(12deg);}
+.kf-sound-morph.is-muted .icon-volume-off{opacity:1;transform:scale(1) rotate(0deg);}
+/* 上传 / 导入成功：默认静止，仅成功瞬间显示 CircleCheck */
+.kf-action-icon{position:relative;width:18px;height:18px;display:inline-block;flex:0 0 18px;}
+.kf-action-icon>.kf-icon{position:absolute;inset:0;width:18px;height:18px;transition:opacity .18s ease,transform .26s cubic-bezier(.22,1,.36,1);}
+.kf-action-icon .kf-success-icon{opacity:0;transform:scale(.52);}
+button.kf-action-success .kf-action-icon .kf-action-default{opacity:0;transform:scale(.7);}
+button.kf-action-success .kf-action-icon .kf-success-icon{opacity:1;transform:scale(1);animation:kfActionSuccessPop .58s cubic-bezier(.22,1.45,.36,1);}
+@keyframes kfActionSuccessPop{0%{transform:scale(.52);}58%{transform:scale(1.14);}100%{transform:scale(1);}}
+@media(prefers-reduced-motion:reduce){.kf-sound-morph svg,.kf-action-icon>.kf-icon{transition:none!important;}button.kf-action-success .kf-action-icon .kf-success-icon{animation:none!important;}}
 /* 中英切换（分段控件，单语言显示） */
 .kf-langSeg{
   display:inline-flex; align-items:center; gap:2px; flex:0 0 auto;
@@ -771,7 +808,7 @@ html.dark .slot-reel-shell{box-shadow:inset 0 1px 0 rgba(255,255,255,.045);}
 .winners-detail-row:hover{ background:var(--accent-soft); border-radius:8px; }
 .winners-detail-row.row-absent{ opacity:.72; }
 .winners-detail-row .ok{ color:var(--ok); font-weight:600; }
-/* 奖品明细 Dashboard：竖状 / 横状 / 卡片三种核对视图 */
+/* 奖品明细 Dashboard：横状图 / 卡片两种核对视图 */
 .prize-view-segmented{
   display:inline-flex;align-items:center;gap:4px;padding:4px;border:1px solid var(--border);
   border-radius:12px;background:var(--bg-2);box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
@@ -785,37 +822,43 @@ html.dark .slot-reel-shell{box-shadow:inset 0 1px 0 rgba(255,255,255,.045);}
 .prize-view-segmented button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 
 .prize-detail-dashboard{margin-top:14px;}
-/* 竖状图 */
-.prize-detail-dashboard.is-vertical{
-  display:flex;align-items:stretch;gap:12px;padding:14px 4px 4px;overflow-x:auto;overflow-y:hidden;
-  scrollbar-width:thin;scrollbar-color:var(--border-2) transparent;
-}
-.prize-detail-dashboard.is-vertical .prize-detail-card{
-  flex:1 1 0;min-width:118px;max-width:180px;display:flex;flex-direction:column;align-items:stretch;
-  min-height:300px;padding:14px 12px 13px;border:1px solid var(--border);border-radius:16px;background:var(--card-glass-2);
-  -webkit-backdrop-filter:var(--card-blur);backdrop-filter:var(--card-blur);
-}
-.prize-detail-qty{text-align:center;color:var(--txt-1);font-size:20px;font-weight:780;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.03em;}
-.prize-detail-chart{height:156px;display:flex;align-items:flex-end;justify-content:center;padding:12px 10px 0;}
-.prize-detail-column{width:min(54px,58%);min-height:8px;border-radius:12px 12px 5px 5px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 72%, white),var(--accent));box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 18%, transparent);}
-.prize-detail-meta{min-width:0;margin-top:12px;padding-top:11px;border-top:1px solid var(--border);text-align:center;}
-.prize-detail-product{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:38px;color:var(--txt-1);font-size:14px;font-weight:700;line-height:1.35;overflow-wrap:anywhere;cursor:default;}
-.prize-detail-award{margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--txt-3);font-size:11px;font-weight:600;}
-.prize-detail-order{display:inline-block;margin-right:5px;color:var(--accent);font-variant-numeric:tabular-nums;}
-@media (min-width:1100px){.prize-detail-dashboard.is-vertical:has(.prize-detail-card:nth-child(-n+6):last-child) .prize-detail-card{max-width:none;}}
+.prize-detail-order{display:inline-block;margin-right:6px;color:var(--accent);font-variant-numeric:tabular-nums;}
 
-/* 横状图：长产品名更易阅读 */
-.prize-detail-dashboard.is-horizontal{display:grid;gap:10px;}
-.prize-h-row{display:grid;grid-template-columns:minmax(150px,1.15fr) minmax(180px,2fr) 58px;align-items:center;gap:14px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;background:var(--card-glass-2);}
+/* 横状图：单一报表容器，适合长奖品名称与数量比较 */
+.prize-detail-dashboard.is-horizontal{
+  display:block;overflow:hidden;border:1px solid var(--border);border-radius:16px;background:var(--card-glass-2);
+}
+.prize-h-head,.prize-h-row{
+  display:grid;grid-template-columns:minmax(210px,1.3fr) minmax(240px,2fr) 74px;align-items:center;gap:18px;
+}
+.prize-h-head{
+  min-height:38px;padding:0 16px;border-bottom:1px solid var(--border);background:color-mix(in srgb,var(--bg-2) 72%,transparent);
+  color:var(--txt-3);font-size:10.5px;font-weight:750;letter-spacing:.06em;text-transform:uppercase;
+}
+.prize-h-head span:last-child{text-align:right;}
+.prize-h-row{
+  min-height:68px;padding:11px 16px;border-bottom:1px solid color-mix(in srgb,var(--border) 78%,transparent);
+  transition:background-color .16s ease;
+}
+.prize-h-row:last-child{border-bottom:0;}
+.prize-h-row:hover{background:color-mix(in srgb,var(--accent) 5%,transparent);}
 .prize-h-copy{min-width:0;}
-.prize-h-product{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--txt-1);font-size:13px;font-weight:700;}
+.prize-h-product{
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;overflow-wrap:anywhere;
+  color:var(--txt-1);font-size:13px;font-weight:720;line-height:1.35;
+}
 .prize-h-award{margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--txt-3);font-size:11px;font-weight:600;}
-.prize-h-track{height:12px;border-radius:999px;background:var(--bg-2);overflow:hidden;box-shadow:inset 0 0 0 1px var(--border);}
-.prize-h-bar{height:100%;min-width:6px;border-radius:999px;background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 70%, white));}
-.prize-h-qty{text-align:right;color:var(--txt-1);font-size:16px;font-weight:780;font-variant-numeric:tabular-nums;}
+.prize-h-track{
+  height:14px;border-radius:999px;background:var(--bg-2);overflow:hidden;box-shadow:inset 0 0 0 1px var(--border);position:relative;
+}
+.prize-h-bar{
+  height:100%;min-width:7px;border-radius:999px;background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 70%,white));
+  box-shadow:0 0 14px color-mix(in srgb,var(--accent) 12%,transparent);
+}
+.prize-h-qty{text-align:right;color:var(--txt-1);font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;}
 
-/* 卡片：更像导入预览清单 */
-.prize-detail-dashboard.is-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+/* 卡片：导入预览清单 */
+.prize-detail-dashboard.is-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
 .prize-c-card{min-width:0;padding:15px 16px;border:1px solid var(--border);border-radius:15px;background:var(--card-glass-2);}
 .prize-c-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;}
 .prize-c-copy{min-width:0;}
@@ -825,11 +868,12 @@ html.dark .slot-reel-shell{box-shadow:inset 0 1px 0 rgba(255,255,255,.045);}
 .prize-c-track{height:6px;margin-top:13px;border-radius:999px;background:var(--bg-2);overflow:hidden;}
 .prize-c-bar{height:100%;min-width:4px;border-radius:999px;background:var(--accent);}
 
+@media (min-width:761px) and (max-width:980px){.prize-detail-dashboard.is-cards{grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media (max-width:760px){
-  .prize-detail-dashboard.is-vertical{gap:10px;padding-top:12px;}
-  .prize-detail-dashboard.is-vertical .prize-detail-card{flex:0 0 126px;min-width:126px;min-height:280px;padding:13px 10px 12px;}
-  .prize-detail-chart{height:140px}.prize-detail-product{font-size:13px;}
-  .prize-h-row{grid-template-columns:minmax(120px,1fr) minmax(110px,1.25fr) 48px;gap:10px;padding:11px 12px;}
+  .prize-detail-dashboard.is-horizontal{overflow-x:auto;}
+  .prize-h-head,.prize-h-row{min-width:660px;grid-template-columns:minmax(220px,1.3fr) minmax(250px,2fr) 64px;gap:14px;}
+  .prize-h-head{padding:0 14px;}
+  .prize-h-row{padding:10px 14px;}
   .prize-detail-dashboard.is-cards{grid-template-columns:1fr;}
 }
 
@@ -905,6 +949,21 @@ html.dark .kf-modal-overlay{ background:rgba(2,6,16,.62); }
   animation-delay:calc(var(--i,0) * 55ms);
 }
 @keyframes staggerIn{ to{ opacity:1; transform:none; } }
+/* ---------- 14a. 中奖反馈微交互 ---------- */
+.kf-reveal-heading{display:flex;align-items:center;gap:12px;min-width:0;}
+.kf-reveal-badge{
+  width:38px;height:38px;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
+  border-radius:12px;background:var(--accent-soft);color:var(--accent);
+}
+.kf-reveal-badge .kf-icon{width:20px;height:20px;}
+#stageRevealModal.is-open .kf-reveal-badge{animation:kfRevealBadgePop .56s cubic-bezier(.22,1.45,.36,1) both;}
+@keyframes kfRevealBadgePop{
+  0%{opacity:0;transform:scale(.72) rotate(-8deg);box-shadow:0 0 0 0 transparent;}
+  55%{opacity:1;transform:scale(1.08) rotate(2deg);box-shadow:0 0 0 8px var(--accent-soft);}
+  100%{opacity:1;transform:scale(1) rotate(0);box-shadow:0 0 0 0 transparent;}
+}
+@media(prefers-reduced-motion:reduce){#stageRevealModal.is-open .kf-reveal-badge{animation:none;}}
+
 /* ---------- 14b. 揭晓结果卡片（Keynote 风格：姓名为视觉中心） ---------- */
 .kf-modal.rv-wide{ width:min(960px,100%); }
 .rv-grid{ margin-top:6px; }
@@ -1000,18 +1059,6 @@ html.dark .rv-award{ color:var(--accent-2); }
 }
 html.dark .popover{ background:var(--card); }
 
-/* ---------- 16b. 开始按钮呼吸引导（仅未禁用时） ---------- */
-#btnStartRoll:not(:disabled):not(.kf-busy){
-  animation:btnBreathe 1.5s ease-in-out infinite;
-}
-@keyframes btnBreathe{
-  0%,100%{ transform:scale(1); }
-  50%{ transform:scale(1.02); }
-}
-#btnStartRoll:not(:disabled):not(.kf-busy):hover{
-  animation:none; transform:translateY(-1px) scale(1.02);
-  filter:brightness(1.05); box-shadow:0 6px 20px rgba(79,140,255,.34);
-}
 
 /* ---------- 16c. 弹窗仪式感（姓名放大→缓动落回） ---------- */
 .kf-modal-overlay.is-opening .kf-modal{
@@ -1614,7 +1661,7 @@ html[data-accent="vibrant"] #btnStartRoll:not(:disabled){
   color:#fff!important;
   text-shadow:0 1px 2px rgba(20,24,40,.18);
   box-shadow:0 8px 28px rgba(0,186,242,.16),0 10px 34px rgba(255,79,154,.12)!important;
-  animation:kfNeonFlow 4.8s linear infinite,btnBreathe 1.5s ease-in-out infinite!important;
+  animation:kfNeonFlow 4.8s linear infinite!important;
 }
 html[data-accent="vibrant"] #btnStartRoll:not(:disabled):hover{
   animation:kfNeonFlow 2.8s linear infinite!important;
@@ -2006,6 +2053,7 @@ html.dark #btnStopRoll{
   transform:none!important;box-shadow:0 2px 10px rgba(30,40,60,.06)!important;
 }
 .kf-data-panel button.kf-help-icon span{display:block;transform:translateY(-.25px);}
+.kf-data-panel button.kf-help-icon .kf-icon{width:16px;height:16px;}
 </style>
 <style id="kf-dark-card-edge-glow">
 /* v2.2.18 — Dark Mode only: rounded, theme-aware edge glow for primary cards. */
@@ -2039,6 +2087,227 @@ html.dark.glow-on .drawExperience > *{position:relative;z-index:1;}
 @media (pointer:coarse),(prefers-reduced-motion:reduce){
   html.dark.glow-on :is(.card,.drawExperience)::after{opacity:0!important;}
 }
+</style>
+
+<style id="kf-v2230-ui-consistency">
+/* =========================================================
+   v2.2.30 — UI Consistency Pass
+   Visual/responsive QA only. No business-logic changes.
+   ========================================================= */
+
+/* 1) Page safety + shared control rhythm */
+html,body{overflow-x:clip;}
+button .kf-icon,.kf-action-icon,.kf-action-icon>.kf-icon{width:18px;height:18px;flex:0 0 18px;}
+button:not(.accentChip):not(.uiSwitch):not(.kf-help-icon):not(.kf-settings-close):not(#themeToggle){gap:8px;}
+
+/* Neutral utility actions use the same geometry and hover strength. */
+button.ghost,.resetAction,button.secondary{
+  border-radius:12px;
+}
+button.ghost:hover:not(:disabled),.resetAction:hover:not(:disabled),button.secondary:hover:not(:disabled){
+  background:var(--card-glass-2)!important;
+  border-color:var(--border-2)!important;
+  box-shadow:none!important;
+}
+
+/* 2) Settings drawer: labels and controls share one visual baseline. */
+.kf-settings-scroll .settingsRow{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:11px;
+  padding:18px 0;
+}
+.kf-settings-scroll .settingsLabel{margin:0;line-height:1.35;min-width:0;}
+.kf-settings-scroll .settingsLabel>span:first-child{display:block;}
+.kf-settings-scroll .settingsLabel small{margin-top:4px;line-height:1.45;}
+.kf-settings-scroll .settingsCtl{
+  width:100%;min-width:0;display:flex;align-items:center;justify-content:flex-start;
+  flex-wrap:wrap;gap:10px;
+}
+.kf-settings-scroll .settingsCtl select,
+.kf-settings-scroll .settingsCtl .settingsInput{
+  min-height:40px;
+}
+.kf-settings-scroll .settingsCtl .prize-view-segmented{max-width:100%;}
+.kf-settings-scroll .settingsCtl .prize-view-segmented button{min-height:34px;}
+.kf-settings-scroll .settingsCtl input[type="range"]{max-width:100%;}
+
+/* 3) Data management: upload/import/reset actions align as one family. */
+.kf-data-panel .cardControls{align-items:center;gap:12px;}
+.kf-data-panel .controlGroup{align-items:center;gap:8px;min-width:0;}
+.kf-data-panel .controlGroup>button{
+  min-height:40px;height:40px;padding:0 15px;border-radius:12px;font-size:13px;
+}
+#btnPeopleUpload,#btnPrizeUpload{min-width:124px;}
+.kf-data-panel .controlStatus{display:inline-flex;align-items:center;min-height:40px;line-height:1.35;}
+.prize-h-product{overflow-wrap:anywhere;word-break:break-word;}
+.prize-detail-dashboard.is-cards{align-items:stretch;}
+.prize-c-card{height:100%;display:flex;flex-direction:column;}
+.prize-c-track{margin-top:auto;transform:translateY(13px);margin-bottom:13px;}
+
+/* 4) Draw stage: clear hierarchy, shared height, no accidental emphasis. */
+.card-stage .stageControls:has(#btnGoWinners){
+  min-height:42px;align-items:center;gap:10px;
+}
+.card-stage .stageControls:has(#btnGoWinners) .pill{
+  min-height:36px;display:inline-flex;align-items:center;
+}
+.card-stage .stageControls:has(#btnGoWinners) .pill select,
+.card-stage .stageControls:has(#btnGoWinners) .pill input[type="number"]{min-height:36px;height:36px;}
+#btnGoWinners,#btnReset{
+  min-height:36px;height:36px;padding:0 13px;border-radius:10px;font-size:12.5px;
+}
+#btnGoWinners{color:var(--txt-2);}
+#btnReset{min-width:112px;flex:0 0 auto;}
+.card-stage .stageControls[style*="justify-content:center"]{align-items:center;}
+#btnStartRoll,#btnStopRoll{min-height:50px;height:50px;}
+
+/* 5) Dark mode: preserve hierarchy without bright borders. */
+html.dark .kf-data-panel .controlGroup>button.ghost,
+html.dark #btnGoWinners,
+html.dark #btnReset,
+html.dark .prize-view-segmented{
+  border-color:rgba(255,255,255,.10)!important;
+}
+html.dark .controlStatus,
+html.dark .settingsLabel small{color:rgba(244,246,251,.52);}
+html.dark .prize-h-head{background:rgba(255,255,255,.025);}
+
+/* 6) Tablet/mobile QA. Keep horizontal scrolling local, never page-wide. */
+@media(max-width:760px){
+  .kf-data-panel .cardControls{align-items:flex-start;}
+  .kf-data-panel .controlGroup{width:100%;}
+  .kf-data-panel .controlStatus{width:100%;min-height:24px;margin-top:2px;}
+  .prize-detail-dashboard.is-horizontal{max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch;}
+  .winner-group{max-width:100%;overflow:hidden;}
+  .winner-group .winners-detail-box{overflow-x:auto!important;overscroll-behavior-inline:contain;}
+  .winner-group .winners-detail-row{min-width:660px;}
+  .kf-modal{max-width:calc(100vw - 24px);}
+}
+
+@media(max-width:430px){
+  .page{padding-left:12px;padding-right:12px;}
+  .card:not(.card-stage){padding:16px;}
+  .kf-data-head{padding-left:14px!important;padding-right:14px!important;gap:10px;}
+  .kf-data-panel{padding-left:14px!important;padding-right:14px!important;}
+  .kf-data-tabs{min-width:0;}
+  .kf-data-tab{min-width:0;padding-left:10px;padding-right:10px;}
+  .kf-data-panel .controlGroup>button{flex:1 1 calc(50% - 4px);min-width:0;padding:0 10px;}
+  .kf-data-panel .controlGroup>.kf-help-icon{flex:0 0 40px;width:40px;padding:0;}
+  #btnPeopleUpload,#btnPrizeUpload{min-width:0;}
+
+  .card-stage{padding-left:12px;padding-right:12px;}
+  .card-stage .stageControls:has(#btnGoWinners){display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;}
+  .card-stage .stageControls:has(#btnGoWinners) .stageDrawGroup{grid-column:1/-1;width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;}
+  .card-stage .stageControls:has(#btnGoWinners) .stageDrawGroup .pill{min-width:0;justify-content:space-between;}
+  #btnGoWinners{margin-left:0!important;min-width:0;}
+  #btnReset{min-width:0;flex:0 0 auto;}
+  #btnStartRoll,#btnStopRoll{width:min(100%,260px);min-width:0;}
+
+  .kf-settings-head{padding:20px 16px 16px;}
+  .kf-settings-scroll{padding-left:16px;padding-right:16px;}
+  .kf-settings-scroll .settingsCtl>*{max-width:100%;}
+  .kf-settings-scroll .settingsCtl select{max-width:100%;}
+  .kf-settings-scroll .settingsCtl .settingsInput{min-width:0;}
+  .accentPresets{gap:8px!important;}
+  .prize-view-segmented{max-width:100%;overflow-x:auto;}
+}
+
+@media(max-width:390px){
+  .kf-langSeg button{padding-left:8px;padding-right:8px;}
+  .card-stage .stageControls:has(#btnGoWinners){grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
+  #btnGoWinners,#btnReset{width:100%;justify-content:center;}
+  .card-stage .stageControls:has(#btnGoWinners) .stageDrawGroup{grid-template-columns:1fr;}
+  .kf-data-panel .controlGroup>button{flex-basis:100%;}
+  .kf-data-panel .controlGroup>.kf-help-icon{flex:0 0 40px;}
+  .prize-view-segmented button{padding-left:10px;padding-right:10px;}
+}
+</style>
+
+
+<style id="kf-v2231-regression-fixes">
+/* =========================================================
+   v2.2.31 — Regression fixes
+   - Restore Mouse Glow row layout and icon centering
+   - Preserve sticky header while clipping horizontal overflow
+   ========================================================= */
+
+/* `overflow-x:hidden` on the page root can turn an ancestor into a
+   scrolling container and break `position:sticky` in some browsers. */
+html,body{overflow-x:clip;}
+
+/* Mouse Glow is intentionally a compact left-label / right-toggle row. */
+.kf-settings-scroll .settingsRow.glowSettingRow{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  column-gap:18px;
+  row-gap:0;
+}
+.kf-settings-scroll .glowSettingRow .settingsCtl{
+  width:auto;
+  margin-left:0;
+  justify-content:flex-end;
+  flex-wrap:nowrap;
+}
+.kf-settings-scroll .glowSettingLabel{
+  display:flex!important;
+  align-items:center!important;
+  gap:11px!important;
+}
+.kf-settings-scroll .glowSettingLabel > .settingIcon{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:30px!important;
+  height:30px!important;
+  padding:0!important;
+  line-height:0!important;
+  flex:0 0 30px!important;
+}
+.kf-settings-scroll .glowSettingLabel > .settingIcon svg{
+  display:block!important;
+  width:16px!important;
+  height:16px!important;
+  margin:0!important;
+}
+
+/* Keep the header pinned to the viewport scroll container. */
+.kf-header{position:sticky;top:0;z-index:900;}
+
+@media (max-width:430px){
+  .kf-settings-scroll .settingsRow.glowSettingRow{
+    grid-template-columns:minmax(0,1fr) auto;
+    column-gap:12px;
+  }
+}
+</style>
+
+
+<style id="kf-v2232-interaction-polish">
+/* v2.2.32 — Interaction Polish: stable draw controls + persistent upload success state */
+#btnStartRoll,#btnStopRoll{min-width:192px;width:192px;min-height:50px;height:50px;}
+#btnStartRoll{padding:0 24px;}
+#btnStopRoll{padding:0 24px;}
+#btnStartRoll::before{transition:transform .2s cubic-bezier(.2,.8,.2,1),opacity .2s ease;}
+#btnStartRoll:not(:disabled):hover{transform:translateY(-1px)!important;}
+#btnStartRoll:not(:disabled):active{transform:translateY(0) scale(.98)!important;}
+#btnStartRoll:not(:disabled):active::before{transform:translateX(2px) scale(1.05);}
+button.kf-busy{pointer-events:none;animation:none!important;}
+@media(max-width:430px){#btnStartRoll,#btnStopRoll{width:min(100%,192px);min-width:0;}}
+@media(prefers-reduced-motion:reduce){#btnStartRoll::before{transition:none!important;}}
+</style>
+
+<style id="kf-v2233-final-ui-qa">
+/* v2.2.33 — Fill-result alignment + final interaction QA */
+#fillRevealModal .kf-modal{display:flex!important;flex-direction:column!important;overflow:hidden!important;max-height:84vh!important;}
+#fillRevealModal .kf-modal-header{position:relative!important;top:auto!important;flex:0 0 auto!important;z-index:30!important;background:var(--card)!important;border-bottom:1px solid var(--border)!important;}
+#fillRevealModal .kf-modal-body{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;scrollbar-gutter:stable;padding-bottom:18px!important;}
+#fillRevealModal .kf-modal-footer{flex:0 0 auto!important;width:100%;box-sizing:border-box;}
+#fillRevealModal .kf-modal-body::-webkit-scrollbar{width:8px;}
+#fillRevealModal .kf-modal-body::-webkit-scrollbar-track{background:transparent;}
+#fillRevealModal .kf-modal-body::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:4px;}
+#fillRevealModal .kf-modal-body{scrollbar-width:thin;scrollbar-color:var(--border-2) transparent;}
 </style>
 </head>
 <script id="KF_THEME_MANAGER">
@@ -2510,7 +2779,7 @@ document.addEventListener("DOMContentLoaded", () => {
 .kf-settings-toggle svg{width:17px!important;height:17px!important;display:block!important;}
 .kf-settings-toggle:hover{border-color:var(--border-2)!important;background:var(--accent-soft)!important;color:var(--accent)!important;transform:none!important;}
 @media(max-width:1120px){.kf-nav{display:none!important}.kf-langSeg{margin-left:auto!important;}}
-@media(max-width:640px){.kf-settings-toggle{min-width:38px!important;width:38px!important;padding:0!important}.kf-settings-toggle span{display:none!important;}}
+@media(max-width:640px){.kf-settings-toggle{min-width:38px!important;width:38px!important;padding:0!important}.kf-settings-toggle > .settingsToggleLabel{display:none!important;}}
 </style>
 
 <style id="kfControlConsistencyV2210">
@@ -2639,12 +2908,17 @@ input:focus-visible{
       <button type="button" data-lang="en">EN</button>
     </div>
     <button id="themeToggle" type="button" aria-label="切换深浅主题" title="Switch Theme">
-      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="kf-theme-morph" aria-hidden="true">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </span>
     </button>
     <button id="settingsToggle" class="kf-settings-toggle" type="button" aria-label="打开偏好设置" title="偏好设置" aria-controls="settingsDrawer" aria-expanded="false">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21H9.6v-.09A1.7 1.7 0 0 0 8.5 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3v-4h.09A1.7 1.7 0 0 0 4.6 8.5a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3h4v.09A1.7 1.7 0 0 0 15.5 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.14.37.36.7.65.97.29.27.67.43 1.06.43H21v4h-.09A1.7 1.7 0 0 0 19.4 15Z"/></svg>
-      <span data-i18n="nav.set">设置</span>
+      <span class="kf-settings-morph" aria-hidden="true">
+        <svg class="icon-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21H9.6v-.09A1.7 1.7 0 0 0 8.5 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3v-4h.09A1.7 1.7 0 0 0 4.6 8.5a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3h4v.09A1.7 1.7 0 0 0 15.5 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.14.37.36.7.65.97.29.27.67.43 1.06.43H21v4h-.09A1.7 1.7 0 0 0 19.4 15Z"/></svg>
+        <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </span>
+      <span class="settingsToggleLabel" data-i18n="nav.set">设置</span>
     </button>
   </div>
 </header>
@@ -2784,17 +3058,17 @@ input:focus-visible{
       <input accept=".txt,.csv" id="peopleFile" style="display:none;" type="file"/>
       <div class="cardControls">
         <div class="controlGroup">
-          <button class="ghost" id="btnPeopleUpload" type="button" data-i18n="people.upload">上传名单</button>
-          <button id="applyPeople" type="button" data-i18n="people.apply">应用参会者名单</button>
-          <button class="ghost resetAction" id="resetPeople" type="button" data-i18n="people.reset">重置参会者</button>
-          <button class="ghost kf-help-icon" id="togglePeopleHelp" type="button" aria-label="说明" title="说明"><span aria-hidden="true">!</span></button>
+          <button class="ghost" id="btnPeopleUpload" type="button"><span class="kf-action-icon" aria-hidden="true"><svg class="kf-icon kf-action-default" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg><svg class="kf-icon kf-success-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></span><span data-i18n="people.upload">上传名单</span></button>
+          <button id="applyPeople" type="button"><span class="kf-action-icon" aria-hidden="true"><svg class="kf-icon kf-action-default" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"/></svg><svg class="kf-icon kf-success-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></span><span data-i18n="people.apply">应用参会者名单</span></button>
+          <button class="ghost resetAction" id="resetPeople" type="button"><svg class="kf-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg><span data-i18n="people.reset">重置参会者</span></button>
+          <button class="ghost kf-help-icon" id="togglePeopleHelp" type="button" aria-label="说明" title="说明"><svg class="kf-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 1 1 5.83 1c0 2-3 2-3 4"/><path d="M12 18h.01"/></svg></button>
         </div>
         <span class="small muted controlStatus import-empty" id="peopleStatus">未上传</span>
       </div>
       <div class="hintBox" id="peopleHelp" style="display:none;">
         <div><b data-i18n="people.fmt">格式要求</b></div>
-        <div data-i18n="people.fmt1">• TXT：每行一个名字（支持中英文）</div>
-        <div data-i18n="people.fmt2">• CSV：第一列为名字，自动识别表头与带引号字段（推荐 UTF-8）</div>
+        <div data-i18n="people.fmt1">• TXT：每行一个姓名，支持中英文</div>
+        <div data-i18n="people.fmt2">• CSV：姓名放在第一列，支持表头，建议使用 UTF-8 编码</div>
         <div class="mt-1.5"><b data-i18n="people.ex">示例（TXT）</b></div>
         <div>Mia Xu</div>
         <div>Alex LU</div>
@@ -2814,10 +3088,10 @@ input:focus-visible{
       <input accept=".txt,.csv" id="prizeFile" style="display:none;" type="file"/>
       <div class="cardControls">
         <div class="controlGroup">
-          <button class="ghost" id="btnPrizeUpload" type="button" data-i18n="prize.upload">上传奖品</button>
-          <button id="applyPrizes" type="button" data-i18n="prize.apply">导入奖品</button>
-          <button class="ghost resetAction" id="resetPrizes" type="button" data-i18n="prize.reset">重置奖品</button>
-          <button class="ghost kf-help-icon" id="togglePrizeHelp" type="button" aria-label="说明" title="说明"><span aria-hidden="true">!</span></button>
+          <button class="ghost" id="btnPrizeUpload" type="button"><span class="kf-action-icon" aria-hidden="true"><svg class="kf-icon kf-action-default" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg><svg class="kf-icon kf-success-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></span><span data-i18n="prize.upload">上传奖品</span></button>
+          <button id="applyPrizes" type="button"><span class="kf-action-icon" aria-hidden="true"><svg class="kf-icon kf-action-default" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"/></svg><svg class="kf-icon kf-success-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></span><span data-i18n="prize.apply">导入奖品</span></button>
+          <button class="ghost resetAction" id="resetPrizes" type="button"><svg class="kf-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg><span data-i18n="prize.reset">重置奖品</span></button>
+          <button class="ghost kf-help-icon" id="togglePrizeHelp" type="button" aria-label="说明" title="说明"><svg class="kf-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 1 1 5.83 1c0 2-3 2-3 4"/><path d="M12 18h.01"/></svg></button>
         </div>
         <span class="small muted controlStatus import-empty" id="prizeStatus">未上传</span>
       </div>
@@ -2840,7 +3114,7 @@ input:focus-visible{
     </div>
   </section>
 
-  <footer class="appFooter"><span id="footerProduct">Lucky Draw</span><span>·</span><span>v2.1.6</span><span>·</span><span data-i18n="footer.updated">更新于 2026-09-09</span></footer>
+  <footer class="appFooter"><span id="footerProduct">Lucky Draw</span><span>·</span><span>v2.2.33</span><span>·</span><span data-i18n="footer.updated">更新于 2026-09-14</span></footer>
 </main>
 
 <!-- ============ Global Settings Drawer ============ -->
@@ -2900,7 +3174,6 @@ input:focus-visible{
         <div class="settingsLabel"><span data-i18n="set.prizeView">奖品明细显示</span><small data-i18n="set.prizeViewSub">选择导入奖品后的核对方式</small></div>
         <div class="settingsCtl">
           <div class="prize-view-segmented" id="prizeViewMode" role="group" aria-label="奖品明细显示方式">
-            <button type="button" data-prize-view="vertical" data-i18n="set.prizeVertical">竖状图</button>
             <button type="button" data-prize-view="horizontal" data-i18n="set.prizeHorizontal">横状图</button>
             <button type="button" data-prize-view="cards" data-i18n="set.prizeCards">卡片</button>
           </div>
@@ -2931,6 +3204,10 @@ input:focus-visible{
       <div class="settingsRow">
         <div class="settingsLabel"><span data-i18n="set.sound">音效</span><small data-i18n="set.soundSub">选择整套抽奖音色；自动模式会跟随主题配色</small></div>
         <div class="settingsCtl">
+          <span class="kf-sound-morph" id="soundStateIcon" aria-hidden="true">
+            <svg class="icon-volume-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+            <svg class="icon-volume-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/></svg>
+          </span>
           <select id="soundMode">
             <option selected="" value="on" data-i18n="set.on">开</option>
             <option value="off" data-i18n="set.off">关</option>
@@ -2944,9 +3221,9 @@ input:focus-visible{
             <option value="corporate">Corporate</option>
             <option value="neon">Neon Party</option>
           </select>
-          <button class="ghost" id="btnSoundPreview" type="button" data-i18n="set.soundPreview">试听</button>
-          <input id="soundVolSlider" max="100" min="0" type="range" value="100"/>
-          <span class="small muted" id="soundVolLabel">100%</span>
+          <button class="ghost" id="btnSoundPreview" type="button"><svg class="kf-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="m6 3 14 9-14 9z"/></svg><span data-i18n="set.soundPreview">试听</span></button>
+          <input id="soundVolSlider" max="100" min="0" type="range" value="70" aria-label="Sound volume"/>
+          <span class="small muted" id="soundVolLabel">70%</span>
         </div>
       </div>
       <div class="settingsRow">
@@ -2967,9 +3244,14 @@ input:focus-visible{
 <div aria-modal="true" class="kf-modal-overlay" id="stageRevealModal" role="dialog">
   <div class="kf-modal">
     <div class="kf-modal-header">
-      <div>
-        <div class="kf-modal-h1" data-i18n="modal.drawTitle">本次抽奖结果</div>
-        <div class="kf-modal-h2" id="stageRevealTitle"></div>
+      <div class="kf-reveal-heading">
+        <span class="kf-reveal-badge" aria-hidden="true">
+          <svg class="kf-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4v2a4 4 0 0 0 4 4"/><path d="M17 6h3v2a4 4 0 0 1-4 4"/></svg>
+        </span>
+        <div>
+          <div class="kf-modal-h1" data-i18n="modal.drawTitle">本次抽奖结果</div>
+          <div class="kf-modal-h2" id="stageRevealTitle"></div>
+        </div>
       </div>
       <button class="secondary modalCloseBtn" id="btnCloseStageReveal" type="button" data-i18n="modal.close">关闭</button>
     </div>
@@ -3090,9 +3372,9 @@ window.KFI18N = (function(){
       'draw.title':'抽奖舞台','draw.status':'状态：等待导入数据','draw.from':'从奖项开始','draw.fromAuto':'（自动选择）','draw.count':'本次人数','draw.max':'(最大数)','draw.view':'查看中奖清单','draw.reset':'重置抽奖',
       'btn.start':'开始抽奖','btn.stop':'停止',
       'win.title':'中奖榜单','win.export':'导出 CSV','win.fill':'补抽缺席名额','win.need':'待补抽','win.can':'可补抽人数',
-      'sec.people':'参会者','sec.peopleSub':'参会者名单','people.upload':'上传名单','people.apply':'应用参会者名单','people.reset':'重置参会者','people.help':'说明','people.none':'未上传','people.fmt':'格式要求','people.fmt1':'• TXT：每行一个名字（支持中英文）','people.fmt2':'• CSV：第一列为名字，自动识别表头与带引号字段（推荐 UTF-8）','people.ex':'示例（TXT）',
+      'sec.people':'参会者','sec.peopleSub':'参会者名单','people.upload':'上传名单','people.apply':'应用参会者名单','people.reset':'重置参会者','people.help':'说明','people.none':'未上传','people.fmt':'格式要求','people.fmt1':'• TXT：每行一个姓名，支持中英文','people.fmt2':'• CSV：姓名放在第一列，支持表头，建议使用 UTF-8 编码','people.ex':'示例（TXT）',
       'sec.prizes':'奖品','sec.prizesSub':'奖品清单','prize.upload':'上传奖品','prize.apply':'导入奖品','prize.reset':'重置奖品','prize.help':'说明','prize.none':'未上传','prize.fmt':'格式要求（按列位置解析）','prize.c1':'第1列：顺序（数字）','prize.c2':'第2列：奖项','prize.c3':'第3列：产品','prize.c4':'第4列：数量（整数）','prize.ex':'示例','prize.empty':'（导入后这里会显示完整奖品清单，用于核对）',
-      'set.title':'偏好设置','set.eyebrow':'全局设置','set.sub':'品牌、主题、舞台效果、音效与速度','set.prizeView':'奖品明细显示','set.prizeViewSub':'选择导入奖品后的核对方式','set.prizeVertical':'竖状图','set.prizeHorizontal':'横状图','set.prizeCards':'卡片','set.stageRoll':'舞台名字滚动','set.stageRollSub':'选择抽奖时名字的滚动方式','set.stageRollRapid':'快速闪选','set.stageRollSlot':'老虎机滚轮','data.title':'数据管理','data.sub':'抽奖前的数据准备与维护','set.eventTitle':'活动标题','set.eventTitleSub':'顶部标题仅可在此修改，避免现场误操作','set.applyTitle':'应用标题','set.sound':'音效','set.soundSub':'选择整套抽奖音色；自动模式会跟随主题配色','set.soundAuto':'自动（跟随主题）','set.soundPreview':'试听','set.on':'开','set.off':'关','set.speed':'滚动速度','set.speedSub':'名字滚动墙的速度','set.theme':'配色风格','set.themeSub':'选择你喜欢的界面配色','set.logo':'品牌 Logo','set.logoSub':'上传自己的品牌标识；自动保持原始比例','set.logoUpload':'上传 Logo','set.logoReset':'恢复默认','set.accent':'主题配色','set.accentSub':'统一控制按钮、高亮与舞台强调色','set.custom':'自定义','set.glow':'鼠标光晕','set.glowSub':'流体光晕跟随鼠标移动','set.effect':'舞台特效','set.effectSub':'选择揭晓时的舞台表现','set.fxMinimal':'默认','set.fxSpotlight':'聚光','set.preview':'预览','footer.updated':'更新于 2026-09-09',
+      'set.title':'偏好设置','set.eyebrow':'全局设置','set.sub':'品牌、主题、舞台效果、音效与速度','set.prizeView':'奖品明细显示','set.prizeViewSub':'选择横状图或卡片方式核对导入奖品','set.prizeHorizontal':'横状图','set.prizeCards':'卡片','set.stageRoll':'舞台名字滚动','set.stageRollSub':'选择抽奖时名字的滚动方式','set.stageRollRapid':'快速闪选','set.stageRollSlot':'老虎机滚轮','data.title':'数据管理','data.sub':'抽奖前的数据准备与维护','set.eventTitle':'活动标题','set.eventTitleSub':'顶部标题仅可在此修改，避免现场误操作','set.applyTitle':'应用标题','set.sound':'音效','set.soundSub':'选择整套抽奖音色；自动模式会跟随主题配色','set.soundAuto':'自动（跟随主题）','set.soundPreview':'试听','set.on':'开','set.off':'关','set.speed':'滚动速度','set.speedSub':'名字滚动墙的速度','set.theme':'配色风格','set.themeSub':'选择你喜欢的界面配色','set.logo':'品牌 Logo','set.logoSub':'上传自己的品牌标识；自动保持原始比例','set.logoUpload':'上传 Logo','set.logoReset':'恢复默认','set.accent':'主题配色','set.accentSub':'统一控制按钮、高亮与舞台强调色','set.custom':'自定义','set.glow':'鼠标光晕','set.glowSub':'流体光晕跟随鼠标移动','set.effect':'舞台特效','set.effectSub':'选择揭晓时的舞台表现','set.fxMinimal':'默认','set.fxSpotlight':'聚光','set.preview':'预览','footer.updated':'更新于 2026-09-14',
       'modal.drawTitle':'本次抽奖结果','modal.fillTitle':'补抽结果','modal.close':'关闭','modal.drawFooter':'提示：已自动写入「中奖清单」，奖品剩余数量已扣减。','modal.fillFooter':'提示：已自动写入「中奖清单」。',
       'fly.hint':'中奖啦','rv.people':'位中奖者','rv.time':'时间','rv.prize':'奖品','rv.award':'奖项'
     },
@@ -3105,9 +3387,9 @@ window.KFI18N = (function(){
       'draw.title':'Lucky Draw','draw.status':'Status: Waiting for data','draw.from':'Start from prize','draw.fromAuto':'(Auto)','draw.count':'Winners This Round','draw.max':'(Max)','draw.view':'View Winner List','draw.reset':'Reset Draw',
       'btn.start':'Start Draw','btn.stop':'Stop',
       'win.title':'Winners','win.export':'Export CSV','win.fill':'Redraw Absentees','win.need':'Pending Redraws: ','win.can':'Eligible Participants: ',
-      'sec.people':'Participants','sec.peopleSub':'Expand to upload & manage the list','people.upload':'Upload List','people.apply':'Apply List','people.reset':'Reset Participants','people.help':'Help','people.none':'Not uploaded','people.fmt':'Format','people.fmt1':'• TXT: one name per line (CN/EN)','people.fmt2':'• CSV: first column is the name; headers and quoted fields supported (UTF-8 recommended)','people.ex':'Example (TXT)',
+      'sec.people':'Participants','sec.peopleSub':'Expand to upload & manage the list','people.upload':'Upload List','people.apply':'Apply List','people.reset':'Reset Participants','people.help':'Help','people.none':'Not uploaded','people.fmt':'Format','people.fmt1':'• TXT: one name per line; Chinese and English supported','people.fmt2':'• CSV: put names in the first column; headers supported; UTF-8 recommended','people.ex':'Example (TXT)',
       'sec.prizes':'Prizes','sec.prizesSub':'Expand to import the prize list','prize.upload':'Upload Prizes','prize.apply':'Import Prizes','prize.reset':'Reset Prizes','prize.help':'Help','prize.none':'Not uploaded','prize.fmt':'Format (parsed by column)','prize.c1':'Col 1: Order (number)','prize.c2':'Col 2: Prize Tier','prize.c3':'Col 3: Prize Name','prize.c4':'Col 4: Qty (integer)','prize.ex':'Example','prize.empty':'(Imported prize list will appear here for review)',
-      'set.title':'Settings','set.eyebrow':'Global Settings','set.sub':'Brand, theme, stage effects, sound & speed','set.prizeView':'Prize Detail View','set.prizeViewSub':'Choose how imported prizes are reviewed','set.prizeVertical':'Vertical','set.prizeHorizontal':'Horizontal','set.prizeCards':'Cards','set.stageRoll':'Stage Name Roll','set.stageRollSub':'Choose how names move during the draw','set.stageRollRapid':'Rapid Flash','set.stageRollSlot':'Slot Reels','data.title':'Data Management','data.sub':'Prepare and maintain draw data','set.eventTitle':'Event Title','set.eventTitleSub':'Edit the header title here to prevent accidental changes','set.applyTitle':'Save Changes','set.sound':'Sound','set.soundSub':'Choose a sound pack; Auto follows the color theme','set.soundAuto':'Auto (Follow Theme)','set.soundPreview':'Preview','set.on':'On','set.off':'Off','set.speed':'Roll Speed','set.speedSub':'Speed of the rolling wall','set.theme':'Color Theme','set.themeSub':'Choose your favorite color scheme','set.logo':'Brand Logo','set.logoSub':'Upload your own brand mark; original proportions are preserved','set.logoUpload':'Upload Logo','set.logoReset':'Restore Default','set.accent':'Accent Color','set.accentSub':'Controls buttons, highlights and stage accents','set.custom':'Custom','set.glow':'Mouse Glow','set.glowSub':'Fluid glow follows the cursor','set.effect':'Draw Effect','set.effectSub':'Choose the reveal experience','set.fxMinimal':'Default','set.fxSpotlight':'Spotlight','set.preview':'Preview','footer.updated':'Updated Sep 9, 2026',
+      'set.title':'Settings','set.eyebrow':'Global Settings','set.sub':'Brand, theme, stage effects, sound & speed','set.prizeView':'Prize Detail View','set.prizeViewSub':'Review imported prizes as a horizontal chart or cards','set.prizeHorizontal':'Horizontal','set.prizeCards':'Cards','set.stageRoll':'Stage Name Roll','set.stageRollSub':'Choose how names move during the draw','set.stageRollRapid':'Rapid Flash','set.stageRollSlot':'Slot Reels','data.title':'Data Management','data.sub':'Prepare and maintain draw data','set.eventTitle':'Event Title','set.eventTitleSub':'Edit the header title here to prevent accidental changes','set.applyTitle':'Save Changes','set.sound':'Sound','set.soundSub':'Choose a sound pack; Auto follows the color theme','set.soundAuto':'Auto (Follow Theme)','set.soundPreview':'Preview','set.on':'On','set.off':'Off','set.speed':'Roll Speed','set.speedSub':'Speed of the rolling wall','set.theme':'Color Theme','set.themeSub':'Choose your favorite color scheme','set.logo':'Brand Logo','set.logoSub':'Upload your own brand mark; original proportions are preserved','set.logoUpload':'Upload Logo','set.logoReset':'Restore Default','set.accent':'Accent Color','set.accentSub':'Controls buttons, highlights and stage accents','set.custom':'Custom','set.glow':'Mouse Glow','set.glowSub':'Fluid glow follows the cursor','set.effect':'Draw Effect','set.effectSub':'Choose the reveal experience','set.fxMinimal':'Default','set.fxSpotlight':'Spotlight','set.preview':'Preview','footer.updated':'Updated Sep 14, 2026',
       'modal.drawTitle':'Draw Results','modal.fillTitle':'Redraw Results','modal.close':'Close','modal.drawFooter':'Note: winners are written to the Winner List; prize stock updated.','modal.fillFooter':'Note: winners are written to the Winner List.',
       'fly.hint':'Winner','rv.people':'Winners','rv.time':'Time','rv.prize':'Prize','rv.award':'Prize Tier'
     }
@@ -3724,24 +4006,65 @@ function runStaggerIn(container, itemSelector){
   // ------------------------------- 音频播放器 -------------------------------
   const audioContext = new (window.AudioContext || window.webkitAudioContext)();
   let masterGain = audioContext.createGain();
-  masterGain.connect(audioContext.destination);
-  // 音量初始化：延后到 state 初始化后（避免 TDZ）
+  const outputCompressor = audioContext.createDynamicsCompressor();
+  outputCompressor.threshold.value = -8;
+  outputCompressor.knee.value = 10;
+  outputCompressor.ratio.value = 4;
+  outputCompressor.attack.value = 0.003;
+  outputCompressor.release.value = 0.18;
+  masterGain.connect(outputCompressor);
+  outputCompressor.connect(audioContext.destination);
+  // 独立网页音量：采用感知曲线，避免旧版 50% = 线性 0.5 带来的明显偏轻。
+  // 100% 保持 unity gain；50% 约为 0.68，听感更接近 Windows 音量滑块的中段。
   function updateSoundVolume() {
     const slider = $("soundVolSlider");
-    const pct = slider ? Number(slider.value || 0) : 0;
-    const volValue = Math.max(0, Math.min(1, pct / 100)); // 0.00 - 1.00
-    masterGain.gain.value = volValue;
-    if ($("soundVolLabel")) $("soundVolLabel").textContent = Math.round(volValue * 100) + "%";
-}
+    const pct = Math.max(0, Math.min(100, Number(slider?.value ?? 70)));
+    const normalized = pct / 100;
+    const perceptualGain = pct <= 0 ? 0 : Math.pow(pct / 100, 0.56);
+    masterGain.gain.value = perceptualGain;
+    if ($("soundVolLabel")) $("soundVolLabel").textContent = Math.round(pct) + "%";
+    if (state?.settings) state.settings.soundVol = normalized;
+  }
   function soundEnabled(){
     return $("soundMode")?.value !== "off";
+  }
+  function syncSoundStateIcon(){
+    const icon = $("soundStateIcon");
+    if (!icon) return;
+    icon.classList.toggle("is-muted", $("soundMode")?.value === "off");
+  }
+  function flashActionSuccess(buttonId){
+    const btn = $(buttonId);
+    if (!btn) return;
+    if (btn._kfSuccessTimer) clearTimeout(btn._kfSuccessTimer);
+    btn.classList.remove("kf-action-success");
+    void btn.offsetWidth;
+    btn.classList.add("kf-action-success");
+    btn._kfSuccessTimer = setTimeout(() => {
+      btn.classList.remove("kf-action-success");
+      btn._kfSuccessTimer = null;
+    }, 760);
+  }
+  function setPersistentActionSuccess(buttonId){
+    const btn = $(buttonId);
+    if (!btn) return;
+    if (btn._kfSuccessTimer) { clearTimeout(btn._kfSuccessTimer); btn._kfSuccessTimer = null; }
+    btn.classList.remove("kf-action-success");
+    void btn.offsetWidth;
+    btn.classList.add("kf-action-success");
+  }
+  function clearPersistentActionSuccess(buttonId){
+    const btn = $(buttonId);
+    if (!btn) return;
+    if (btn._kfSuccessTimer) { clearTimeout(btn._kfSuccessTimer); btn._kfSuccessTimer = null; }
+    btn.classList.remove("kf-action-success");
   }
   // 音效会话：只有一次有效的“开始抽奖”才能激活。
   let drawSoundSessionActive = false;
   // 跟踪所有 Web Audio 振荡器，停止抽奖时可立即取消正在播放和未来已排程的音符。
   const activeSynthNodes = new Set();
 
-  function playSynth(frequency, duration, _volume = 1, type = "sine", when = 0, endFrequency = null) {
+  function playSynth(frequency, duration, volume = 0.03, type = "sine", when = 0, endFrequency = null) {
     if (!soundEnabled() || !drawSoundSessionActive) return;
     try { if (audioContext.state === "suspended") audioContext.resume(); } catch(e) {}
     const now = audioContext.currentTime + Math.max(0, when || 0);
@@ -3752,7 +4075,8 @@ function runStaggerIn(container, itemSelector){
     oscillator.type = type;
     oscillator.frequency.setValueAtTime(Math.max(20, frequency), now);
     if (endFrequency) oscillator.frequency.exponentialRampToValueAtTime(Math.max(20, endFrequency), now + duration);
-    gainNode.gain.setValueAtTime(1, now);
+    const v = Math.min(0.85, Math.max(0.0001, volume * 2.4));
+    gainNode.gain.setValueAtTime(v, now);
     gainNode.gain.exponentialRampToValueAtTime(0.0001, now + duration);
     activeSynthNodes.add(oscillator);
     oscillator.onended = () => {
@@ -3765,8 +4089,8 @@ function runStaggerIn(container, itemSelector){
   }
 
   // 兼容旧调用：统一经过新的 Web Audio 合成器。
-  function playTone(frequency, duration, _volume = 1) {
-    playSynth(frequency, duration, 1, "sine");
+  function playTone(frequency, duration, volume = 0.1) {
+    playSynth(frequency, duration, Math.min(.28, volume * 1.8), "sine");
   }
 
   const SOUND_PACKS = new Set(["glass","celebration","zen","arcade","corporate","neon"]);
@@ -3894,7 +4218,7 @@ function runStaggerIn(container, itemSelector){
     // 导入锁：导入成功后锁定按钮，需点击旁边“重置”才可再次导入
     lockApplyPeople: false,
     lockApplyPrizes: false,
-    settings: { soundMode: "on", soundPack: "auto", soundVol: 1, wallSpeedPct: 20, glassPct: 60, eventTitle: "Lucky Draw", brandLogo: "", accent: "neutral", accentCustom: "#52606d", glowEnabled: true, effectMode: "minimal", prizeViewMode: "vertical", stageRollMode: "rapid" }
+    settings: { soundMode: "on", soundPack: "auto", soundVol: 0.7, wallSpeedPct: 20, glassPct: 60, eventTitle: "Lucky Draw", brandLogo: "", accent: "neutral", accentCustom: "#52606d", glowEnabled: true, effectMode: "minimal", prizeViewMode: "horizontal", stageRollMode: "rapid" }
   });
   let state = defaultState();
   let rolling = false;
@@ -3978,12 +4302,12 @@ function getRealLeftForPrize(prize) {
         obj.settings.wallSpeedPct = Math.round(obj.settings.wallSpeedPct / 5);
       }
       if (typeof obj.settings.glassPct !== "number") obj.settings.glassPct = 60;
-      if (typeof obj.settings.soundVol !== "number") obj.settings.soundVol = 1;
-      if (obj.settings.soundVol === 0.6) obj.settings.soundVol = 1;
+      if (typeof obj.settings.soundVol !== "number") obj.settings.soundVol = 0.7;
       if (typeof obj.settings.soundMode !== "string") obj.settings.soundMode = "on";
       if (typeof obj.settings.soundPack !== "string" || !(obj.settings.soundPack === "auto" || SOUND_PACKS.has(obj.settings.soundPack))) obj.settings.soundPack = "auto";
       if (typeof obj.settings.eventTitle !== "string" || !obj.settings.eventTitle.trim()) obj.settings.eventTitle = "Lucky Draw";
-      if (!["vertical","horizontal","cards"].includes(obj.settings.prizeViewMode)) obj.settings.prizeViewMode = "vertical";
+      if (obj.settings.prizeViewMode === "vertical") obj.settings.prizeViewMode = "horizontal";
+      if (!["horizontal","cards"].includes(obj.settings.prizeViewMode)) obj.settings.prizeViewMode = "horizontal";
       if (!["rapid","slot"].includes(obj.settings.stageRollMode)) obj.settings.stageRollMode = "rapid";
       // 数据完整性：旧/异常奖品补充唯一 prizeId
       (obj.prizes || []).forEach(p => { if (!p.prizeId) p.prizeId = uid(); });
@@ -4007,9 +4331,7 @@ function getRealLeftForPrize(prize) {
     box.classList.add("popover");
     document.body.appendChild(box);
 
-    let hideTimer = null;
     const show = () => {
-      if (hideTimer) clearTimeout(hideTimer);
       box.style.display = "block";
       // 依据按钮实时位置定位：默认在按钮下方，底部放不下时翻转到上方，左右防溢出
       const r = btn.getBoundingClientRect();
@@ -4023,11 +4345,7 @@ function getRealLeftForPrize(prize) {
       box.style.left = left + "px";
     };
     const hide = () => {
-      if (hideTimer) clearTimeout(hideTimer);
-      // 轻微延迟，避免鼠标从按钮移动到浮层时闪烁
-      hideTimer = setTimeout(() => {
-        box.style.display = "none";
-      }, 120);
+      box.style.display = "none";
     };
 
     // 默认隐藏
@@ -4035,12 +4353,10 @@ function getRealLeftForPrize(prize) {
 
     btn.addEventListener("mouseenter", show);
     btn.addEventListener("mouseleave", hide);
-    box.addEventListener("mouseenter", show);
-    box.addEventListener("mouseleave", hide);
 
     // 折叠卡收起时同步隐藏，避免浮层残留悬空
     btn.closest("details")?.addEventListener("toggle", (e) => {
-      if (!e.target.open) { if (hideTimer) clearTimeout(hideTimer); box.style.display = "none"; }
+      if (!e.target.open) box.style.display = "none";
     });
     // 滚动 / 窗口变化时跟随按钮重新定位
     window.addEventListener("scroll", () => { if (box.style.display !== "none") show(); }, true);
@@ -4369,12 +4685,14 @@ if ($("glassLabel")) $("glassLabel").textContent = Math.round(p) + "%";
     if (state.lockApplyPeople) { try { e.target.value = ""; } catch(_) {} return; }
     const file = e.target.files?.[0];
     if (!file) return;
+    clearPersistentActionSuccess("btnPeopleUpload");
     const reader = new FileReader();
 reader.onload = () => {
       const txt = String(reader.result || "");
       peopleParsed = parsePeopleText(txt, file.name.toLowerCase().endsWith(".csv"));
       // 解析成功：仅缓存待应用的数据（不清空榜单、不锁按钮）
       $("peopleStatus").textContent = ui(`已解析：${peopleParsed.length} 人（待应用）`, `Ready to import: ${peopleParsed.length} participants`);
+      if (peopleParsed.length) setPersistentActionSuccess("btnPeopleUpload");
 
       try { updateImportLocks(); } catch(e) {}
       try { refreshImportStatus(); } catch(e) {}
@@ -4397,6 +4715,7 @@ reader.onload = () => {
     try { updateImportLocks(); } catch(e) {}
     updateControls();
     saveState();
+    flashActionSuccess("applyPeople");
   });
   $("resetPeople").addEventListener("click", () => {
     playClickSfx();
@@ -4445,6 +4764,7 @@ btn.style.background = "#c62828";
     }
 
     state.attendees = [];
+    clearPersistentActionSuccess("btnPeopleUpload");
     peopleParsed = [];
     state.lockApplyPeople = false;
     $("peopleFile").value = "";
@@ -4461,6 +4781,7 @@ btn.style.background = "#c62828";
     if (state.lockApplyPrizes) { try { e.target.value = ""; } catch(_) {} return; }
     const file = e.target.files?.[0];
     if (!file) return;
+    clearPersistentActionSuccess("btnPrizeUpload");
     const reader = new FileReader();
     reader.onload = () => {
       prizeParsed = parsePrizeText(String(reader.result || ""));
@@ -4468,6 +4789,7 @@ btn.style.background = "#c62828";
       $("prizeStatus").textContent = prizeParsed.length
         ? ui(`已解析：${prizeParsed.length} 行（待导入）`, `Ready to import: ${prizeParsed.length} rows`)
         : ui("未解析到有效行：每行需为 顺序,奖项,产品,数量（支持中英文逗号）", "No valid rows found. Use: Order, Prize Tier, Prize Name, Quantity.");
+      if (prizeParsed.length) setPersistentActionSuccess("btnPrizeUpload");
 
       try { updateImportLocks(); } catch(e) {}
       try { refreshImportStatus(); } catch(e) {}
@@ -4502,9 +4824,10 @@ btn.style.background = "#c62828";
 
     updateControls();
     saveState();
+    flashActionSuccess("applyPrizes");
   });
   function syncPrizeViewModeControl() {
-    const mode = ["vertical","horizontal","cards"].includes(state?.settings?.prizeViewMode) ? state.settings.prizeViewMode : "vertical";
+    const mode = ["horizontal","cards"].includes(state?.settings?.prizeViewMode) ? state.settings.prizeViewMode : "horizontal";
     document.querySelectorAll("#prizeViewMode [data-prize-view]").forEach(btn => {
       const active = btn.dataset.prizeView === mode;
       btn.classList.toggle("active", active);
@@ -4532,31 +4855,29 @@ btn.style.background = "#c62828";
     }
     const total = state.prizes.reduce((sum,p)=>sum+(Number(p.qty)||0),0);
     const maxQty = Math.max(...state.prizes.map(p => Number(p.qty) || 0), 1);
-    const mode = ["vertical","horizontal","cards"].includes(state?.settings?.prizeViewMode) ? state.settings.prizeViewMode : "vertical";
+    const mode = ["horizontal","cards"].includes(state?.settings?.prizeViewMode) ? state.settings.prizeViewMode : "horizontal";
     $("prizeTotal").textContent = ui(`总数：${total}`, `Total: ${total}`);
+    const displayPrizes = [...state.prizes].sort((a,b) => (Number(a.order)||0) - (Number(b.order)||0));
     let html = `<div class="prize-detail-dashboard is-${mode}" role="list" aria-label="${ui("奖品数量比较","Prize quantity comparison")}">`;
-    state.prizes.forEach(p => {
+    if (mode === "horizontal") {
+      html += `<div class="prize-h-head" aria-hidden="true"><span>${ui("奖品","Prize")}</span><span>${ui("数量分布","Quantity distribution")}</span><span>${ui("数量","Qty")}</span></div>`;
+    }
+    displayPrizes.forEach(p => {
       const qty = Math.max(0, Number(p.qty) || 0);
       const pct = qty > 0 ? Math.max(4, Math.min(100, (qty / maxQty) * 100)) : 0;
       const product = escapeHtml(p.product);
       const award = escapeHtml(p.award);
       const order = escapeHtml(String(p.order));
+      const detailTitle = `${product} · ${award} · × ${qty}`;
       if (mode === "horizontal") {
-        html += `<article class="prize-h-row" role="listitem">` +
-          `<div class="prize-h-copy"><div class="prize-h-product" title="${product}">${product}</div><div class="prize-h-award"><span class="prize-detail-order">${order}</span>${award}</div></div>` +
-          `<div class="prize-h-track" aria-hidden="true"><div class="prize-h-bar" style="width:${pct.toFixed(1)}%"></div></div>` +
-          `<div class="prize-h-qty">× ${qty}</div></article>`;
-      } else if (mode === "cards") {
-        html += `<article class="prize-c-card" role="listitem"><div class="prize-c-top"><div class="prize-c-copy">` +
-          `<div class="prize-c-award"><span class="prize-detail-order">${order}</span>${award}</div><div class="prize-c-product" title="${product}">${product}</div>` +
-          `</div><div class="prize-c-qty">× ${qty}</div></div><div class="prize-c-track" aria-hidden="true"><div class="prize-c-bar" style="width:${pct.toFixed(1)}%"></div></div></article>`;
+        html += `<article class="prize-h-row" role="listitem" title="${detailTitle}">` +
+          `<div class="prize-h-copy"><div class="prize-h-product">${product}</div><div class="prize-h-award"><span class="prize-detail-order">${order}</span>${award}</div></div>` +
+          `<div class="prize-h-track" aria-label="${ui("数量比例","Quantity proportion")}: ${pct.toFixed(0)}%"><div class="prize-h-bar" style="width:${pct.toFixed(1)}%"></div></div>` +
+          `<div class="prize-h-qty">${qty}</div></article>`;
       } else {
-        const height = qty > 0 ? Math.max(8, Math.min(100, (qty / maxQty) * 100)) : 0;
-        html += `<article class="prize-detail-card" role="listitem">` +
-          `<div class="prize-detail-qty">× ${qty}</div>` +
-          `<div class="prize-detail-chart" aria-hidden="true"><div class="prize-detail-column" style="height:${height.toFixed(1)}%"></div></div>` +
-          `<div class="prize-detail-meta"><div class="prize-detail-product" title="${product}">${product}</div>` +
-          `<div class="prize-detail-award"><span class="prize-detail-order">${order}</span>${award}</div></div></article>`;
+        html += `<article class="prize-c-card" role="listitem" title="${detailTitle}"><div class="prize-c-top"><div class="prize-c-copy">` +
+          `<div class="prize-c-award"><span class="prize-detail-order">${order}</span>${award}</div><div class="prize-c-product">${product}</div>` +
+          `</div><div class="prize-c-qty">× ${qty}</div></div><div class="prize-c-track" aria-hidden="true"><div class="prize-c-bar" style="width:${pct.toFixed(1)}%"></div></div></article>`;
       }
     });
     html += `</div>`;
@@ -4610,6 +4931,7 @@ btn.style.background = "#c62828";
     }
 
     state.prizes = [];
+    clearPersistentActionSuccess("btnPrizeUpload");
     state.curPrizeIndex = 0;
     state.winners = [];
     state.absentSet = [];
@@ -5344,6 +5666,7 @@ openOverlayModal(modal);
   $("soundMode").addEventListener("change", () => {
      state.settings.soundMode = $("soundMode").value;
      if(state.settings.soundMode === "off") stopAllDrawAudio();
+     syncSoundStateIcon();
      saveState();
   });
   $("soundPack")?.addEventListener("change", () => {
@@ -5351,16 +5674,15 @@ openOverlayModal(modal);
      if (!rolling) stopAllDrawAudio();
      saveState();
   });
+  $("soundVolSlider")?.addEventListener("input", () => {
+     updateSoundVolume();
+     saveState();
+  });
   $("btnSoundPreview")?.addEventListener("click", () => {
      // 试听只播放一次当前 Sound Pack 的中奖提示音；绝不启动滚动/背景循环。
      stopAllDrawAudio();
      if (!soundEnabled()) return;
      playRevealWinSound();
-  });
-  $("soundVolSlider").addEventListener("input", () => {
-     state.settings.soundVol = Math.max(0,Math.min(1,Number($("soundVolSlider").value||0)/100));
-     updateSoundVolume();
-     saveState();
   });
   function refreshImportStatus(){
     const lang=(window.KFI18N?.getLang?.()||"zh");
@@ -5432,7 +5754,7 @@ openOverlayModal(modal);
     const btn=e.target.closest?.("[data-prize-view]");
     if(!btn)return;
     const mode=btn.dataset.prizeView;
-    if(!["vertical","horizontal","cards"].includes(mode))return;
+    if(!["horizontal","cards"].includes(mode))return;
     state.settings.prizeViewMode=mode;
     syncPrizeViewModeControl();
     renderPrizeList();
@@ -5458,10 +5780,11 @@ openOverlayModal(modal);
       if ($("soundMode") && state?.settings?.soundMode) $("soundMode").value = state.settings.soundMode;
       if ($("soundPack")) $("soundPack").value = state?.settings?.soundPack || "auto";
       if ($("soundVolSlider")) {
-        const pct = Math.round((state?.settings?.soundVol ?? 1) * 100);
+        const pct = Math.round(Math.max(0, Math.min(1, Number(state?.settings?.soundVol ?? 0.7))) * 100);
         $("soundVolSlider").value = String(pct);
       }
       updateSoundVolume();
+      syncSoundStateIcon();
       if ($("wallSpeedSlider")) {
         const v = Number(state?.settings?.wallSpeedPct ?? 20);
         $("wallSpeedSlider").value = String(v);
