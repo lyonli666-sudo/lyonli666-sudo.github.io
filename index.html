@@ -2309,6 +2309,23 @@ button.kf-busy{pointer-events:none;animation:none!important;}
 #fillRevealModal .kf-modal-body::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:4px;}
 #fillRevealModal .kf-modal-body{scrollbar-width:thin;scrollbar-color:var(--border-2) transparent;}
 </style>
+
+<style id="kf-v2234-empty-state-fix">
+/* v2.2.34 — Empty-state alignment + i18n refresh */
+.kf-empty-state{
+  width:100%;
+  box-sizing:border-box;
+  padding:18px 12px;
+  margin:0;
+  color:var(--txt-3)!important;
+  opacity:1!important;
+  font-size:13px;
+  line-height:1.5;
+  text-align:center;
+}
+.kf-empty-people{grid-column:1 / -1;justify-self:stretch;}
+.kf-empty-prizes{display:block;}
+</style>
 </head>
 <script id="KF_THEME_MANAGER">
 /*
@@ -3114,7 +3131,7 @@ input:focus-visible{
     </div>
   </section>
 
-  <footer class="appFooter"><span id="footerProduct">Lucky Draw</span><span>·</span><span>v2.2.33</span><span>·</span><span data-i18n="footer.updated">更新于 2026-09-14</span></footer>
+  <footer class="appFooter"><span id="footerProduct">Lucky Draw</span><span>·</span><span>v2.2.34</span><span>·</span><span data-i18n="footer.updated">更新于 2026-09-14</span></footer>
 </main>
 
 <!-- ============ Global Settings Drawer ============ -->
@@ -3399,7 +3416,7 @@ window.KFI18N = (function(){
   var EXACT = {
     '开始滚动抽奖':'Start Draw','奖品已抽完':'Prizes Exhausted','人员不足':'Not Enough People','人数/奖品不足':'Quota Unavailable',
     '状态：等待导入数据':'Status: Waiting for data','状态：第一轮已抽完':'Status: Round 1 finished','状态：滚动中...':'Status: Rolling…','状态：就绪，可开始抽奖':'Status: Ready to draw',
-    '（暂无中奖记录）':'(No winners yet)','请上传奖品清单':'Please upload the prize list',
+    '暂无中奖记录':'No winners yet','请上传奖品清单':'Please upload the prize list',
     '顺序':'No.','奖项':'Prize Tier','产品':'Prize','剩余/总数':'Left / Total',
     '补抽':'Redraw','第一轮':'Round 1','缺席':'Absent','有效':'Valid','在场':'Present','标记缺席':'Mark Absent',
     '未上传':'Not uploaded','已导出 CSV':'CSV exported','暂无中奖数据可导出':'No winner data to export',
@@ -4458,7 +4475,7 @@ function getRealLeftForPrize(prize) {
     const pc = $("peopleCount");
     if (pc) pc.textContent = names.length;
     if (names.length === 0) {
-      tagList.innerHTML = `<div class="small" style="color:#999;padding:16px;">${ui("暂无参会者","No participants")}</div>`;
+      tagList.innerHTML = `<div class="small kf-empty-state kf-empty-people">${ui("暂无参会者","No participants")}</div>`;
     } else {
       names.forEach((n, index) => {
         const span = document.createElement("span");
@@ -4849,7 +4866,7 @@ btn.style.background = "#c62828";
     if (!list) return;
     syncPrizeViewModeControl();
     if (!state.prizes?.length) {
-      list.innerHTML = `<div class="small" style="opacity:.85;">${ui("请上传奖品清单", "Please upload the prize list")}</div>`;
+      list.innerHTML = `<div class="small kf-empty-state kf-empty-prizes">${ui("请上传奖品清单", "Please upload the prize list")}</div>`;
       $("prizeTotal").textContent = ui("总数：0", "Total: 0");
       return;
     }
@@ -5372,7 +5389,7 @@ const close = () => { try { StageFX.setHype(0); StageFX.spotlightsOn(false); Sta
       $("needFill") && ($("needFill").textContent = "0");
       $("canFill") && ($("canFill").textContent = "0");
       const wl = $("winnersList");
-      if (wl) wl.innerHTML = '<div class="small winnersEmpty winners-empty-text" style="opacity:.85;">（暂无中奖记录）</div>';
+      if (wl) wl.innerHTML = `<div class="small winnersEmpty winners-empty-text kf-empty-state">${ui('暂无中奖记录','No winners yet')}</div>`;
       $("btnDoFill") && ($("btnDoFill").disabled = true);
       $("btnExportCsv") && ($("btnExportCsv").disabled = true);
       // 运行一次统一更新（若存在）
@@ -5389,7 +5406,7 @@ function renderWinners() {
     const container = $("winnersList");
     container.innerHTML = "";
     if (!state.winners.length) {
-      container.innerHTML = `<div class="small winners-empty-text" style="opacity:.85;">${ui('（暂无中奖记录）','No winners yet')}</div>`;
+      container.innerHTML = `<div class="small winners-empty-text kf-empty-state">${ui('暂无中奖记录','No winners yet')}</div>`;
       updateControls();
       return;
     }
@@ -5705,6 +5722,7 @@ openOverlayModal(modal);
     try{ refreshImportStatus(); }catch(e){}
     try{ [$("togglePeopleHelp"), $("togglePrizeHelp")].forEach(btn=>{ if(btn){ const label=ui("说明","Help"); btn.setAttribute("aria-label",label); btn.setAttribute("title",label); } }); }catch(e){}
     try{ renderPrizeList(); }catch(e){}
+    try{ rebuildWall(); }catch(e){}
     try{ refreshStartFrom(); }catch(e){}
     try{ renderWinners(); }catch(e){}
     try{ updateImportLocks(); }catch(e){}
