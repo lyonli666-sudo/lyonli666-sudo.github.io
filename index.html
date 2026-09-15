@@ -2326,6 +2326,47 @@ button.kf-busy{pointer-events:none;animation:none!important;}
 .kf-empty-people{grid-column:1 / -1;justify-self:stretch;}
 .kf-empty-prizes{display:block;}
 </style>
+
+<style id="result-confetti-style">
+.result-confetti-canvas {
+  position:fixed; inset:0; width:100%; height:100%; z-index:1101;
+  pointer-events:none;
+}
+#fullscreenToggle {
+  width:38px; min-width:38px; height:36px; min-height:36px; padding:0; flex:0 0 38px;
+  display:inline-flex; align-items:center; justify-content:center; gap:0;
+  border:1px solid var(--border); border-radius:10px; background:var(--card-glass); color:var(--txt-1);
+  box-shadow:0 1px 3px rgba(30,40,60,.04); cursor:pointer;
+  transition:background .2s ease,border-color .2s ease,box-shadow .2s ease,transform .15s ease;
+}
+#fullscreenToggle svg { width:19px; height:19px; display:block; overflow:visible; }
+#fullscreenToggle .fullscreen-corner {
+  transform-box:fill-box; transform-origin:center;
+  transform:translate(0,0) rotate(0deg);
+  transition:transform .28s cubic-bezier(.2,.8,.2,1);
+}
+#fullscreenToggle .corner-tl { --dx:-1.5px; --dy:-1.5px; }
+#fullscreenToggle .corner-tr { --dx:1.5px; --dy:-1.5px; }
+#fullscreenToggle .corner-br { --dx:1.5px; --dy:1.5px; }
+#fullscreenToggle .corner-bl { --dx:-1.5px; --dy:1.5px; }
+#fullscreenToggle[aria-pressed="true"] { color:var(--accent); background:var(--accent-soft); border-color:var(--accent); }
+#fullscreenToggle[aria-pressed="true"] .fullscreen-corner {
+  transform:translate(calc(var(--dx) * -1),calc(var(--dy) * -1)) rotate(180deg);
+}
+@media (hover:hover) and (pointer:fine) {
+  #fullscreenToggle:hover:not(:disabled) { background:var(--accent-soft); color:var(--accent); border-color:var(--accent); transform:translateY(-1px)!important; }
+  #fullscreenToggle[aria-pressed="false"]:hover:not(:disabled) .fullscreen-corner { transform:translate(var(--dx),var(--dy)); }
+  #fullscreenToggle[aria-pressed="true"]:hover:not(:disabled) .fullscreen-corner { transform:translate(calc(var(--dx) * -2),calc(var(--dy) * -2)) rotate(180deg); }
+}
+#fullscreenToggle:active:not(:disabled) { transform:scale(.94)!important; }
+#fullscreenToggle:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+#fullscreenToggle:disabled { opacity:.45; cursor:not-allowed; }
+@media (pointer:coarse) { #fullscreenToggle { width:44px; min-width:44px; height:44px; flex-basis:44px; } }
+@media (prefers-reduced-motion:reduce) {
+  #fullscreenToggle, #fullscreenToggle .fullscreen-corner { transition:none!important; }
+}
+@media (prefers-reduced-motion:reduce) { .result-confetti-canvas { display:none; } }
+</style>
 </head>
 <script id="KF_THEME_MANAGER">
 /*
@@ -2881,6 +2922,8 @@ input:focus-visible{
   outline-offset:2px!important;
 }
 </style>
+
+
 </head>
 <body>
 <div id="saveWarning" role="alert" hidden></div>
@@ -2929,6 +2972,14 @@ input:focus-visible{
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </span>
+    </button>
+    <button id="fullscreenToggle" type="button" aria-label="进入全屏" title="进入全屏" aria-pressed="false">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path class="fullscreen-corner corner-tl" d="M8 4H4v4"/>
+        <path class="fullscreen-corner corner-tr" d="M16 4h4v4"/>
+        <path class="fullscreen-corner corner-br" d="M20 16v4h-4"/>
+        <path class="fullscreen-corner corner-bl" d="M8 20H4v-4"/>
+      </svg>
     </button>
     <button id="settingsToggle" class="kf-settings-toggle" type="button" aria-label="打开偏好设置" title="偏好设置" aria-controls="settingsDrawer" aria-expanded="false">
       <span class="kf-settings-morph" aria-hidden="true">
@@ -3131,7 +3182,7 @@ input:focus-visible{
     </div>
   </section>
 
-  <footer class="appFooter"><span id="footerProduct">Lucky Draw</span><span>·</span><span>v2.2.34</span><span>·</span><span data-i18n="footer.updated">更新于 2026-09-14</span></footer>
+  <footer class="appFooter"><span id="footerProduct">Lucky Draw</span><span>·</span><span>v2.2.37</span><span>·</span><span data-i18n="footer.updated">更新于 2026-09-15</span></footer>
 </main>
 
 <!-- ============ Global Settings Drawer ============ -->
@@ -3216,6 +3267,13 @@ input:focus-visible{
         <div class="settingsCtl">
           <select id="effectMode"><option value="minimal" data-i18n="set.fxMinimal">默认</option><option value="spotlight" data-i18n="set.fxSpotlight">聚光</option></select>
           <button class="ghost" id="btnEffectPreview" type="button" data-i18n="set.preview">预览</button>
+        </div>
+      </div>
+      <div class="settingsRow">
+        <div class="settingsLabel"><label id="resultConfettiLabel" for="resultConfettiToggle" data-i18n="set.resultConfetti">结果撒花</label><small id="resultConfettiHint" data-i18n="set.resultConfettiSub">全网页两侧喷射彩带、顶部飘落彩纸，结果弹窗保持清爽</small></div>
+        <div class="settingsCtl">
+          <button id="resultConfettiToggle" class="uiSwitch" type="button" role="switch" aria-checked="true" aria-labelledby="resultConfettiLabel" aria-describedby="resultConfettiHint"><span class="uiSwitchKnob"></span></button>
+          <button class="ghost" id="btnResultConfettiPreview" type="button" data-i18n="set.preview">预览</button>
         </div>
       </div>
       <div class="settingsRow">
@@ -3391,7 +3449,7 @@ window.KFI18N = (function(){
       'win.title':'中奖榜单','win.export':'导出 CSV','win.fill':'补抽缺席名额','win.need':'待补抽','win.can':'可补抽人数',
       'sec.people':'参会者','sec.peopleSub':'参会者名单','people.upload':'上传名单','people.apply':'应用参会者名单','people.reset':'重置参会者','people.help':'说明','people.none':'未上传','people.fmt':'格式要求','people.fmt1':'• TXT：每行一个姓名，支持中英文','people.fmt2':'• CSV：姓名放在第一列，支持表头，建议使用 UTF-8 编码','people.ex':'示例（TXT）',
       'sec.prizes':'奖品','sec.prizesSub':'奖品清单','prize.upload':'上传奖品','prize.apply':'导入奖品','prize.reset':'重置奖品','prize.help':'说明','prize.none':'未上传','prize.fmt':'格式要求（按列位置解析）','prize.c1':'第1列：顺序（数字）','prize.c2':'第2列：奖项','prize.c3':'第3列：产品','prize.c4':'第4列：数量（整数）','prize.ex':'示例','prize.empty':'（导入后这里会显示完整奖品清单，用于核对）',
-      'set.title':'偏好设置','set.eyebrow':'全局设置','set.sub':'品牌、主题、舞台效果、音效与速度','set.prizeView':'奖品明细显示','set.prizeViewSub':'选择横状图或卡片方式核对导入奖品','set.prizeHorizontal':'横状图','set.prizeCards':'卡片','set.stageRoll':'舞台名字滚动','set.stageRollSub':'选择抽奖时名字的滚动方式','set.stageRollRapid':'快速闪选','set.stageRollSlot':'老虎机滚轮','data.title':'数据管理','data.sub':'抽奖前的数据准备与维护','set.eventTitle':'活动标题','set.eventTitleSub':'顶部标题仅可在此修改，避免现场误操作','set.applyTitle':'应用标题','set.sound':'音效','set.soundSub':'选择整套抽奖音色；自动模式会跟随主题配色','set.soundAuto':'自动（跟随主题）','set.soundPreview':'试听','set.on':'开','set.off':'关','set.speed':'滚动速度','set.speedSub':'名字滚动墙的速度','set.theme':'配色风格','set.themeSub':'选择你喜欢的界面配色','set.logo':'品牌 Logo','set.logoSub':'上传自己的品牌标识；自动保持原始比例','set.logoUpload':'上传 Logo','set.logoReset':'恢复默认','set.accent':'主题配色','set.accentSub':'统一控制按钮、高亮与舞台强调色','set.custom':'自定义','set.glow':'鼠标光晕','set.glowSub':'流体光晕跟随鼠标移动','set.effect':'舞台特效','set.effectSub':'选择揭晓时的舞台表现','set.fxMinimal':'默认','set.fxSpotlight':'聚光','set.preview':'预览','footer.updated':'更新于 2026-09-14',
+      'set.title':'偏好设置','set.eyebrow':'全局设置','set.sub':'品牌、主题、舞台效果、音效与速度','set.prizeView':'奖品明细显示','set.prizeViewSub':'选择横状图或卡片方式核对导入奖品','set.prizeHorizontal':'横状图','set.prizeCards':'卡片','set.stageRoll':'舞台名字滚动','set.stageRollSub':'选择抽奖时名字的滚动方式','set.stageRollRapid':'快速闪选','set.stageRollSlot':'老虎机滚轮','data.title':'数据管理','data.sub':'抽奖前的数据准备与维护','set.eventTitle':'活动标题','set.eventTitleSub':'顶部标题仅可在此修改，避免现场误操作','set.applyTitle':'应用标题','set.sound':'音效','set.soundSub':'选择整套抽奖音色；自动模式会跟随主题配色','set.soundAuto':'自动（跟随主题）','set.soundPreview':'试听','set.on':'开','set.off':'关','set.speed':'滚动速度','set.speedSub':'名字滚动墙的速度','set.theme':'配色风格','set.themeSub':'选择你喜欢的界面配色','set.logo':'品牌 Logo','set.logoSub':'上传自己的品牌标识；自动保持原始比例','set.logoUpload':'上传 Logo','set.logoReset':'恢复默认','set.accent':'主题配色','set.accentSub':'统一控制按钮、高亮与舞台强调色','set.custom':'自定义','set.glow':'鼠标光晕','set.glowSub':'流体光晕跟随鼠标移动','set.resultConfetti':'结果撒花','set.resultConfettiSub':'全网页两侧喷射彩带、顶部飘落彩纸，结果弹窗保持清爽','set.effect':'舞台特效','set.effectSub':'选择揭晓时的舞台表现','set.fxMinimal':'默认','set.fxSpotlight':'聚光','set.preview':'预览','footer.updated':'更新于 2026-09-15',
       'modal.drawTitle':'本次抽奖结果','modal.fillTitle':'补抽结果','modal.close':'关闭','modal.drawFooter':'提示：已自动写入「中奖清单」，奖品剩余数量已扣减。','modal.fillFooter':'提示：已自动写入「中奖清单」。',
       'fly.hint':'中奖啦','rv.people':'位中奖者','rv.time':'时间','rv.prize':'奖品','rv.award':'奖项'
     },
@@ -3406,7 +3464,7 @@ window.KFI18N = (function(){
       'win.title':'Winners','win.export':'Export CSV','win.fill':'Redraw Absentees','win.need':'Pending Redraws: ','win.can':'Eligible Participants: ',
       'sec.people':'Participants','sec.peopleSub':'Expand to upload & manage the list','people.upload':'Upload List','people.apply':'Apply List','people.reset':'Reset Participants','people.help':'Help','people.none':'Not uploaded','people.fmt':'Format','people.fmt1':'• TXT: one name per line; Chinese and English supported','people.fmt2':'• CSV: put names in the first column; headers supported; UTF-8 recommended','people.ex':'Example (TXT)',
       'sec.prizes':'Prizes','sec.prizesSub':'Expand to import the prize list','prize.upload':'Upload Prizes','prize.apply':'Import Prizes','prize.reset':'Reset Prizes','prize.help':'Help','prize.none':'Not uploaded','prize.fmt':'Format (parsed by column)','prize.c1':'Col 1: Order (number)','prize.c2':'Col 2: Prize Tier','prize.c3':'Col 3: Prize Name','prize.c4':'Col 4: Qty (integer)','prize.ex':'Example','prize.empty':'(Imported prize list will appear here for review)',
-      'set.title':'Settings','set.eyebrow':'Global Settings','set.sub':'Brand, theme, stage effects, sound & speed','set.prizeView':'Prize Detail View','set.prizeViewSub':'Review imported prizes as a horizontal chart or cards','set.prizeHorizontal':'Horizontal','set.prizeCards':'Cards','set.stageRoll':'Stage Name Roll','set.stageRollSub':'Choose how names move during the draw','set.stageRollRapid':'Rapid Flash','set.stageRollSlot':'Slot Reels','data.title':'Data Management','data.sub':'Prepare and maintain draw data','set.eventTitle':'Event Title','set.eventTitleSub':'Edit the header title here to prevent accidental changes','set.applyTitle':'Save Changes','set.sound':'Sound','set.soundSub':'Choose a sound pack; Auto follows the color theme','set.soundAuto':'Auto (Follow Theme)','set.soundPreview':'Preview','set.on':'On','set.off':'Off','set.speed':'Roll Speed','set.speedSub':'Speed of the rolling wall','set.theme':'Color Theme','set.themeSub':'Choose your favorite color scheme','set.logo':'Brand Logo','set.logoSub':'Upload your own brand mark; original proportions are preserved','set.logoUpload':'Upload Logo','set.logoReset':'Restore Default','set.accent':'Accent Color','set.accentSub':'Controls buttons, highlights and stage accents','set.custom':'Custom','set.glow':'Mouse Glow','set.glowSub':'Fluid glow follows the cursor','set.effect':'Draw Effect','set.effectSub':'Choose the reveal experience','set.fxMinimal':'Default','set.fxSpotlight':'Spotlight','set.preview':'Preview','footer.updated':'Updated Sep 14, 2026',
+      'set.title':'Settings','set.eyebrow':'Global Settings','set.sub':'Brand, theme, stage effects, sound & speed','set.prizeView':'Prize Detail View','set.prizeViewSub':'Review imported prizes as a horizontal chart or cards','set.prizeHorizontal':'Horizontal','set.prizeCards':'Cards','set.stageRoll':'Stage Name Roll','set.stageRollSub':'Choose how names move during the draw','set.stageRollRapid':'Rapid Flash','set.stageRollSlot':'Slot Reels','data.title':'Data Management','data.sub':'Prepare and maintain draw data','set.eventTitle':'Event Title','set.eventTitleSub':'Edit the header title here to prevent accidental changes','set.applyTitle':'Save Changes','set.sound':'Sound','set.soundSub':'Choose a sound pack; Auto follows the color theme','set.soundAuto':'Auto (Follow Theme)','set.soundPreview':'Preview','set.on':'On','set.off':'Off','set.speed':'Roll Speed','set.speedSub':'Speed of the rolling wall','set.theme':'Color Theme','set.themeSub':'Choose your favorite color scheme','set.logo':'Brand Logo','set.logoSub':'Upload your own brand mark; original proportions are preserved','set.logoUpload':'Upload Logo','set.logoReset':'Restore Default','set.accent':'Accent Color','set.accentSub':'Controls buttons, highlights and stage accents','set.custom':'Custom','set.glow':'Mouse Glow','set.glowSub':'Fluid glow follows the cursor','set.resultConfetti':'Result Confetti','set.resultConfettiSub':'Page-wide streamers and falling confetti; results stay clear','set.effect':'Draw Effect','set.effectSub':'Choose the reveal experience','set.fxMinimal':'Default','set.fxSpotlight':'Spotlight','set.preview':'Preview','footer.updated':'Updated Sep 15, 2026',
       'modal.drawTitle':'Draw Results','modal.fillTitle':'Redraw Results','modal.close':'Close','modal.drawFooter':'Note: winners are written to the Winner List; prize stock updated.','modal.fillFooter':'Note: winners are written to the Winner List.',
       'fly.hint':'Winner','rv.people':'Winners','rv.time':'Time','rv.prize':'Prize','rv.award':'Prize Tier'
     }
@@ -3919,6 +3977,7 @@ function runStaggerIn(container, itemSelector){
 
   const closeOverlayModal = (modal) => {
     if (!modal) return;
+    ResultConfetti.stop();
 
     if (prefersReducedMotion()) {
       modal.classList.remove("is-open", "is-opening", "is-closing");
@@ -4235,7 +4294,7 @@ function runStaggerIn(container, itemSelector){
     // 导入锁：导入成功后锁定按钮，需点击旁边“重置”才可再次导入
     lockApplyPeople: false,
     lockApplyPrizes: false,
-    settings: { soundMode: "on", soundPack: "auto", soundVol: 0.7, wallSpeedPct: 20, glassPct: 60, eventTitle: "Lucky Draw", brandLogo: "", accent: "neutral", accentCustom: "#52606d", glowEnabled: true, effectMode: "minimal", prizeViewMode: "horizontal", stageRollMode: "rapid" }
+    settings: { soundMode: "on", soundPack: "auto", soundVol: 0.7, wallSpeedPct: 20, glassPct: 60, eventTitle: "Lucky Draw", brandLogo: "", accent: "neutral", accentCustom: "#52606d", glowEnabled: true, resultConfettiEnabled: true, effectMode: "minimal", prizeViewMode: "horizontal", stageRollMode: "rapid" }
   });
   let state = defaultState();
   let rolling = false;
@@ -4309,6 +4368,7 @@ function getRealLeftForPrize(prize) {
       obj.filledAbsent = new Set(obj.filledAbsent || []);
       // 兼容旧版本设置
       obj.settings = obj.settings || {};
+      if (typeof obj.settings.resultConfettiEnabled !== "boolean") obj.settings.resultConfettiEnabled = true;
       // 兼容旧版本：导入锁字段
       if (typeof obj.lockApplyPeople !== "boolean") obj.lockApplyPeople = false;
       if (typeof obj.lockApplyPrizes !== "boolean") obj.lockApplyPrizes = false;
@@ -5331,6 +5391,129 @@ startNameTicker(pool);
     $("flyout").style.display = "none";
   }
   // 舞台抽奖揭晓（中奖人名字彩色渐变 + 放大）
+  // Viewport celebration with an unpainted results-dialog area, preserving its original glass surface.
+  const ResultConfetti = (() => {
+    let frame = 0, canvas = null, resizeObserver = null, resizeHandler = null;
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const stop = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      resizeObserver?.disconnect();
+      resizeObserver = null;
+      if (resizeHandler) window.removeEventListener("resize", resizeHandler);
+      resizeHandler = null;
+      canvas?.remove();
+      canvas = null;
+    };
+    const start = modal => {
+      stop();
+      if (state.settings.resultConfettiEnabled === false || motion.matches || document.hidden) return;
+      const box = modal.querySelector('.kf-modal');
+      if (!box) return;
+      canvas = document.createElement('canvas');
+      canvas.className = 'result-confetti-canvas';
+      canvas.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(canvas);
+      const ctx = canvas.getContext('2d');
+      if (!ctx) { stop(); return; }
+      let w = 0, h = 0, particles = [], burst = 0, nextRain = .45;
+      const resize = () => {
+        w = document.documentElement.clientWidth; h = window.innerHeight;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      };
+      resize();
+      resizeObserver = new ResizeObserver(resize);
+      resizeObserver.observe(document.documentElement);
+      resizeHandler = resize;
+      window.addEventListener("resize", resizeHandler);
+      const colors = ['#ef476f','#ffd166','#06c7a0','#3e9eff','#b57bff','#f5bc43'];
+      const rand = (a,b) => a + Math.random() * (b-a);
+      const emit = (side, rain = false) => {
+        const ribbon = Math.random() < (rain ? .16 : .4);
+        const speed = rand(.55,.95) * Math.min(w,800);
+        const angle = rand(.78,1.3);
+        particles.push({
+          x: rain ? rand(0,w) : (side < 0 ? 4 : w-4),
+          y: rain ? -28 : h * rand(.72,.9),
+          vx: rain ? rand(-24,24) : -side * Math.cos(angle) * speed,
+          vy: rain ? rand(32,85) : -Math.sin(angle) * Math.max(speed,h*.9),
+          size: rand(5,9), length: ribbon ? rand(22,48) : rand(6,13), ribbon,
+          phase: rand(0,Math.PI*2), rotation: rand(0,Math.PI*2), spin: rand(-4,4),
+          color: colors[Math.floor(rand(0,colors.length))], age: 0, life: rand(3.4,5.4)
+        });
+      };
+      const begin = performance.now();
+      let last = begin;
+      const draw = now => {
+        if (!canvas || document.hidden || modal.classList.contains('is-closing') ||
+            !modal.classList.contains('is-open') && !modal.classList.contains('is-opening')) { stop(); return; }
+        const elapsed = (now-begin)/1000, dt = Math.min((now-last)/1000,.035);
+        last = now;
+        if (elapsed > 7) { stop(); return; }
+        if (burst < 3 && elapsed >= burst * .5) {
+          const count = w < 450 ? 28 : 48;
+          for (let i=0;i<count;i++) { emit(-1); emit(1); }
+          burst++;
+        }
+        if (elapsed >= nextRain && elapsed < 2.6) {
+          for (let i=0;i<(w<450?6:10);i++) emit(0,true);
+          nextRain = elapsed + .09;
+        }
+        ctx.clearRect(0,0,w,h);
+        // Exclude the entire dialog each frame, including while it moves during reveal/resize.
+        const bounds = box.getBoundingClientRect();
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(0,0,w,h);
+        ctx.roundRect(bounds.left-2,bounds.top-2,bounds.width+4,bounds.height+4,
+          Math.max(0,parseFloat(getComputedStyle(box).borderTopLeftRadius)||0));
+        ctx.clip('evenodd');
+        particles = particles.filter(p => p.age < p.life && p.y < h+70);
+        for (const p of particles) {
+          p.age += dt;
+          p.vx *= Math.exp(-1.05*dt);
+          p.vy = Math.min(p.vy + 300*dt, p.ribbon ? 155 : 200);
+          p.x += (p.vx + Math.sin(p.age*3+p.phase)*22)*dt;
+          p.y += p.vy*dt;
+          p.rotation += p.spin*dt;
+          const flip = Math.cos(p.age*7+p.phase);
+          ctx.save();
+          ctx.translate(p.x,p.y);
+          ctx.rotate(p.rotation);
+          ctx.scale(Math.max(.12,Math.abs(flip)),1);
+          ctx.globalAlpha = Math.min(1,(p.life-p.age)/.8,Math.max(0,7-elapsed)) * .92;
+          ctx.fillStyle = p.color; ctx.strokeStyle = p.color;
+          if (p.ribbon) {
+            ctx.lineWidth = p.size*.62;
+            ctx.beginPath();
+            ctx.moveTo(0,-p.length/2);
+            ctx.bezierCurveTo(p.size*1.7*Math.sin(p.age*5+p.phase),-p.length*.16,
+              -p.size*1.7,p.length*.22,0,p.length/2);
+            ctx.stroke();
+            ctx.globalAlpha *= .45;
+            ctx.strokeStyle = '#fff4d2'; ctx.lineWidth = 1;
+            ctx.stroke();
+          } else {
+            ctx.fillRect(-p.size/2,-p.length/2,p.size,p.length);
+            ctx.globalAlpha *= .5 * Math.abs(flip);
+            ctx.fillStyle = '#fff8dc';
+            ctx.fillRect(-p.size/2,-p.length/2,p.size,1.5);
+          }
+          ctx.restore();
+        }
+        ctx.restore();
+        frame = requestAnimationFrame(draw);
+      };
+      frame = requestAnimationFrame(draw);
+    };
+    document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
+    motion.addEventListener('change', () => { if (motion.matches) stop(); });
+    window.addEventListener('pagehide', stop);
+    return {start, stop};
+  })();
+
   function applyRevealEffect() {
     if (state.settings.effectMode !== "spotlight") return;
     StageFX.start(); StageFX.setHype(2); StageFX.spotlightsOn(true); StageFX.impact();
@@ -5371,12 +5554,20 @@ startNameTicker(pool);
     openOverlayModal(modal);
     runStaggerIn(content, ".rv-card");
     playRevealWinSound();
-    // （已移除）弹窗撒花特效
+    ResultConfetti.start(modal);
     try { applyRevealEffect(); } catch(e) {}
 const close = () => { try { StageFX.setHype(0); StageFX.spotlightsOn(false); StageFX.stop(); } catch(e) {} modal.classList.remove("rv-wide"); closeOverlayModal(modal); };
     closeBtn.onclick = close;
     modal.onclick = e => { if (e.target === modal) close(); };
   }
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    const modal = document.querySelector('#stageRevealModal.is-open, #fillRevealModal.is-open');
+    if (!modal) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    modal.querySelector('.modalCloseBtn')?.click();
+  }, true);
   // ------------------------------- 中奖清单 & 补抽 ------------------------------- & 补抽 -------------------------------
   
   // 清空“中奖榜单”相关数据与UI（与人员/奖品按钮联动）
@@ -5637,6 +5828,7 @@ function renderWinners() {
       try { window.KFI18N && window.KFI18N.apply(modal); } catch(e) {}
 openOverlayModal(modal);
       runStaggerIn(content, ".rv-card");
+      ResultConfetti.start(modal);
       // 播放补抽中奖音效
       try { applyRevealEffect(); } catch(e) {}
 
@@ -5719,6 +5911,7 @@ openOverlayModal(modal);
   }
   window.refreshImportStatus=refreshImportStatus;
   window.KFRefreshDynamicLanguage=()=>{
+    syncFullscreen();
     try{ refreshImportStatus(); }catch(e){}
     try{ [$("togglePeopleHelp"), $("togglePrizeHelp")].forEach(btn=>{ if(btn){ const label=ui("说明","Help"); btn.setAttribute("aria-label",label); btn.setAttribute("title",label); } }); }catch(e){}
     try{ renderPrizeList(); }catch(e){}
@@ -5733,6 +5926,38 @@ openOverlayModal(modal);
     const rb=$("btnReset"); if(rb?.dataset.confirming==="1") rb.textContent=ui(`确认重置（${rb.dataset._confirmLeft||5}秒）`,`Confirm Reset (${rb.dataset._confirmLeft||5}s)`);
     const fb=$("btnDoFill"); if(fb?.dataset.confirming==="1") { const c=state.winners.filter(w=>w.round==="R1"&&w.status==="absent"&&!state.filledAbsent.has(w.id)).length; fb.textContent=ui(`确认补抽（${c}个名额）`,`Confirm Redraw (${c} ${c===1?"slot":"slots"})`); }
   };
+
+  // Browser-owned fullscreen state also updates correctly after the user presses Escape.
+  const fullscreenButton = $("fullscreenToggle");
+  const fullscreenElement = () => document.fullscreenElement || document.webkitFullscreenElement;
+  const syncFullscreen = () => {
+    const active = !!fullscreenElement();
+    const supported = !!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen);
+    const label = !supported ? ui("当前浏览器不支持全屏","Fullscreen is unavailable in this browser") :
+      active ? ui("退出全屏","Exit fullscreen") : ui("进入全屏","Enter fullscreen");
+    fullscreenButton.setAttribute("aria-pressed", String(active));
+    fullscreenButton.setAttribute("aria-label", label);
+    fullscreenButton.title = label;
+    fullscreenButton.disabled = !supported;
+  };
+  fullscreenButton.addEventListener("click", async () => {
+    fullscreenButton.disabled = true;
+    try {
+      if (fullscreenElement()) {
+        const exit = document.exitFullscreen || document.webkitExitFullscreen;
+        await exit.call(document);
+      } else {
+        const root = document.documentElement;
+        const enter = root.requestFullscreen || root.webkitRequestFullscreen;
+        await enter.call(root);
+      }
+    } catch (error) {
+      showCenterToast(ui("无法切换全屏，请检查浏览器是否允许全屏。","Could not switch fullscreen. Check your browser's fullscreen permissions."),3000,"info");
+    } finally { syncFullscreen(); }
+  });
+  document.addEventListener("fullscreenchange", syncFullscreen);
+  document.addEventListener("webkitfullscreenchange", syncFullscreen);
+  syncFullscreen();
 
   // 活动标题只允许在偏好设置中修改
   $("applyEventTitle")?.addEventListener("click",()=>{
@@ -5787,6 +6012,21 @@ openOverlayModal(modal);
     syncStageRollModeControl();
     saveState();
   });
+  const syncResultConfetti = () => {
+    const on = state.settings.resultConfettiEnabled !== false;
+    $("resultConfettiToggle").setAttribute("aria-checked", String(on));
+    $("btnResultConfettiPreview").disabled = !on;
+  };
+  $("resultConfettiToggle").addEventListener("click", () => {
+    state.settings.resultConfettiEnabled = state.settings.resultConfettiEnabled === false;
+    if (!state.settings.resultConfettiEnabled) ResultConfetti.stop();
+    syncResultConfetti();
+    saveState();
+  });
+  $("btnResultConfettiPreview").addEventListener("click", () => {
+    document.body.classList.add("kf-effect-preview");
+    showStageReveal({award:ui("演示奖项","Demo Prize"),product:ui("撒花效果预览","Confetti Preview")},[{name:ui("演示中奖者","Demo Winner"),ts:Date.now()}]);
+  });
   $("effectMode")?.addEventListener("change",e=>{state.settings.effectMode=e.target.value;applyEffectMode();rebuildWall();saveState();});
   $("btnEffectPreview")?.addEventListener("click",()=>{showStageReveal({award:ui("演示奖项","Demo Prize"),product:ui("效果预览","Effect Preview")},[{name:ui("演示中奖者","Demo Winner"),ts:Date.now()}]);});
 
@@ -5812,7 +6052,7 @@ openOverlayModal(modal);
       if ($("eventTitleInput")) $("eventTitleInput").value = state?.settings?.eventTitle || "Lucky Draw";
       if ($("kfTitle")) $("kfTitle").textContent = state?.settings?.eventTitle || "Lucky Draw";
       if ($("accentCustom")) $("accentCustom").value = state?.settings?.accentCustom || "#52606d";
-      renderBrandLogo(); applyAccent(); applyGlowSettings(); applyEffectMode(); syncPrizeViewModeControl(); syncStageRollModeControl();
+      renderBrandLogo(); applyAccent(); applyGlowSettings(); applyEffectMode(); syncResultConfetti(); syncPrizeViewModeControl(); syncStageRollModeControl();
     } catch(e) {}
 
     refreshImportStatus();
