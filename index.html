@@ -2921,6 +2921,26 @@ input:focus-visible{
   outline:2px solid var(--accent)!important;
   outline-offset:2px!important;
 }
+
+/* v2.2.38 · Data import panels aligned to v2.2.51; preferences remain untouched. */
+#sec-data .kf-data-panel{height:440px;min-height:440px;overflow:hidden;}
+#sec-data .kf-data-panel .secBody{height:100%;display:flex;flex-direction:column;min-height:0;}
+#sec-data .cardControls{flex:0 0 auto;}
+#sec-data .hintBox{flex:0 0 auto;max-height:190px;overflow:auto;}
+#sec-data .peopleBottom,#sec-data #prizeList{flex:1 1 auto;min-height:0;margin-top:14px;overflow:hidden;}
+#sec-data .peopleParse{height:100%;min-height:0;}
+#sec-data #peopleTagList{height:100%;max-height:none;overflow-y:auto;overscroll-behavior:contain;}
+#sec-data #prizeList{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--border-2) transparent;padding-right:6px;}
+#sec-data #prizeList::-webkit-scrollbar,#sec-data #peopleTagList::-webkit-scrollbar{width:6px;}
+#sec-data #prizeList::-webkit-scrollbar-thumb,#sec-data #peopleTagList::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:999px;}
+.prize-plain-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:0 24px;align-content:start;}
+.prize-plain-row{display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:14px;min-height:58px;padding:10px 0;border-bottom:1px solid var(--border);}
+.prize-plain-number{color:var(--txt-3);font-size:11px;font-weight:400;font-variant-numeric:tabular-nums;}
+.prize-plain-copy{display:flex;flex-direction:column;min-width:0;gap:2px;}
+.prize-plain-copy strong{font-size:13.5px;font-weight:550;color:var(--txt-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.prize-plain-copy small{font-size:11.5px;color:var(--txt-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.prize-plain-qty{font-size:13px;font-weight:650;color:var(--txt-2);font-variant-numeric:tabular-nums;white-space:nowrap;}
+@media(max-width:760px){#sec-data .kf-data-panel{height:500px;min-height:500px;}.prize-plain-list{grid-template-columns:1fr;}}
 </style>
 
 
@@ -3182,7 +3202,7 @@ input:focus-visible{
     </div>
   </section>
 
-  <footer class="appFooter"><span id="footerProduct">Lucky Draw</span><span>·</span><span>v2.2.37</span><span>·</span><span data-i18n="footer.updated">更新于 2026-09-15</span></footer>
+  <footer class="appFooter"><span id="footerProduct">Lucky Draw</span><span>·</span><span>v2.2.39</span><span>·</span><span data-i18n="footer.updated">更新于 2026-09-21</span></footer>
 </main>
 
 <!-- ============ Global Settings Drawer ============ -->
@@ -3236,15 +3256,6 @@ input:focus-visible{
           <button type="button" class="accentChip" data-accent="ochre" aria-label="Ochre" title="Ochre"></button>
           <button type="button" class="accentChip" data-accent="vibrant" aria-label="Vibrant" title="Vibrant"></button>
           <label class="accentCustom" title="自定义配色"><input id="accentCustom" type="color" value="#52606d" aria-label="自定义配色"/></label>
-        </div>
-      </div>
-      <div class="settingsRow">
-        <div class="settingsLabel"><span data-i18n="set.prizeView">奖品明细显示</span><small data-i18n="set.prizeViewSub">选择导入奖品后的核对方式</small></div>
-        <div class="settingsCtl">
-          <div class="prize-view-segmented" id="prizeViewMode" role="group" aria-label="奖品明细显示方式">
-            <button type="button" data-prize-view="horizontal" data-i18n="set.prizeHorizontal">横状图</button>
-            <button type="button" data-prize-view="cards" data-i18n="set.prizeCards">卡片</button>
-          </div>
         </div>
       </div>
       <div class="settingsRow">
@@ -4924,41 +4935,22 @@ btn.style.background = "#c62828";
   function renderPrizeList() {
     const list = $("prizeList");
     if (!list) return;
-    syncPrizeViewModeControl();
     if (!state.prizes?.length) {
       list.innerHTML = `<div class="small kf-empty-state kf-empty-prizes">${ui("请上传奖品清单", "Please upload the prize list")}</div>`;
       $("prizeTotal").textContent = ui("总数：0", "Total: 0");
       return;
     }
     const total = state.prizes.reduce((sum,p)=>sum+(Number(p.qty)||0),0);
-    const maxQty = Math.max(...state.prizes.map(p => Number(p.qty) || 0), 1);
-    const mode = ["horizontal","cards"].includes(state?.settings?.prizeViewMode) ? state.settings.prizeViewMode : "horizontal";
     $("prizeTotal").textContent = ui(`总数：${total}`, `Total: ${total}`);
     const displayPrizes = [...state.prizes].sort((a,b) => (Number(a.order)||0) - (Number(b.order)||0));
-    let html = `<div class="prize-detail-dashboard is-${mode}" role="list" aria-label="${ui("奖品数量比较","Prize quantity comparison")}">`;
-    if (mode === "horizontal") {
-      html += `<div class="prize-h-head" aria-hidden="true"><span>${ui("奖品","Prize")}</span><span>${ui("数量分布","Quantity distribution")}</span><span>${ui("数量","Qty")}</span></div>`;
-    }
-    displayPrizes.forEach(p => {
-      const qty = Math.max(0, Number(p.qty) || 0);
-      const pct = qty > 0 ? Math.max(4, Math.min(100, (qty / maxQty) * 100)) : 0;
-      const product = escapeHtml(p.product);
-      const award = escapeHtml(p.award);
-      const order = escapeHtml(String(p.order));
-      const detailTitle = `${product} · ${award} · × ${qty}`;
-      if (mode === "horizontal") {
-        html += `<article class="prize-h-row" role="listitem" title="${detailTitle}">` +
-          `<div class="prize-h-copy"><div class="prize-h-product">${product}</div><div class="prize-h-award"><span class="prize-detail-order">${order}</span>${award}</div></div>` +
-          `<div class="prize-h-track" aria-label="${ui("数量比例","Quantity proportion")}: ${pct.toFixed(0)}%"><div class="prize-h-bar" style="width:${pct.toFixed(1)}%"></div></div>` +
-          `<div class="prize-h-qty">${qty}</div></article>`;
-      } else {
-        html += `<article class="prize-c-card" role="listitem" title="${detailTitle}"><div class="prize-c-top"><div class="prize-c-copy">` +
-          `<div class="prize-c-award"><span class="prize-detail-order">${order}</span>${award}</div><div class="prize-c-product">${product}</div>` +
-          `</div><div class="prize-c-qty">× ${qty}</div></div><div class="prize-c-track" aria-hidden="true"><div class="prize-c-bar" style="width:${pct.toFixed(1)}%"></div></div></article>`;
-      }
-    });
-    html += `</div>`;
-    list.innerHTML = html;
+    list.innerHTML = `<div class="prize-plain-list" role="list" aria-label="${ui("奖品清单","Prize list")}">` +
+      displayPrizes.map((p,index)=>{
+        const qty=Math.max(0,Number(p.qty)||0);
+        return `<article class="prize-plain-row" role="listitem">` +
+          `<span class="prize-plain-number" aria-hidden="true">${String(index+1).padStart(2,"0")}</span>` +
+          `<span class="prize-plain-copy"><strong>${escapeHtml(p.product)}</strong><small>${escapeHtml(p.award)}</small></span>` +
+          `<span class="prize-plain-qty">× ${qty}</span></article>`;
+      }).join("") + `</div>`;
   }
 
   $("resetPrizes").addEventListener("click", () => {
@@ -5299,8 +5291,17 @@ startNameTicker(pool);
     try { const bs = $("btnStopRoll"); if (bs) { bs.classList.add("kf-busy"); bs.setAttribute("aria-busy","true"); } } catch(e) {}
     if (!rolling) return;
     rolling = false;
-    stopAllDrawAudio();
-    stopNameTicker();
+    const stopMode = ["rapid","slot"].includes(state?.settings?.stageRollMode) ? state.settings.stageRollMode : "rapid";
+    /* v2.2.51: keep the synth session alive during the stop transition.
+       We only stop the continuous rolling bed here; slot/rapid deceleration sounds
+       continue until the winner has visibly settled. */
+    stopRollingSound();
+    if (stopMode === "slot") {
+      stopNameTicker();
+    } else {
+      clearInterval(tickerTimer);
+      tickerTimer = null;
+    }
     const anim = wallAnim.get($("wall"));
     if (anim) anim.speed = 0;
     // 停止滚动时显示滚动墙主体
@@ -5360,7 +5361,17 @@ startNameTicker(pool);
     } catch(e) {}
 
     const __doReveal = () => {
-      showStageReveal(p, revealItems);
+      const reveal = () => {
+        stopAllDrawAudio();
+        showStageReveal(p, revealItems);
+      };
+      if (stopMode === "slot" && window.KFOriginalReelStop?.active?.()) {
+        window.KFOriginalReelStop.settle(revealItems, reveal);
+      } else if (stopMode === "rapid" && window.KFRapidStopTransition) {
+        window.KFRapidStopTransition(pool, revealItems, reveal);
+      } else {
+        reveal();
+      }
     };
     setTimeout(__doReveal, 140);
     renderPrizeList();
@@ -6312,6 +6323,11 @@ openOverlayModal(modal);
     fly.classList.add("slot-reel-mode");
     name.style.display = "none";
     shell.style.display = "grid";
+
+    /* Cancel delayed callbacks left by the previous reveal before starting a new run. */
+    window.__kfOriginalReelStopId = (window.__kfOriginalReelStopId || 0) + 1;
+    (window.__kfOriginalReelStopTimers || []).forEach(clearTimeout);
+    window.__kfOriginalReelStopTimers = [];
     const speedPct = Math.max(0, Math.min(100, Number(state.settings.wallSpeedPct ?? 20)));
     const base = 1.65 - speedPct * 0.0085;
     const durationFactors = [1.00, .86, 1.12, .93];
@@ -6320,6 +6336,21 @@ openOverlayModal(modal);
 
     reels.forEach((reel, reelIndex) => {
       const track = reel.querySelector('.slot-reel-track');
+
+      /* v2.2.43 restart reset:
+         Previous target-stop converts winner lanes to controlled transforms.
+         A new draw must remove every inline stop/docking property and restore
+         the original v2.2.37 kfSlotReelSpin animation before rebuilding names. */
+      reel.classList.remove("kf-reel-winner");
+      track.style.transition = "";
+      track.style.transform = "";
+      track.style.animation = "";
+      track.style.animationName = "kfSlotReelSpin";
+      track.style.animationTimingFunction = "linear";
+      track.style.animationIterationCount = "infinite";
+      track.style.animationFillMode = "";
+      track.style.animationPlayState = "running";
+
       const seq = [];
       const seqLen = Math.max(12, Math.min(20, pool.length * 2));
       for (let i = 0; i < seqLen; i++) {
@@ -6346,16 +6377,152 @@ openOverlayModal(modal);
     clearInterval(tickerTimer);
     tickerTimer = null;
     const fly = $("flyout");
+    /* v2.2.43: slot mode stays visually alive until target-stop reveal finishes.
+       Rapid mode keeps the original immediate-hide behavior. */
+    if (fly && fly.classList.contains("slot-reel-mode")) return;
     if (fly) {
-      fly.querySelectorAll('.slot-reel-track').forEach(track => { track.style.animationPlayState = 'paused'; });
       fly.style.display = "none";
-      fly.classList.remove("slot-reel-mode");
       const shell = fly.querySelector('.slot-reel-shell');
       const name = fly.querySelector('.rollName');
       if (shell) shell.style.display = 'none';
       if (name) name.style.display = '';
     }
     currentRollHintIndex = -1;
+  };
+
+  /* v2.2.51 · Rapid Flash controlled stop
+     Slow the name changes progressively, settle on the selected winner, hold 0.5s,
+     then continue to the existing result modal. */
+  window.KFRapidStopTransition = function(pool, winners, done) {
+    const s = ensureFlyoutStructure();
+    if (!s) { done?.(); return; }
+    const { fly, shell, name } = s;
+    fly.classList.remove("slot-reel-mode");
+    fly.style.display = "flex";
+    shell.style.display = "none";
+    name.style.display = "block";
+    const source = (pool || []).filter(Boolean);
+    const finalLabel = participantLabel(winners?.[0]?.name ?? winners?.[0] ?? source[0] ?? "");
+    const delays = [80, 105, 135, 175, 225, 290, 370];
+    let step = 0;
+    const tick = () => {
+      if (step >= delays.length) {
+        name.textContent = finalLabel;
+        name.setAttribute("data-text", finalLabel);
+        try { playSynth(760,.08,.018,"sine",0,620); } catch(e) {}
+        setTimeout(() => {
+          fly.style.display = "none";
+          currentRollHintIndex = -1;
+          done?.();
+        }, 500);
+        return;
+      }
+      const label = participantLabel(source[Math.floor(Math.random() * Math.max(1,source.length))] || finalLabel);
+      name.textContent = label;
+      name.setAttribute("data-text", label);
+      try { playTone(980 - step*55, .025, .014); } catch(e) {}
+      const delay = delays[step++];
+      setTimeout(tick, delay);
+    };
+    tick();
+  };
+
+  /* v2.2.43 · Original Reel Target Stop
+     Keeps v2.2.37's real vertical CSS reels. Only the final docking behavior changes. */
+  window.KFOriginalReelStop = {
+    active(){
+      const fly = $("flyout");
+      return !!(fly && fly.classList.contains("slot-reel-mode") && fly.style.display !== "none");
+    },
+    settle(winners, done){
+      const s = ensureFlyoutStructure();
+      if (!s || !this.active()) { done?.(); return; }
+      const { fly, shell, name } = s;
+      const labels = (winners || []).map(x => participantLabel(x?.name ?? x)).filter(Boolean);
+      const reels = Array.from(shell.querySelectorAll(".slot-reel")).slice(0,4);
+      if (!labels.length || reels.length < 4) { done?.(); return; }
+
+      window.__kfOriginalReelStopId = (window.__kfOriginalReelStopId || 0) + 1;
+      const runId = window.__kfOriginalReelStopId;
+      const timers = [];
+      const later = (fn,ms) => { const t=setTimeout(fn,ms); timers.push(t); return t; };
+      window.__kfOriginalReelStopTimers?.forEach(clearTimeout);
+      window.__kfOriginalReelStopTimers = timers;
+
+      /* v2.2.51: audible mechanical cadence while the reels decelerate after Stop. */
+      [0,150,320,510,730,980,1260,1570].forEach((ms,i) => later(() => {
+        if (window.__kfOriginalReelStopId !== runId) return;
+        try { playSynth(520 - i*28, .045 + i*.006, .018, i < 4 ? "triangle" : "sine"); } catch(e) {}
+      }, ms));
+
+      /* Which lanes dock to winners. Non-target lanes retain the original animation. */
+      let targets;
+      if (labels.length === 1) targets = [[0,labels[0]],[1,labels[0]],[2,labels[0]],[3,labels[0]]];
+      else if (labels.length === 2) targets = [[1,labels[0]],[2,labels[1]]];
+      else if (labels.length === 3) targets = [[0,labels[0]],[1,labels[1]],[2,labels[2]]];
+      else targets = [[0,labels[0]],[1,labels[1]],[2,labels[2]],[3,labels[3]]];
+
+      const targetMap = new Map(targets);
+      reels.forEach((reel,idx)=>{
+        const track = reel.querySelector(".slot-reel-track");
+        reel.classList.remove("kf-reel-winner");
+        if (!track) return;
+        /* Preserve the exact visual position and original vertical list while switching
+           the winner lane from infinite animation to controlled deceleration. */
+        if (!targetMap.has(idx)) {
+          track.style.animationPlayState = "running";
+          return;
+        }
+        const cs = getComputedStyle(track);
+        const matrix = cs.transform;
+        track.style.animation = "none";
+        track.style.transform = matrix === "none" ? "translate3d(0,-50%,0)" : matrix;
+      });
+
+      /* Dock winner lanes sequentially. We rebuild each winner lane as a long vertical
+         list ending with the winner exactly at the centre focus line, then animate
+         translateY with easing to create a genuine reel slowdown rather than text swaps. */
+      targets.forEach(([idx,label],order)=>{
+        later(()=>{
+          if (window.__kfOriginalReelStopId !== runId) return;
+          const reel = reels[idx], track = reel?.querySelector(".slot-reel-track");
+          if (!track) return;
+          const pool = (state.attendees || []).filter(Boolean);
+          const filler = [];
+          const count = 14 + order * 2;
+          for (let j=0;j<count;j++) filler.push(participantLabel(pool[Math.floor(Math.random()*Math.max(1,pool.length))] || label));
+          filler.push(label);
+          const safe = v => String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+          track.innerHTML = filler.map(v=>`<div class="slot-reel-name" title="${safe(v)}">${safe(v)}</div>`).join("");
+          const itemH = parseFloat(getComputedStyle(track.querySelector(".slot-reel-name")).height) || 64;
+          /* track top is 50%; winner centre must land on shell centre => winner top at -itemH/2 */
+          const winnerIndex = filler.length - 1;
+          const targetY = -(winnerIndex * itemH + itemH/2);
+          track.style.transition = "none";
+          track.style.transform = "translate3d(0,0,0)";
+          void track.offsetHeight;
+          track.style.transition = `transform ${(.95 + order*.16).toFixed(2)}s cubic-bezier(.12,.72,.18,1)`;
+          track.style.transform = `translate3d(0,${targetY}px,0)`;
+          later(()=>reel.classList.add("kf-reel-winner"), 930 + order*160);
+        }, 120 + order*190);
+      });
+
+      const hold = 120 + (targets.length-1)*190 + 1850; /* v2.2.51: fully stopped winner reels hold 0.5s before opening results */
+      later(()=>{
+        if (window.__kfOriginalReelStopId !== runId) return;
+        /* End the still-moving decorative lanes only when transitioning to the result modal. */
+        reels.forEach(reel=>{
+          const track=reel.querySelector(".slot-reel-track");
+          if (track) track.style.animationPlayState="paused";
+        });
+        fly.style.display="none";
+        fly.classList.remove("slot-reel-mode");
+        shell.style.display="none";
+        name.style.display="";
+        currentRollHintIndex=-1;
+        done?.();
+      },hold);
+    }
   };
 
 });
