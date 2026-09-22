@@ -2945,6 +2945,110 @@ input:focus-visible{
 
 
 </head>
+<style id="theme-stage-palette-v2255">
+/* Theme palette owner: page wash, persistent stage and transparent reels.
+   Existing preference controls, accent tokens and draw behavior remain canonical. */
+html[data-accent="neutral"]{--scene-page:#f1f4f6;--scene-base:#233541;--scene-mid:#425f70;--scene-edge:#8297a4;}
+html[data-accent="blue"]{--scene-page:#f0f5fa;--scene-base:#092b50;--scene-mid:#17578c;--scene-edge:#658faa;}
+html[data-accent="green"]{--scene-page:#f1f6f3;--scene-base:#073f32;--scene-mid:#136b51;--scene-edge:#598970;}
+html[data-accent="purple"]{--scene-page:#f5f2fa;--scene-base:#30204e;--scene-mid:#62418b;--scene-edge:#9681b0;}
+html[data-accent="gold"]{--scene-page:#f8f5ee;--scene-base:#493417;--scene-mid:#795827;--scene-edge:#a38c5c;}
+html[data-accent="indigo"]{--scene-page:#f2f3fa;--scene-base:#24234f;--scene-mid:#454786;--scene-edge:#838cb8;}
+html[data-accent="cyan"]{--scene-page:#eff7f8;--scene-base:#103c48;--scene-mid:#176c7b;--scene-edge:#64989f;}
+html[data-accent="rose"]{--scene-page:#faf1f4;--scene-base:#542333;--scene-mid:#8b3d57;--scene-edge:#b47c8e;}
+html[data-accent="orange"]{--scene-page:#faf4ee;--scene-base:#562b17;--scene-mid:#8e4e2c;--scene-edge:#b58560;}
+html[data-accent="celadon"]{--scene-page:#f1f6f2;--scene-base:#21483f;--scene-mid:#437b6c;--scene-edge:#a29365;}
+html[data-accent="dusk"]{--scene-page:#f3f3f7;--scene-base:#26354f;--scene-mid:#4c6084;--scene-edge:#a57f72;}
+html[data-accent="pomegranate"]{--scene-page:#faf2ee;--scene-base:#542534;--scene-mid:#8b4355;--scene-edge:#ae8f7d;}
+html[data-accent="pine"]{--scene-page:#f2f5ee;--scene-base:#243e33;--scene-mid:#46614b;--scene-edge:#9a793c;}
+html[data-accent="mist"]{--scene-page:#f6f3f8;--scene-base:#3e3458;--scene-mid:#70608f;--scene-edge:#a09791;}
+html[data-accent="dustyrose"]{--scene-page:#f8f2f4;--scene-base:#50333f;--scene-mid:#865967;--scene-edge:#31424d;}
+html[data-accent="ochre"]{--scene-page:#f8f6ed;--scene-base:#49412b;--scene-mid:#7b6c3e;--scene-edge:#4e7370;}
+html[data-accent="vibrant"]{--scene-page:#f3f2fa;--scene-base:#342350;--scene-mid:#64508a;--scene-edge:#247b72;}
+html[data-accent="custom"]{
+ --scene-page:color-mix(in srgb,var(--accent) 6%,#f7f8f7);
+ --scene-base:color-mix(in srgb,var(--accent) 34%,#17242a);
+ --scene-mid:color-mix(in srgb,var(--accent) 48%,#29393f);
+ --scene-edge:color-mix(in srgb,var(--accent) 38%,#6c7778);
+}
+html[data-accent]{
+ --bg:var(--scene-page);--bg-2:color-mix(in srgb,var(--scene-base) 9%,#f8faf9);
+ --scene-ink:#fff;--scene-muted:rgba(255,255,255,.78);
+ --scene-line:rgba(255,255,255,.20);
+ --scene-glow:color-mix(in srgb,var(--scene-edge) 36%,#fff);
+ --scene-wash-a:color-mix(in srgb,var(--scene-mid) 30%,#fff);
+ --scene-wash-b:color-mix(in srgb,var(--scene-edge) 38%,#fff);
+}
+html.dark[data-accent]{
+ --bg:color-mix(in srgb,var(--scene-base) 38%,#101417);
+ --bg-2:color-mix(in srgb,var(--scene-base) 45%,#202629);
+}
+.kf-aurora{background:var(--bg)!important;}
+/* Broad flowing color fields, following the reference version's river treatment. */
+.kf-aurora::before,.kf-aurora::after{
+ content:"";position:absolute;inset:-32% -48%;pointer-events:none;
+ border-radius:38% 62% 48% 52% / 58% 36% 64% 42%;
+ background:linear-gradient(125deg,transparent 13%,var(--scene-wash-a) 29%,var(--scene-mid) 43%,var(--scene-wash-b) 56%,transparent 73%);
+ filter:blur(30px);opacity:.38;
+ animation:themeRiver 17s cubic-bezier(.45,.05,.55,.95) infinite alternate;
+}
+.kf-aurora::after{
+ inset:-22% -44% -44%;opacity:.32;animation-duration:22s;animation-delay:-9s;
+ background:linear-gradient(145deg,transparent 19%,var(--scene-wash-b) 36%,var(--scene-edge) 50%,var(--scene-wash-a) 60%,transparent 72%);
+}
+html.dark .kf-aurora::before,html.dark .kf-aurora::after{opacity:.12;}
+.kf-aurora .kf-aurora-orb{background:var(--scene-wash-a);opacity:.14;}
+.kf-aurora .kf-aurora-orb.o2{background:var(--scene-wash-b);}
+.kf-aurora .kf-aurora-orb.o3{background:var(--scene-edge);opacity:.08;}
+@keyframes themeRiver{
+ 0%{transform:translate3d(-11%,-8%,0) rotate(-22deg) scale(1.12,.88)}
+ 33%{transform:translate3d(8%,-1%,0) rotate(-7deg) scale(.94,1.16)}
+ 66%{transform:translate3d(-3%,10%,0) rotate(8deg) scale(1.18,.94)}
+ 100%{transform:translate3d(12%,5%,0) rotate(20deg) scale(.98,1.13)}
+}
+html #stageArea,html.dark #stageArea{
+ background:linear-gradient(125deg,var(--scene-base) 15%,var(--scene-mid) 66%,var(--scene-edge))!important;
+ color:var(--scene-ink);
+}
+#stageArea .stage-empty strong{color:var(--scene-ink);}
+#stageArea .stage-empty span{color:var(--scene-muted);}
+#stageArea #wall .wall-cell{
+ background:transparent!important;border-color:transparent!important;box-shadow:none!important;
+ color:rgba(255,255,255,.94)!important;text-shadow:0 1px 2px var(--scene-base);
+}
+#stageArea #wall .wall-depth-back .wall-cell{color:rgba(255,255,255,.42)!important;}
+#stageArea #flyout{background:color-mix(in srgb,var(--scene-base) 12%,transparent)!important;}
+#stageArea #flyout .rollHint{
+ color:var(--scene-muted)!important;background:color-mix(in srgb,var(--scene-base) 22%,transparent)!important;
+ border-color:var(--scene-line)!important;
+}
+#stageArea #flyout .rollName{color:var(--scene-ink)!important;text-shadow:0 2px 18px var(--scene-base)!important;}
+#stageArea #flyout.slot-reel-mode{
+ background:color-mix(in srgb,var(--scene-base) 16%,transparent)!important;
+ backdrop-filter:blur(8px) saturate(108%)!important;-webkit-backdrop-filter:blur(8px) saturate(108%)!important;
+}
+#stageArea .slot-reel-shell{
+ background:color-mix(in srgb,var(--scene-base) 28%,transparent)!important;
+ border-color:var(--scene-line)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.10)!important;
+}
+#stageArea .slot-reel{border-right-color:rgba(255,255,255,.13)!important;}
+#stageArea .slot-reel-shell::before{background:linear-gradient(180deg,color-mix(in srgb,var(--scene-base) 88%,transparent),color-mix(in srgb,var(--scene-base) 52%,transparent) 46%,transparent)!important;}
+#stageArea .slot-reel-shell::after{background:linear-gradient(0deg,color-mix(in srgb,var(--scene-base) 88%,transparent),color-mix(in srgb,var(--scene-base) 52%,transparent) 46%,transparent)!important;}
+#stageArea .slot-reel-focus{
+ border-top-color:color-mix(in srgb,var(--scene-glow) 34%,transparent)!important;
+ border-bottom-color:color-mix(in srgb,var(--scene-glow) 34%,transparent)!important;
+ background:color-mix(in srgb,var(--scene-glow) 8%,transparent)!important;
+}
+#stageArea .slot-reel-name{color:var(--scene-muted)!important;}
+#stageArea #flyout.slot-reel-mode .slot-reel.kf-reel-winner .slot-reel-name:last-child{color:var(--scene-ink)!important;}
+/* Reuse the existing spotlight trigger; color the stage without changing timing. */
+body.fx-spotlight #stageArea:has(.fx-spotlights.on){
+ background:radial-gradient(ellipse at 50% 0%,color-mix(in srgb,var(--scene-glow) 24%,transparent),transparent 65%),linear-gradient(125deg,var(--scene-base) 15%,var(--scene-mid) 66%,var(--scene-edge))!important;
+}
+@media(max-width:760px){.kf-aurora::before,.kf-aurora::after{filter:blur(18px);}}
+@media(prefers-reduced-motion:reduce){.kf-aurora::before,.kf-aurora::after{animation:none!important;}}
+</style>
+
 <body>
 <div id="saveWarning" role="alert" hidden></div>
 
@@ -3202,7 +3306,7 @@ input:focus-visible{
     </div>
   </section>
 
-  <footer class="appFooter"><span id="footerProduct">Lucky Draw</span><span>·</span><span>v2.2.54</span><span>·</span><span data-i18n="footer.updated">更新于 2026-09-22</span></footer>
+  <footer class="appFooter"><span id="footerProduct">Lucky Draw</span><span>·</span><span>v2.2.55</span><span>·</span><span data-i18n="footer.updated">更新于 2026-09-22</span></footer>
 </main>
 
 <!-- ============ Global Settings Drawer ============ -->
