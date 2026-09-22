@@ -670,7 +670,7 @@ html.dark #stageArea{ background:linear-gradient(180deg,#0B1220,#0F172A); }
   background:var(--card);
   border:1px solid var(--border);
   box-shadow:var(--wall-shadow);
-  font-size:19px; font-weight:600; color:var(--txt-1);
+  font-size:19px; font-weight:600; color:var(--txt-2);
   white-space:nowrap;
 }
 .wall-font-thin #wall .wall-cell{ font-weight:400; }
@@ -2930,6 +2930,16 @@ input:focus-visible{
 #sec-data .peopleBottom,#sec-data #prizeList{flex:1 1 auto;min-height:0;margin-top:14px;overflow:hidden;}
 #sec-data .peopleParse{height:100%;min-height:0;}
 #sec-data #peopleTagList{height:100%;max-height:none;overflow-y:auto;overscroll-behavior:contain;}
+.kf-people-search{position:relative;flex:0 0 auto;margin-top:12px;}
+.kf-people-search .kf-search-icon{position:absolute;left:13px;top:50%;width:17px;height:17px;transform:translateY(-50%);color:var(--txt-3);pointer-events:none;}
+.kf-people-search input{width:100%;height:40px;padding:0 38px 0 40px;border:1px solid var(--border);border-radius:12px;background:var(--card-glass-2);color:var(--txt-1);font:inherit;font-size:13px;outline:none;transition:border-color .18s ease,box-shadow .18s ease,background .18s ease;}
+.kf-people-search input::placeholder{color:var(--txt-3);}
+.kf-people-search input:focus{border-color:color-mix(in srgb,var(--accent) 48%,var(--border));box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 10%,transparent);}
+.kf-people-search .kf-search-count{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--txt-3);font-variant-numeric:tabular-nums;pointer-events:none;}
+#peopleTagList .name-item .person-state{margin-left:auto;font-size:10.5px;color:var(--txt-3);white-space:nowrap;}
+#peopleTagList .name-item.kf-person-absent .person-state{color:var(--txt-3);}
+#peopleTagList .name-item.kf-person-winner .person-state{color:var(--accent);}
+.kf-search-empty{grid-column:1/-1;padding:28px 12px;text-align:center;color:var(--txt-3);font-size:13px;}
 #sec-data #prizeList{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--border-2) transparent;padding-right:6px;}
 #sec-data #prizeList::-webkit-scrollbar,#sec-data #peopleTagList::-webkit-scrollbar{width:6px;}
 #sec-data #prizeList::-webkit-scrollbar-thumb,#sec-data #peopleTagList::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:999px;}
@@ -3017,7 +3027,16 @@ html #stageArea,html.dark #stageArea{
  color:rgba(255,255,255,.94)!important;text-shadow:0 1px 2px var(--scene-base);
 }
 #stageArea #wall .wall-depth-back .wall-cell{color:rgba(255,255,255,.42)!important;}
+/* Slot mode: remove the competing background motion while the four reels are active. */
+#stageArea #wall.wall-hidden{opacity:0;visibility:hidden;transition:opacity .24s ease,visibility 0s linear .24s;}
+#stageArea #wall:not(.wall-hidden){opacity:1;visibility:visible;transition:opacity .24s ease;}
 #stageArea #flyout{background:color-mix(in srgb,var(--scene-base) 12%,transparent)!important;}
+/* v2.2.55 · Rapid Flash: match the slot reel glass depth while keeping the foreground name sharp. */
+#stageArea #flyout.rapid-flash-mode{
+ background:color-mix(in srgb,var(--scene-base) 16%,transparent)!important;
+ backdrop-filter:blur(8px) saturate(108%)!important;
+ -webkit-backdrop-filter:blur(8px) saturate(108%)!important;
+}
 #stageArea #flyout .rollHint{
  color:var(--scene-muted)!important;background:color-mix(in srgb,var(--scene-base) 22%,transparent)!important;
  border-color:var(--scene-line)!important;
@@ -3266,6 +3285,11 @@ body.fx-spotlight #stageArea:has(.fx-spotlights.on){
         <div>Alex LU</div>
         <div>张三</div>
         <div>李四</div>
+      </div>
+      <div class="kf-people-search" role="search">
+        <svg class="kf-search-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.8-3.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="peopleSearch" type="search" autocomplete="off" aria-label="搜索参会者姓名" placeholder="搜索参会者姓名 / Search participant"/>
+        <span class="kf-search-count" id="peopleSearchCount" aria-live="polite"></span>
       </div>
       <div class="peopleBottom">
         <div class="peopleParse">
@@ -4074,6 +4098,7 @@ function runStaggerIn(container, itemSelector){
 
   const openOverlayModal = (modal) => {
     if (!modal) return;
+    modal._kfReturnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
     // Display first so transitions can run
     modal.style.display = "flex";
@@ -4087,6 +4112,7 @@ function runStaggerIn(container, itemSelector){
     requestAnimationFrame(() => {
       modal.classList.add("is-open");
       modal.classList.remove("is-opening");
+      modal.querySelector(".modalCloseBtn")?.focus();
     });
   };
 
@@ -4098,6 +4124,7 @@ function runStaggerIn(container, itemSelector){
       modal.classList.remove("is-open", "is-opening", "is-closing");
       modal.style.display = "none";
       document.body.classList.remove("modal-open");
+      modal._kfReturnFocus?.focus?.();
       return;
     }
 
@@ -4110,6 +4137,7 @@ function runStaggerIn(container, itemSelector){
       modal.classList.remove("is-closing");
       modal.style.display = "none";
       document.body.classList.remove("modal-open");
+      modal._kfReturnFocus?.focus?.();
     };
 
     const onEnd = (e) => {
@@ -4414,6 +4442,9 @@ function runStaggerIn(container, itemSelector){
   let state = defaultState();
   let rolling = false;
   let revealPending = false;
+  let activeDraw = null;
+  let revealTimer = null;
+  let drawGeneration = 0;
   const PARTICIPANT_SEP = "\u241F";
   const participantLabel = v => String(v ?? "").split(PARTICIPANT_SEP)[0];
   const makeParticipantKey = name => `${String(name).trim()}${PARTICIPANT_SEP}${uid()}`;
@@ -4615,10 +4646,9 @@ function getRealLeftForPrize(prize) {
       }
       return inner;
     };
-    // 景深双层：背景层 0.45x 慢速（模糊由 CSS 负责），前景层全速清晰
+    // 单层姓名墙：移除背景景深副本，避免姓名背后出现残影
     const anim = { speed: opt.speed ?? 0.8, raf: 0, parts: [
-      { inner: buildLayer("wall-layer wall-depth-back"), factor: 0.45, y: Math.random() * 400 },
-      { inner: buildLayer("wall-layer wall-depth-front"), factor: 1,    y: Math.random() * 400 }
+      { inner: buildLayer("wall-layer wall-depth-front"), factor: 1, y: Math.random() * 400 }
     ] };
     wallAnim.set(container, anim);
     anim.visible = true; anim.last = null;
@@ -4650,10 +4680,18 @@ function getRealLeftForPrize(prize) {
     tagList.innerHTML = "";
     const pc = $("peopleCount");
     if (pc) pc.textContent = names.length;
+    const searchEl = $("peopleSearch");
+    const searchCount = $("peopleSearchCount");
+    const query = String(searchEl?.value || "").trim().toLocaleLowerCase();
+    const visiblePeople = query ? names.filter(n => participantLabel(n).toLocaleLowerCase().includes(query)) : names;
+    if (searchCount) searchCount.textContent = query ? `${visiblePeople.length}/${names.length}` : "";
     if (names.length === 0) {
       tagList.innerHTML = `<div class="small kf-empty-state kf-empty-people">${ui("暂无参会者","No participants")}</div>`;
+    } else if (visiblePeople.length === 0) {
+      tagList.innerHTML = `<div class="kf-search-empty">${ui(`未找到“${searchEl?.value || ""}”`,`No participant found for “${searchEl?.value || ""}”`)}</div>`;
     } else {
-      names.forEach((n, index) => {
+      visiblePeople.forEach((n) => {
+        const index = names.indexOf(n);
         const span = document.createElement("span");
         span.className = "name-item";
         span.classList.add("kf-chip-in");
@@ -4664,24 +4702,45 @@ function getRealLeftForPrize(prize) {
         const label = document.createElement("span");
         label.className = "person-name";
         label.textContent = participantLabel(n);
+        const personState = document.createElement("span");
+        personState.className = "person-state";
+        if (state.absentSet.includes(n)) {
+          span.classList.add("kf-person-absent");
+          personState.textContent = ui("缺席","Absent");
+        } else if (state.drawnSet[n]) {
+          span.classList.add("kf-person-winner");
+          personState.textContent = ui("已中奖","Winner");
+        } else if (query) {
+          personState.textContent = ui("名单中","Listed");
+        }
         span.append(number, label);
+        if (personState.textContent) span.appendChild(personState);
         tagList.appendChild(span);
         span.addEventListener("animationend", () => span.classList.remove("kf-chip-in"), { once: true });
       });
     }
     const wallEl = $("wall");
-    // 仅在非滚动状态时更新并显示滚动墙
-    if (!rolling) {
-        wallEl.classList.remove('wall-hidden');
-        renderWall(wallEl, showNames, { cols: 4, rows: 22, fontSize: 20, speed: ((state.settings.wallSpeedPct * 5) / 100) * 0.8 });
-    } else {
-        // 如果正在滚动，则不更新，只确保它被隐藏
+    const activeMode = ["rapid","slot"].includes(state?.settings?.stageRollMode) ? state.settings.stageRollMode : "rapid";
+    // 名单搜索也会触发 rebuildWall：运行中只有老虎机隐藏背景墙；快速闪选必须保留背景墙供磨砂景深使用。
+    if (rolling && activeMode === "slot") {
         wallEl.classList.add('wall-hidden');
+        const anim = wallAnim.get(wallEl);
+        if (anim) anim.speed = 0;
+    } else {
+        wallEl.classList.remove('wall-hidden');
+        const wallSpeed = rolling && activeMode === "rapid"
+          ? Math.max(0.4, (state.settings.wallSpeedPct * 5) / 100 * 1.4)
+          : ((state.settings.wallSpeedPct * 5) / 100) * 0.8;
+        renderWall(wallEl, showNames, { cols: 4, rows: 22, fontSize: 20, speed: wallSpeed });
     }
    
     // 后台仪表板（替代预览滚动墙）
     updateDashboard();
   }
+  // 名单查询必须绑定在主应用作用域内，确保可以直接调用 rebuildWall。
+  $("peopleSearch")?.addEventListener("input", rebuildWall);
+  $("peopleSearch")?.addEventListener("search", rebuildWall);
+
   $("wallSpeedSlider")?.addEventListener("input", e => {
     const v = Number(e.target.value);          // 0-100（UI）
     $("wallSpeedLabel").textContent = v + "%";
@@ -4800,16 +4859,18 @@ if ($("glassLabel")) $("glassLabel").textContent = Math.round(p) + "%";
     return names; // 保留同名人员；应用时生成唯一内部ID
   }
   function parsePrizeText(txt){
-    const lines=String(txt||"").replace(/^\uFEFF/,"").split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
-    const rows=[];
-    lines.forEach((line,idx)=>{
-      const c=parseDelimitedLine(line); if(c.length<4) return;
+    const lines=String(txt||"").replace(/^\uFEFF/,"").split(/\r?\n/).map((text,index)=>({text:text.trim(),line:index+1})).filter(x=>x.text);
+    const rows=[]; const errors=[];
+    lines.forEach(({text,line},idx)=>{
+      const c=parseDelimitedLine(text);
+      if(c.length<4){ errors.push(line); return; }
       const [ord,awd,prod,qt]=c;
       if(idx===0 && /^(order|顺序|序号|no\.?|number)$/i.test(ord) && /^(award|奖项)$/i.test(awd)) return;
       const qty=Number(String(qt).replace(/,/g,""));
-      if(qty>0 && awd && prod) rows.push({prizeId:uid(),order:Number(ord)||0,award:awd,product:prod,qty,left:qty});
+      if(!awd || !prod || !Number.isInteger(qty) || qty<=0){ errors.push(line); return; }
+      rows.push({prizeId:uid(),order:Number(ord)||0,award:awd,product:prod,qty,left:qty});
     });
-    return rows;
+    return {rows,errors};
   }
 
   // ------------------------------- 参会者上传 -------------------------------
@@ -4977,11 +5038,16 @@ btn.style.background = "#c62828";
     clearPersistentActionSuccess("btnPrizeUpload");
     const reader = new FileReader();
     reader.onload = () => {
-      prizeParsed = parsePrizeText(String(reader.result || ""));
-      // 解析成功：仅缓存待导入的数据（不清空榜单、不锁按钮）
-      $("prizeStatus").textContent = prizeParsed.length
-        ? ui(`已解析：${prizeParsed.length} 行（待导入）`, `Ready to import: ${prizeParsed.length} rows`)
-        : ui("未解析到有效行：每行需为 顺序,奖项,产品,数量（支持中英文逗号）", "No valid rows found. Use: Order, Prize Tier, Prize Name, Quantity.");
+      const parsedPrizeResult = parsePrizeText(String(reader.result || ""));
+      prizeParsed = parsedPrizeResult.rows;
+      const invalidLines = parsedPrizeResult.errors;
+      // 数量必须为有限正整数；异常行直接拒绝并提示原文件行号
+      $("prizeStatus").textContent = invalidLines.length
+        ? ui(`导入失败：第 ${invalidLines.join("、")} 行格式或数量无效；数量必须为正整数`, `Import failed: invalid data or quantity on line(s) ${invalidLines.join(", ")}; quantity must be a positive integer`)
+        : (prizeParsed.length
+          ? ui(`已解析：${prizeParsed.length} 行（待导入）`, `Ready to import: ${prizeParsed.length} rows`)
+          : ui("未解析到有效行：每行需为 顺序,奖项,产品,数量（支持中英文逗号）", "No valid rows found. Use: Order, Prize Tier, Prize Name, Quantity."));
+      if (invalidLines.length) prizeParsed = [];
       if (prizeParsed.length) setPersistentActionSuccess("btnPrizeUpload");
 
       try { updateImportLocks(); } catch(e) {}
@@ -5246,11 +5312,16 @@ function updateCurrentPrize() {
     const poolSize = state.attendees.filter(n=>!state.absentSet.includes(n) && !state.drawnSet[n]).length;
     $("needFill").textContent = needFill;
     $("canFill").textContent = poolSize;
-    $("btnDoFill").disabled = needFill === 0 || poolSize === 0;
+    $("btnDoFill").disabled = rolling || revealPending || needFill === 0 || poolSize === 0;
     setStageStatus(!hasData ? ui("状态：等待导入数据", "Status: Waiting for data")
-                             : state.prizes.every(p=>getRealLeftForPrize(p)<=0) ? ui("状态：第一轮已抽完", "Status: Round 1 complete")
+                             : revealPending ? ui("状态：结果揭晓中...", "Status: Revealing result…")
                              : rolling ? ui("状态：滚动中...", "Status: Rolling…")
+                             : state.prizes.every(p=>getRealLeftForPrize(p)<=0) ? ui("状态：第一轮已抽完", "Status: Round 1 complete")
                              : ui("状态：就绪，可开始抽奖", "Status: Ready to draw"));
+    const drawLocked = rolling || revealPending;
+    if ($("startFrom")) $("startFrom").disabled = drawLocked;
+    if ($("drawN")) $("drawN").disabled = drawLocked;
+    if ($("btnSetMax")) $("btnSetMax").disabled = drawLocked;
     try {
       const b = $("btnStartRoll");
       if (b && !rolling) { b.classList.remove("kf-busy"); b.removeAttribute("aria-busy"); }
@@ -5326,6 +5397,10 @@ btn.style.background = "#c62828";
       btn.style.color = "";
     }
 
+    drawGeneration++;
+    activeDraw = null;
+    clearTimeout(revealTimer);
+    revealTimer = null;
     rolling = false;
     revealPending = false;
     stopAllDrawAudio();
@@ -5383,6 +5458,7 @@ state.prizes.forEach(p => p.left = p.qty);
     return showCenterToast(ui(`奖品数量不足（剩余：${prizeLeft}，需要：${need}）`, `Not enough prizes (${prizeLeft} available, ${need} needed)`), 4500, "info");
   }
 
+  activeDraw = { generation: ++drawGeneration, prize: p, prizeIndex: state.prizes.indexOf(p), need, pool: pool.slice() };
   rolling = true;
   drawSoundSessionActive = true;
   try { const b = $("btnStartRoll"); if (b) { b.classList.add("kf-busy"); b.setAttribute("aria-busy","true"); } } catch(e) {}
@@ -5390,9 +5466,16 @@ state.prizes.forEach(p => p.left = p.qty);
   try { if(state.settings.effectMode==="spotlight"){StageFX.setHype(1); StageFX.spotlightsOn(true);} } catch(e) {}
 startNameTicker(pool);
   const anim = wallAnim.get($("wall"));
-  if (anim) anim.speed = Math.max(0.4, (state.settings.wallSpeedPct * 5) / 100 * 1.4);
-  // 开始滚动时隐藏滚动墙主体
-  $("wall").classList.add('wall-hidden');
+  const activeMode = ["rapid","slot"].includes(state?.settings?.stageRollMode) ? state.settings.stageRollMode : "rapid";
+  if (activeMode === "slot") {
+    // 四轨老虎机本身已有高密度运动：淡出并暂停背景姓名墙，避免双层滚动干扰。
+    if (anim) anim.speed = 0;
+    $("wall").classList.add('wall-hidden');
+  } else {
+    // 快速闪选保留背景姓名墙，由 flyout 的磨砂层形成景深。
+    if (anim) anim.speed = Math.max(0.4, (state.settings.wallSpeedPct * 5) / 100 * 1.4);
+    $("wall").classList.remove('wall-hidden');
+  }
   updateControls();
   playStartSound(); // 播放开始音效
   startRollingSound();
@@ -5414,17 +5497,22 @@ startNameTicker(pool);
     }
     const anim = wallAnim.get($("wall"));
     if (anim) anim.speed = 0;
-    // 停止滚动时显示滚动墙主体
-    $("wall").classList.remove('wall-hidden');
-    // 更新滚动墙内容（排除已中奖者）
-    const names = state.attendees.slice();
-    const absent = new Set(state.absentSet);
-    const showNames = names.filter(n => !absent.has(n) && !state.drawnSet[n]);
-    renderWall($("wall"), showNames, { cols: 4, rows: 22, fontSize: 20, speed: ((state.settings.wallSpeedPct * 5) / 100) * 0.8 });
-    const p = getCurrentPrize();
-    if (!p) return showErr(ui("当前奖项不可用","Current prize is unavailable"));
-    let n = Math.max(1, Number($("drawN").value || 1));
-    const pool = state.attendees.filter(n => !state.absentSet.includes(n) && !state.drawnSet[n]);
+    if (stopMode === "slot") {
+      // 老虎机关停后仍处于揭晓流程：背景姓名墙保持隐藏，直到结果弹窗关闭。
+      $("wall").classList.add('wall-hidden');
+    } else {
+      // 快速闪选停止后恢复普通姓名墙。
+      $("wall").classList.remove('wall-hidden');
+      const names = state.attendees.slice();
+      const absent = new Set(state.absentSet);
+      const showNames = names.filter(n => !absent.has(n) && !state.drawnSet[n]);
+      renderWall($("wall"), showNames, { cols: 4, rows: 22, fontSize: 20, speed: ((state.settings.wallSpeedPct * 5) / 100) * 0.8 });
+    }
+    const draw = activeDraw;
+    const p = draw?.prize;
+    if (!draw || !p || draw.generation !== drawGeneration) return showErr(ui("本轮抽奖状态已失效，请重新开始","This draw is no longer valid. Please start again."));
+    let n = draw.need;
+    const pool = draw.pool.filter(name => !state.absentSet.includes(name) && !state.drawnSet[name]);
     const poolSize = pool.length;
 
     const prizeLeft = Number(getRealLeftForPrize(p) || 0);
@@ -5483,7 +5571,13 @@ startNameTicker(pool);
         reveal();
       }
     };
-    setTimeout(__doReveal, 140);
+    clearTimeout(revealTimer);
+    const revealGeneration = draw.generation;
+    revealTimer = setTimeout(() => {
+      revealTimer = null;
+      if (revealGeneration !== drawGeneration || !revealPending) return;
+      __doReveal();
+    }, 140);
     renderPrizeList();
     renderWinners();
     refreshStartFrom();
@@ -5682,6 +5776,8 @@ const close = () => {
       closeOverlayModal(modal);
       const livePrizeIndex = state.prizes.indexOf(prize);
       revealPending = false;
+      activeDraw = null;
+      rebuildWall(); // 结果弹窗关闭后恢复姓名墙及正常滚动
       if (livePrizeIndex >= 0 && getRealLeftForPrize(prize) <= 0 && state.curPrizeIndex === livePrizeIndex) {
         const nextIndex = state.prizes.findIndex((p,i) => i > livePrizeIndex && getRealLeftForPrize(p) > 0);
         const fallbackIndex = state.prizes.findIndex(p => getRealLeftForPrize(p) > 0);
@@ -5696,6 +5792,16 @@ const close = () => {
     closeBtn.onclick = close;
     modal.onclick = e => { if (e.target === modal) close(); };
   }
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Tab') return;
+    const modal = document.querySelector('#stageRevealModal.is-open, #fillRevealModal.is-open');
+    if (!modal) return;
+    const focusable = [...modal.querySelectorAll('button:not(:disabled), [href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])')].filter(el => !el.hidden && el.getClientRects().length);
+    if (!focusable.length) { e.preventDefault(); return; }
+    const first = focusable[0], last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }, true);
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
     const modal = document.querySelector('#stageRevealModal.is-open, #fillRevealModal.is-open');
@@ -5878,6 +5984,10 @@ function renderWinners() {
   // 一键补抽：二段确认，防止现场误触
   $("btnDoFill").addEventListener("click", () => {
     const fillBtn = $("btnDoFill");
+    if (rolling || revealPending) {
+      showCenterToast(ui("抽奖或揭晓进行中，暂不能补抽","A draw or reveal is in progress. Redraw is temporarily unavailable."), 3200, "info");
+      return;
+    }
     if (fillBtn && fillBtn.dataset.confirming !== "1") {
       const count = state.winners.filter(w => w.round === "R1" && w.status === "absent" && !state.filledAbsent.has(w.id)).length;
       if (!count) { showErr(ui("当前没有待补抽的缺席名额","No pending redraws"), 5000); return; }
@@ -6429,6 +6539,7 @@ openOverlayModal(modal);
     if (mode === "rapid") {
       /* 保留上传版本原效果：单个大名字约每 60ms 高频随机跳动。 */
       fly.classList.remove("slot-reel-mode");
+      fly.classList.add("rapid-flash-mode");
       shell.style.display = "none";
       name.style.display = "block";
       const updateRapidName = () => {
@@ -6445,6 +6556,7 @@ openOverlayModal(modal);
     }
 
     /* 模式 B：四轨老虎机滚轮，速度/相位错开形成节奏层次。 */
+    fly.classList.remove("rapid-flash-mode");
     fly.classList.add("slot-reel-mode");
     name.style.display = "none";
     shell.style.display = "grid";
@@ -6507,6 +6619,7 @@ openOverlayModal(modal);
     if (fly && fly.classList.contains("slot-reel-mode")) return;
     if (fly) {
       fly.style.display = "none";
+      fly.classList.remove("rapid-flash-mode");
       const shell = fly.querySelector('.slot-reel-shell');
       const name = fly.querySelector('.rollName');
       if (shell) shell.style.display = 'none';
@@ -6523,6 +6636,7 @@ openOverlayModal(modal);
     if (!s) { done?.(); return; }
     const { fly, shell, name } = s;
     fly.classList.remove("slot-reel-mode");
+    fly.classList.add("rapid-flash-mode");
     fly.style.display = "flex";
     shell.style.display = "none";
     name.style.display = "block";
@@ -6537,6 +6651,7 @@ openOverlayModal(modal);
         try { playSynth(760,.08,.018,"sine",0,620); } catch(e) {}
         setTimeout(() => {
           fly.style.display = "none";
+          fly.classList.remove("rapid-flash-mode");
           currentRollHintIndex = -1;
           done?.();
         }, 500);
