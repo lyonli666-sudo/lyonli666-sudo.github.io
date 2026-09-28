@@ -1,413 +1,122 @@
-# Lucky Draw
-
-A polished, standalone lucky draw application designed for company events, annual meetings, team celebrations, town halls, and prize drawings.
-
-一个无需安装、无需服务器、可直接在浏览器运行的企业活动抽奖工具。支持参会者与奖品导入、随机抽奖、缺席补抽、中奖记录、奖品可视化核对、中英文界面、品牌自定义以及多种舞台滚动效果。
-
-> Current Version / 当前版本：**v2.2.34**  
-> Updated / 更新日期：**2026-09-14**
-
----
-
-## Overview / 项目简介
-
-Lucky Draw is built as a **single standalone HTML file**.
-
-No Node.js, npm, database, backend service, or installation is required. Download the HTML file and open it directly in a modern browser.
-
-Lucky Draw 采用 **单 HTML 文件** 设计，无需安装 Node.js、npm、数据库或任何后端服务。下载后双击 HTML 文件即可运行，非常适合公司年会、团队活动、会议抽奖以及现场大屏展示。
-
-### Key Highlights / 核心特点
-
-- Single-file standalone application / 单 HTML 文件独立运行
-- Participant & prize import / 参会者与奖品导入
-- Random winner selection / 随机抽奖
-- Multiple draw rounds / 多轮抽奖
-- Absent winner redraw / 缺席补抽
-- Winner history & CSV export / 中奖记录与 CSV 导出
-- Prize dashboard / 奖品可视化核对
-- Multiple rolling styles / 多种名字滚动方式
-- Chinese & English UI / 中英文界面
-- Light & Dark mode / 浅色与深色模式
-- Custom branding / 品牌自定义
-- Sound & stage effects / 音效与舞台效果
-- Responsive interface / 响应式界面
-- Local browser storage / 浏览器本地保存设置
-
----
-
-## Features / 功能
-
-### Participant Management / 参会者管理
-
-Import participant lists from **TXT or CSV** files.
-
-支持通过 **TXT / CSV** 文件导入参会者名单。
-
-- Supports Chinese and English names
-- 支持中英文姓名
-- Duplicate display names can participate independently
-- 同名人员仍可作为不同参会者参与抽奖
-- Participant data is locked after successful application
-- 成功应用名单后自动锁定，降低现场误操作风险
-- Upload status remains visible after successful import
-- 上传成功后持续显示完成状态
-- Use **Reset Participants / 重置参会者** before replacing the list
-- 更换名单前需要先执行 **重置参会者**
-
----
-
-### Prize Management / 奖品管理
-
-Import prize tiers, prize names and quantities from CSV.
-
-支持导入奖项、奖品名称以及奖品数量。
-
-- Automatically tracks remaining prizes
-- 自动统计剩余奖品
-- Prize data is independently locked after successful import
-- 奖品导入后独立锁定
-- Upload status remains visible after successful import
-- 上传成功后持续显示完成状态
-- Use **Reset Prizes / 重置奖品** before replacing prize data
-- 更换奖品前需要先执行 **重置奖品**
-
-### Prize Dashboard / 奖品核对
-
-Imported prize data can be visually reviewed before the event.
-
-导入奖品后，可以通过可视化界面快速核对奖品名称及数量。
-
-Available views:
-
-- Horizontal Chart / 横状图
-- Cards / 卡片
-
-The preferred display mode can be selected from **Preferences / 偏好设置**.
-
----
-
-## Lucky Draw / 抽奖舞台
-
-The draw stage is designed for live presentation on large screens.
-
-抽奖舞台针对会议室、大屏以及现场活动展示进行了优化。
-
-- Select prize tier
-- 选择当前奖项
-- Select number of winners
-- 设置本轮中奖人数
-- Automatically limits the maximum available winners
-- 自动限制本轮最大可抽人数
-- Random winner selection
-- 随机抽取中奖者
-- Prevents normal draws from selecting previous winners again
-- 普通抽奖自动排除已中奖人员
-- Supports multiple draw rounds
-- 支持连续多轮抽奖
-- Animated winner reveal
-- 中奖结果动画揭晓
-
-### Rolling Styles / 名字滚动方式
-
-Two stage rolling styles are available:
-
-#### Rapid Shuffle / 快速闪选
-
-Names rapidly change across multiple columns.
-
-经典快速名字跳动模式，适合正式会议及企业活动。
-
-#### Slot Reels / 滚轮模式
-
-Names move vertically in multiple synchronized reels, inspired by slot-machine displays.
-
-名字以多列纵向滚轮方式滚动，让抽奖过程更具有节奏感。
-
-The rolling style can be changed from **Preferences / 偏好设置**.
-
----
-
-## Winner Management / 中奖管理
-
-Winner records are automatically organized by prize tier.
-
-中奖记录会按照奖项自动分类显示。
-
-- View winner history
-- 查看中奖记录
-- Group winners by prize tier
-- 按奖项分类
-- Mark a winner as absent
-- 标记中奖者缺席
-- Restore attendance
-- 恢复中奖者在场状态
-- Redraw absent winner slots
-- 对缺席名额进行补抽
-- Export winner records as CSV
-- 导出中奖名单 CSV
-
-### Winner Result Dialog / 中奖结果弹窗
-
-Large winner lists use an independently scrollable result area.
-
-多人中奖时，中奖名单区域可以独立滚动，同时保持标题和操作区域固定，方便现场查看。
-
-The redraw result dialog uses the same structured layout for consistent presentation.
-
-补抽结果同样采用统一的结果展示结构。
-
----
-
-## Preferences / 偏好设置
-
-Lucky Draw includes a centralized Preferences panel for interface and stage customization.
-
-所有主要外观和舞台设置均集中在 **偏好设置** 中管理。
-
-Available settings include:
-
-- Event Title / 活动标题
-- Brand Logo / 品牌 Logo
-- Appearance / 外观模式
-- Interface Language / 界面语言
-- Accent Color / 强调色
-- Prize Display Mode / 奖品显示方式
-- Stage Rolling Style / 舞台滚动方式
-- Draw Effects / 抽奖特效
-- Mouse Glow / 鼠标光晕
-- Sound / 音效
-- Volume / 音量
-- Rolling Speed / 滚动速度
-
----
-
-## Appearance / 外观
-
-### Light & Dark Mode
-
-Lucky Draw supports both light and dark interfaces.
-
-支持浅色和深色界面，并针对文字层级、边框、卡片以及舞台区域进行了适配。
-
-### Accent Colors / 强调色
-
-Multiple accent colors are available to match different event themes.
-
-强调色会应用于按钮、状态、界面高亮以及部分舞台效果。
-
-### Mouse Glow / 鼠标光晕
-
-An optional subtle pointer glow can be enabled from Preferences.
-
-可以在偏好设置中开启或关闭鼠标光晕，用于增强桌面端的界面交互感。
-
----
-
-## Draw Effects / 抽奖特效
-
-Different presentation levels are available depending on the event style.
-
-### Minimal
-
-Clean and restrained winner reveal.
-
-简洁、正式，适合会议及较正式的企业活动。
-
-### Spotlight
-
-Adds focused winner presentation and stage emphasis.
-
-增加舞台聚焦以及中奖卡片强调效果。
-
-### Celebration
-
-Adds celebration particles for important prize moments.
-
-适合大奖、年会以及最终奖项揭晓。
-
-Visual effects run independently and do not change the page layout.
-
-所有舞台视觉效果均独立运行，不会改变页面布局。
-
-### Preview
-
-Use **Preview / 预览** in Preferences to test effects before the event.
-
-Preview does not:
-
-- Create winner records
-- Reduce prize inventory
-- Change draw history
-
-预览不会产生真实中奖记录，也不会减少奖品数量或修改抽奖历史。
-
----
-
-## Sound & Speed / 音效与速度
-
-Preferences include:
-
-- Sound On / Off
-- Volume
-- Rolling Speed
-
+Lucky Draw --- 使用说明
+基于 LuckyDraw_v2.4.16_Prize_Hero_State_Sync_Fix.html
+Lucky Draw
+是一个可直接在浏览器中运行的活动抽奖工具。本说明仅介绍功能与使用方法。
+
+1. 快速开始
+1. 使用浏览器打开 LuckyDraw_v2.4.16_Prize_Hero_State_Sync_Fix.html。
+2. 在「数据管理」中上传并应用参会者名单。
+3. 上传并导入奖品清单。
+4. 在「抽奖舞台」确认当前奖项、剩余数量与本轮抽取人数。
+5. 点击「开始抽奖」。
+6. 点击「停止」完成本轮抽取。
+7. 查看中奖结果，关闭结果窗口后继续下一轮抽奖。
+2. 参会者名单
+上传名单
+进入「数据管理 → 参会者」，点击「上传名单」。
 支持：
-
-- 音效开关
-- 音量调节
-- 名字滚动速度
-
-These preferences are stored locally in the browser.
-
----
-
-## Chinese & English / 中英文界面
-
-Lucky Draw provides a bilingual interface.
-
-Lucky Draw 支持完整的中英文界面切换，包括：
-
-- Navigation
-- Dashboard
-- Data Management
-- Draw Stage
-- Winner Management
-- Preferences
-- Empty States
-- Dialogs and status messages
-
-Language preferences are stored locally.
-
----
-
-## Online Demo / 在线体验
-
-GitHub Pages:
-
-https://lyonli666-sudo.github.io/
-
----
-
-## Run Locally / 本地运行
-
-Lucky Draw is designed as a **single standalone HTML file**.
-
-No server, build tool, Node.js, npm, package manager, or installation is required.
-
-### Steps / 使用步骤
-
-1. Download the HTML file.  
-   下载 HTML 文件。
-
-2. Double-click the file.  
-   双击打开。
-
-3. Open it with Chrome, Microsoft Edge, Firefox, or Safari.  
-   使用现代浏览器运行。
-
-4. Import participants.  
-   导入参会者名单。
-
-5. Import prizes.  
-   导入奖品清单。
-
-6. Review the imported data.  
-   核对参会者及奖品数据。
-
-7. Start the draw.  
-   开始抽奖。
-
-For live events, the latest versions of **Google Chrome** or **Microsoft Edge** are recommended.
-
----
-
-## Participant File Format / 参会者文件格式
-
-TXT and CSV are supported.
-
-### TXT
-
-One participant per line.
-
-每行一个姓名，支持中英文。
-
-```text
+- TXT：每行一个姓名。
+- CSV：姓名放在第一列，可带表头，建议使用 UTF-8 编码。
+- 支持中文和英文姓名。
+TXT 示例：
 Mia Xu
-Alex Lu
+Alex LU
 张三
 李四
-```
-
-### CSV
-
-The participant name should be placed in the first column.
-
-姓名放在第一列，支持表头，建议使用 UTF-8 编码。
-
-```csv
-Name
-Mia Xu
-Alex Lu
-张三
-李四
-```
-
----
-
-## Prize File Format / 奖品文件格式
-
-Prize data is imported by column position.
-
-奖品清单按照列位置读取：
-
-```text
-Column 1 / 第1列：Order / 顺序
-Column 2 / 第2列：Prize Tier / 奖项
-Column 3 / 第3列：Product / 产品
-Column 4 / 第4列：Quantity / 数量
-```
-
-Example:
-
-```csv
-Order,Prize Tier,Product,Quantity
-1,First Prize,iPad,1
-2,Second Prize,Headphones,3
-3,Third Prize,Gift Card,10
-```
-
----
-
-## Data & Privacy / 数据与隐私
-
-Lucky Draw runs entirely inside the browser.
-
-Lucky Draw 的主要数据处理均在浏览器本地完成。
-
-Participant lists, prize information and draw data do not require a dedicated backend server to operate.
-
-因此非常适合需要快速部署、离线运行或现场使用的企业活动。
-
-Before using the application on a shared or public computer, remember to reset event data after the event.
-
----
-
-## Browser Support / 浏览器支持
-
-Recommended:
-
-- Google Chrome
-- Microsoft Edge
-- Mozilla Firefox
-- Safari
-
-For the best live-event experience, use an up-to-date desktop browser.
-
----
-
-## License
-
-This project is intended for event and internal business use.
-
-Check the repository license before redistribution or modification.
+选择文件后，点击「应用参会者名单」使名单正式生效。
+搜索参会者
+参会者区域提供姓名搜索框，可用于快速检查导入的人员是否存在于名单中。
+更换名单
+需要重新导入时，先点击「重置参会者」，然后重新上传并应用新的名单。
+3. 奖品清单
+进入「数据管理 → 奖品」，点击「上传奖品」。
+奖品文件按以下四列解析：
+  列        内容   示例
+  第 1 列   顺序   1
+  第 2 列   奖项   一等奖
+  第 3 列   产品   iPhone 15 Pro Max
+  第 4 列   数量   1
+示例：
+1，一等奖，iPhone 15 Pro Max，1
+2，二等奖，AirPods Pro 2，3
+3，三等奖，Apple Watch SE，8
+4，幸运奖，无线充电器，15
+选择文件后，点击「导入奖品」。导入后的奖品清单会显示在页面中，建议抽奖前检查奖项、产品名称和数量是否正确。
+需要更换奖品数据时，点击「重置奖品」后重新导入。
+4. 抽奖舞台
+参会者和奖品均导入完成后，即可使用抽奖舞台。
+选择奖项
+在舞台控制区选择需要抽取的奖项。页面会同步显示当前奖项/奖品及剩余数量。
+设置本轮人数
+在「人数」中输入本轮需要抽取的中奖人数。
+点击「最大」可快速设置为当前允许的最大抽取人数。
+开始与停止
+点击「开始抽奖」后，舞台开始滚动姓名。
+需要揭晓结果时点击「停止」。系统完成停止过程后会显示本轮中奖结果。
+中奖结果会自动写入「中奖榜单」，对应奖品的剩余数量同步更新。
+5. 抽奖模式
+在「偏好设置 → 舞台名字滚动」中可切换：
+快速闪选
+姓名在舞台中快速切换，停止后揭晓中奖者。
+###老虎机滚轮
+使用老虎机式滚动方式展示姓名，适合希望抽奖过程更有现场感的场景。
+两种模式只改变舞台展示方式，实际抽奖仍通过「开始抽奖 / 停止」操作。
+6. 中奖榜单
+「中奖榜单」用于查看已经产生的中奖记录。
+导出 CSV
+点击「导出 CSV」可导出中奖记录，便于活动结束后留档或进一步整理。
+补抽
+如中奖记录中存在需要补抽的名额，可使用「补抽」功能进行重新抽取。补抽结果会显示结果窗口，并写入中奖记录。
+7. 重置抽奖
+舞台区域提供「重置抽奖」。
+需要重新开始当前抽奖流程时可使用该功能。正式活动中建议确认确实需要重置后再操作，避免影响已有抽奖状态。
+8. 偏好设置
+点击页面右上方的「偏好设置」可调整界面和现场体验。
+活动标题
+输入新的活动标题后点击「应用标题」，顶部标题会同步更新。
+活动 Logo
+点击「上传 Logo」可使用自己的活动 Logo。
+支持：
+- PNG
+- JPEG
+- WebP
+点击「恢复默认」可恢复默认 Logo。
+页面背景
+用于切换整个网页的动态背景效果。
+舞台背景
+用于单独切换抽奖舞台内部的背景效果。
+同步背景
+开启后，页面背景与舞台背景使用相同的背景预设。
+主题配色
+选择不同的主题色后，按钮、高亮区域以及舞台强调色会同步变化。
+也可以使用自定义颜色。
+结果撒花
+控制中奖结果出现时的庆祝彩带/撒花效果。
+可使用「预览」提前检查现场效果。
+音效
+控制抽奖启动、老虎机滚动以及中奖揭晓时的声音。
+滚动速度
+调整舞台姓名滚动墙的速度，可根据现场屏幕和观看距离自行设置。
+9. 中英文切换
+页面顶部提供中文 / English 切换。
+切换语言后，主要界面、操作按钮和状态文字会同步切换，不影响已经导入的参会者、奖品和中奖数据。
+10. 全屏模式
+点击页面顶部的「全屏」按钮即可进入浏览器全屏模式，再次操作可退出全屏。
+正式活动时建议使用全屏模式，以减少浏览器地址栏和其他界面对舞台画面的干扰。
+如果浏览器阻止全屏，请检查浏览器的全屏权限。
+11. 推荐的现场操作顺序
+正式活动前建议按照以下顺序准备：
+1. 打开 Lucky Draw。
+2. 设置活动标题和 Logo。
+3. 选择主题、页面背景和舞台背景。
+4. 选择快速闪选或老虎机滚轮模式。
+5. 根据需要调整音效、撒花和滚动速度。
+6. 上传并应用参会者名单。
+7. 上传并导入奖品清单。
+8. 检查参会者和奖品数据。
+9. 进入全屏模式。
+10. 选择奖项和本轮人数。
+11. 开始抽奖 → 停止 → 查看中奖结果。
+12. 重复抽奖直至奖品抽取完成。
+13. 如有需要执行补抽。
+14. 活动结束后导出中奖 CSV 留档。
